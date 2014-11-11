@@ -69,22 +69,16 @@ function loadUnit (unitCode)
 	var unitInfo = loadTemplate(unitCode);
 	
 	var unit = {
-			"genericName": unitInfo.Identity.GenericName
-		,	"specificName": unitInfo.Identity.SpecificName
-		,	"icon": unitInfo.Identity.Icon
+			"genericName":  fetchValue(unitInfo, "Identity/GenericName")
+		,	"specificName": fetchValue(unitInfo, "Identity/SpecificName")
+		,	"icon":         fetchValue(unitInfo, "Identity/Icon")
 	};
 	
-	if (unitInfo.Builder)
+	for (var build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
-		for (var build of unitInfo.Builder.Entities)
-		{
-			if (build.charAt(0) == "-")
-				continue; // temporary fix, until I get tokens parsing properly up and done
-			
-			build = build.replace("{civ}", g_SelectedCiv);
-			if (g_Lists.structures.indexOf(build) < 0)
-				g_Lists.structures.push(build);
-		}
+		build = build.replace("{civ}", g_SelectedCiv);
+		if (g_Lists.structures.indexOf(build) < 0)
+			g_Lists.structures.push(build);
 	}
 	
 	return unit;
@@ -95,24 +89,29 @@ function loadStructure (structCode)
 	var structInfo = loadTemplate(structCode);
 	
 	var structure = {
-			"genericName": structInfo.Identity.GenericName
-		,	"specificName": (structInfo.Identity.SpecificName) ? structInfo.Identity.SpecificName : "?"
-		,	"icon": structInfo.Identity.Icon
+			"genericName"  : fetchValue(structInfo, "Identity/GenericName")
+		,	"specificName" : (structInfo.Identity.SpecificName) ? structInfo.Identity.SpecificName : "?"
+		,	"icon"         : fetchValue(structInfo, "Identity/Icon")
+		,	"production"   : {
+					"technology" : fetchValue(structInfo, "ProductionQueue/Technologies", true)
+				,	"units"      : []
+				}
+		,	"phase"        : false
 	}
 	
-	if (structInfo.ProductionQueue && structInfo.ProductionQueue.Entities)
+	var reqTech = fetchValue(structInfo, "Identity/RequiredTechnology");
+	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
+		structure.phase = reqTech;
+	else if (typeof reqTech == "string" || reqTech.length > 0)
+		structure.required = reqTech;
+	
+	for (var build of fetchValue(structInfo, "ProductionQueue/Entities", true))
 	{
-		for (var build of structInfo.ProductionQueue.Entities)
-		{
-			if (build.charAt(0) == "-")
-				continue; // temporary fix, until I get tokens parsing properly up and done
-			
-			build = build.replace("{civ}", g_SelectedCiv);
-			if (g_Lists.units.indexOf(build) < 0)
-				g_Lists.units.push(build);
-		}
+		build = build.replace("{civ}", g_SelectedCiv);
+		structure.production.units.push(build);
+		if (g_Lists.units.indexOf(build) < 0)
+			g_Lists.units.push(build);
 	}
 	
 	return structure;
 }
-
