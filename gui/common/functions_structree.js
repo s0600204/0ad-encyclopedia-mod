@@ -4,6 +4,7 @@
 */
 
 var g_TemplateData = {};
+var g_TechnologyData = {};
 
 // ====================================================================
 
@@ -14,6 +15,8 @@ function loadTemplate (code)
 	{	// Load XML file and convert into JS Object data if valid file
 		var filename = "simulation/templates/" + code + ".xml";
 		var data = parseXMLData(filename);
+		// translation call goes here. Below is copy of civ's call
+		// translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
 		
 		g_TemplateData[code] = data;
 	}
@@ -21,7 +24,24 @@ function loadTemplate (code)
 	return g_TemplateData[code];
 }
 
+function loadTechData (code)
+{
+	if(!(code in g_TechnologyData))
+	{
+		var filename = "simulation/data/technologies/" + code + ".json";
+		var data = parseJSONData(filename);
+		// translation call goes here. Below is copy of civ's call
+		// translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
+		
+		g_TechnologyData[code] = data;
+	}
+	
+	return g_TechnologyData[code];
+}
+
+
 // ====================================================================
+
 
 function parseXMLData (pathname)
 {
@@ -147,6 +167,9 @@ function fetchValue(template, keypath, collate)
 	}
 	return ret;
 }
+
+
+// ====================================================================
 
 
 var XML = {};
