@@ -18,7 +18,10 @@ function loadCivData (playableOnly)
 	for (let filename of civFiles)
 	{
 		// Parse data if valid file
-		let data = parseJSONData(filename);
+		let data = Engine.ReadJSONFile(filename);
+		if (!data)
+			continue;
+		
 		translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
 		
 		if (!playableOnly || data.SelectableInGameSetup)

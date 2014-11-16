@@ -32,7 +32,7 @@ function loadTechData (code)
 	if(!(code in g_TechnologyData))
 	{
 		var filename = "simulation/data/technologies/" + code + ".json";
-		var data = parseJSONData(filename);
+		var data = Engine.ReadJSONFile(filename);
 		translateObjectKeys(data, ["genericName", "tooltip"]);
 		
 		g_TechnologyData[code] = data;
