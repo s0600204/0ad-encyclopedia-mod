@@ -38,8 +38,11 @@ function selectCiv (civCode)
 	
 	g_ParsedData["units"] = {};
 	g_ParsedData["structures"] = {};
+	g_ParsedData["techs"] = {};
+	g_ParsedData["phases"] = {};
 	g_Lists["units"] = [];
 	g_Lists["structures"] = [];
+	g_Lists["techs"] = [];
 	
 	// get initial units
 	for (var entity of g_CivData[civCode].StartEntities)
@@ -48,6 +51,7 @@ function selectCiv (civCode)
 			g_Lists.units.push(entity.Template);
 	}
 	
+	/* Load units and structures */
 	do {
 		for (var u of g_Lists.units)
 		{
@@ -62,6 +66,172 @@ function selectCiv (civCode)
 		}
 	} while (Object.keys(g_ParsedData.units).length < g_Lists.units.length);
 	
+	/* Load technologies */
+	var techPairs = {};
+	for (var techcode of g_Lists["techs"])
+	{
+		var realcode = depath(techcode);
+		
+		if (realcode.slice(0,4) == "pair")
+			techPairs[techcode] = load_pair(techcode);
+		else if (realcode.slice(0,5) == "phase")
+			g_ParsedData.phases[techcode] = load_phase(techcode);
+		else
+			g_ParsedData.techs[techcode] = load_tech(techcode);
+	}
+	
+	/* Expand tech pairs */
+	for (var paircode in techPairs)
+	{
+		var pairinfo = techPairs[paircode];
+		for (var techcode of pairinfo.techs)
+		{
+			var newTech = load_tech(techcode);
+			
+			if (pairinfo.req !== "")
+			{
+				if ("generic" in newTech.reqs)
+					newTech.reqs.generic.concat(techPairs[pairinfo.req].techs);
+				else
+					for (var civkey of Object.keys(newTech.reqs))
+						newTech.reqs[civkey].concat(techPairs[pairinfo.req].techs);
+			}
+			g_ParsedData.techs[techcode] = newTech;
+		}
+	}
+	
+	/* Establish phase order */
+	g_ParsedData["phaseList"] = unravel_phases(g_ParsedData.techs);
+	for (var phasecode of g_ParsedData["phaseList"])
+	{
+		var phaseInfo = loadTechData(phasecode);
+		g_ParsedData.phases[phasecode] = load_phase(phasecode);
+		
+		if ("requirements" in phaseInfo)
+		{
+			for (var op in phaseInfo.requirements)
+			{
+				var val = phaseInfo.requirements[op];
+				if (op == "any")
+				{
+					for (var v of val)
+					{
+						var k = Object.keys(v);
+						k = k[0];
+						v = v[k];
+						if (k == "tech" && v in g_ParsedData.phases)
+							g_ParsedData.phases[v].actualPhase = phasecode;
+					}
+				}
+			}
+		}
+	}
+	
+	/* Group production lists of structures by phase */
+	for (var structCode of g_Lists.structures)
+	{
+		var structInfo = g_ParsedData.structures[structCode]
+		
+		/* Expand tech pairs */
+		for (var prod of structInfo.production.technology)
+			if (prod.slice(0,4) == "pair" || prod.indexOf("/pair") > -1)
+				structInfo.production.technology.splice(
+						structInfo.production.technology.indexOf(prod), 1,
+						techPairs[prod].techs[0], techPairs[prod].techs[1]
+					);
+		
+		/* Sort Techs by Phase */
+		var newProdTech = {};
+		for (var prod of structInfo.production.technology)
+		{
+			var phase = "";
+			
+			if (prod.slice(0,5) == "phase")
+			{
+				phase = g_ParsedData.phaseList.indexOf(g_ParsedData.phases[prod].actualPhase);
+				if (phase > 0)
+					phase = g_ParsedData.phaseList[phase - 1];
+			}
+			else if (g_SelectedCiv in g_ParsedData.techs[prod].reqs)
+			{
+				if (g_ParsedData.techs[prod].reqs[g_SelectedCiv].length > 0)
+					phase = g_ParsedData.techs[prod].reqs[g_SelectedCiv][0];
+			}
+			else if ("generic" in g_ParsedData.techs[prod].reqs)
+			{
+				phase = g_ParsedData.techs[prod].reqs.generic[0];
+			}
+			
+			if (depath(phase).slice(0,5) !== "phase")
+			{
+				warn(prod+" doesn't have a specific phase set ("+structCode+")");
+				phase = structInfo.phase;
+			}
+			
+			if (!(phase in newProdTech))
+				newProdTech[phase] = [];
+			
+			newProdTech[phase].push(prod);
+		}
+		
+		/* Determine phase for units */
+		var newProdUnits = {};
+		for (var prod of structInfo.production.units)
+		{
+			if (!(prod in g_ParsedData.units))
+			{
+				error(prod+" doesn't exist! ("+structCode+")");
+				continue;
+			}
+			var unit = g_ParsedData.units[prod];
+			var phase = "";
+			
+			if (reqTech in unit)
+			{
+				var reqTech = unit.reqTech;
+				if (reqTech.slice(0,5) == "phase")
+					phase = reqTech;
+				else if (g_SelectedCiv in g_ParsedData.techs[reqTech].reqs)
+					phase = g_ParsedData.techs[reqTech].reqs[g_SelectedCiv][0];
+				else
+					phase = g_ParsedData.techs[reqTech].reqs.generic[0];
+			}
+			else
+			{
+				// hack so it works with civil centres
+				if (structCode.indexOf("civil_centre") > -1 || structInfo.phase === false)
+					phase = g_ParsedData.phaseList[0];
+				else
+					phase = structInfo.phase;
+			}
+			
+			if (!(phase in newProdUnits))
+				newProdUnits[phase] = [];
+			
+			newProdUnits[phase].push(prod);
+		}
+		
+		g_ParsedData.structures[structCode].production = {
+				"technology": newProdTech
+			,	"units"		: newProdUnits
+			};
+	}
+	
+	/* Determine the Build List for the Civ (grouped by phase) */
+	var buildList = {};
+	for (var structCode of g_Lists.structures)
+	{
+		if (!g_ParsedData.structures[structCode].phase)
+			g_ParsedData.structures[structCode].phase = g_ParsedData.phaseList[0];
+		
+		var myPhase = g_ParsedData.structures[structCode].phase; 
+		
+		if (!(myPhase in buildList))
+			buildList[myPhase] = [];
+		buildList[myPhase].push(structCode);
+	}
+	
+	g_CivData[g_SelectedCiv].buildList = buildList;
 }
 
 function load_unit (unitCode)
@@ -76,6 +246,9 @@ function load_unit (unitCode)
 		,	"icon" : fetchValue(unitInfo, "Identity/Icon")
 		};
 	
+	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
+		unit["reqTech"] = unitInfo.Identity["RequiredTechnology"];
+
 	for (var build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
@@ -97,7 +270,7 @@ function load_structure (structCode)
 				}
 		,	"icon"       : fetchValue(structInfo, "Identity/Icon")
 		,	"production" : {
-					"technology" : fetchValue(structInfo, "ProductionQueue/Technologies", true)
+					"technology" : []
 				,	"units"      : []
 				}
 		,	"phase"      : false
@@ -115,6 +288,13 @@ function load_structure (structCode)
 		structure.production.units.push(build);
 		if (g_Lists.units.indexOf(build) < 0)
 			g_Lists.units.push(build);
+	}
+	
+	for (var research of fetchValue(structInfo, "ProductionQueue/Technologies", true))
+	{
+		structure.production.technology.push(research);
+		if (g_Lists.techs.indexOf(research) < 0)
+			g_Lists.techs.push(research);
 	}
 	
 	return structure;
@@ -285,3 +465,42 @@ function calcReqs (op, val)
 	return val;
 }
 
+function unravel_phases (techs)
+{
+	var phaseList = [];
+	
+	for (var techcode in techs)
+	{
+		var techdata = techs[techcode];
+		
+		if ("generic" in techdata.reqs && techdata.reqs.generic.length > 1)
+		{
+			var reqTech = techs[techcode].reqs.generic[1];
+			if (!("generic" in techs[reqTech].reqs))
+				continue;
+			
+			var reqPhase = techs[reqTech].reqs.generic[0];
+			var myPhase = techs[techcode].reqs.generic[0];
+			
+			if(reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
+				continue;
+			
+			var reqPhasePos = phaseList.indexOf(reqPhase);
+			var myPhasePos = phaseList.indexOf(myPhase);
+			
+			if (phaseList.length == 0)
+			{
+				phaseList = [reqPhase, myPhase];
+			}
+			else if (reqPhasePos < 0 && myPhasePos > -1)
+			{
+				phaseList.splice(myPhasePos, 0, reqPhase);
+			}
+			else if (myPhasePos < 0 && reqPhasePos > -1)
+			{
+				phaseList.splice(reqPhasePos+1, 0, myPhase);
+			}
+		}
+	}
+	return phaseList;
+}

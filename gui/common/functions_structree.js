@@ -228,8 +228,11 @@ var ReadXMLFile = function (pathname) {
 		for (var a = 1; a < tag.length; a++)
 		{
 			var attr = tag[a].split("=");
-			if (attr[0] == "datatype" && attr[1] == "\"tokens\"") {
-				tokens = true;
+			if (attr[0] == "datatype" && attr[1].slice(0,8) == "\"tokens\"") {
+				if (attr[1].charAt(8) == "/")
+					jsonString = jsonString.slice(0,-1) + "[],";
+				else
+					tokens = true;
 				continue;
 			}
 			jsonString += "\"@"+attr[0]+"\":";
@@ -264,4 +267,13 @@ var ReadXMLFile = function (pathname) {
 		return jsonObject["Entity"];
 	else
 		return {};	
+}
+
+function depath (path)
+{
+	var pos = path.lastIndexOf("/");
+	if (pos > -1)
+		path = path.slice(pos+1);
+	
+	return path;
 }
