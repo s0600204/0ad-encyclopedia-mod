@@ -232,6 +232,101 @@ function selectCiv (civCode)
 	}
 	
 	g_CivData[g_SelectedCiv].buildList = buildList;
+	
+	/* Draw tree */
+	draw();
+}
+
+/**
+ * Draw the structree
+ *
+ * (Actually moves and changes visibility of elements, and populates text)
+ *
+ * This is the only function in the mod where the phases are hard-coded. This
+ *   is due to limitations in the GUI Engine preventing dynamic creation of UI Elements.
+ */
+function draw () {
+	var initSizes = {
+		"village": Engine.GetGUIObjectByName("village_struct[0]").size
+	,	"town": Engine.GetGUIObjectByName("town_struct[0]").size
+	,	"city": Engine.GetGUIObjectByName("city_struct[0]").size
+	}
+	
+	// position elements for structures
+	for (var i=1; i<10; i++)
+	{
+		var ele = Engine.GetGUIObjectByName("village_struct["+i+"]");
+		var size = ele.size;
+		size.left = initSizes.village.right * i + initSizes.village.left;
+		size.right = initSizes.village.right * (i+1);
+		ele.size = size;
+	}
+	for (var i=1; i<10; i++)
+	{
+		var ele = Engine.GetGUIObjectByName("town_struct["+i+"]");
+		var size = ele.size;
+		size.left = initSizes.town.right * i + initSizes.town.left;
+		size.right = initSizes.town.right * (i+1);
+		ele.size = size;
+	}
+	for (var i=1; i<5; i++)
+	{
+		var ele = Engine.GetGUIObjectByName("city_struct["+i+"]");
+		var size = ele.size;
+		size.left = initSizes.city.right * i + initSizes.city.left;
+		size.right = initSizes.city.right * (i+1);
+		ele.size = size;
+	}
+	
+	// Set elements for structures
+	var i = 0;
+	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_village)
+	{
+		var stru = g_ParsedData.structures[stru];
+		Engine.GetGUIObjectByName("village_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
+		Engine.GetGUIObjectByName("village_name_speci["+i+"]").caption = stru.name.specific;
+	//	Engine.GetGUIObjectByName("village_struct["+i+"]").hidden = false;
+		i++;
+	}
+	for (i; i<10; i++)
+	{
+	//	Engine.GetGUIObjectByName("village_struct["+i+"]").hidden = true;
+		Engine.GetGUIObjectByName("village_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
+		Engine.GetGUIObjectByName("village_name_speci["+i+"]").caption = "--";
+	}
+	
+	var i = 0;
+	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_town)
+	{
+		var stru = g_ParsedData.structures[stru];
+		Engine.GetGUIObjectByName("town_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
+		Engine.GetGUIObjectByName("town_name_speci["+i+"]").caption = stru.name.specific;
+	//	Engine.GetGUIObjectByName("town_struct["+i+"]").hidden = false;
+		i++;
+	}
+	for (i; i<10; i++)
+	{
+	//	Engine.GetGUIObjectByName("town_struct["+i+"]").hidden = true;
+		Engine.GetGUIObjectByName("town_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
+		Engine.GetGUIObjectByName("town_name_speci["+i+"]").caption = "--";
+	}
+	
+	var i = 0;
+	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_city)
+	{
+		var stru = g_ParsedData.structures[stru];
+		Engine.GetGUIObjectByName("city_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
+		Engine.GetGUIObjectByName("city_name_speci["+i+"]").caption = stru.name.specific;
+	//	Engine.GetGUIObjectByName("city_struct["+i+"]").hidden = false;
+		i++;
+	}
+	for (i; i<5; i++)
+	{
+	//	Engine.GetGUIObjectByName("city_struct["+i+"]").hidden = true;
+		Engine.GetGUIObjectByName("city_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
+		Engine.GetGUIObjectByName("city_name_speci["+i+"]").caption = "--";
+	}
+	
 }
 
 function load_unit (unitCode)
