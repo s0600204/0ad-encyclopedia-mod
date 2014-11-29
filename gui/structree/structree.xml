@@ -64,34 +64,13 @@
 			<object type="image" style="TreeDisplay" size="64 8 100% 100%-8">
 				
 				<!-- Village Structures -->
-				<repeat count="10">
-					<object type="image" sprite="TranslucentPanelThinBorder" size="4 4 84 84+16" name="village_struct[n]" absolute="false">
-						<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="village_name_speci[n]"/>
-						<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="village_icon[n]"
-							sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-						/>
-					</object>
-				</repeat>
+				<include file="gui/structree/rows/village_phase.xml"/>
 				
 				<!-- Town Structures -->
-				<repeat count="10">
-					<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16" name="town_struct[n]">
-						<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_name_speci[n]"/>
-						<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_icon[n]"
-							sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-						/>
-					</object>
-				</repeat>
+				<include file="gui/structree/rows/town_phase.xml"/>
 				
 				<!-- City Structures -->
-				<repeat count="5">
-					<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16" name="city_struct[n]">
-						<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_name_speci[n]"/>
-						<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_icon[n]"
-							sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-						/>
-					</object>
-				</repeat>
+				<include file="gui/structree/rows/city_phase.xml"/>
 				
 			</object>
 			

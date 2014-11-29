@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<object name="row_city_phase">
+
+	<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16+14" name="city_struct[0]">
+		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_struct_name_speci[0]"/>
+		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_struct_icon[0]"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		<repeat count="16">
+			<object type="image" size="4 100%-20 20 100%-4" name="city_struct[0]_prod_city[n]"
+				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+			/>
+		</repeat>
+	</object>
+	
+	<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16+14" name="city_struct[1]">
+		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_struct_name_speci[1]"/>
+		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_struct_icon[1]"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		<repeat count="16">
+			<object type="image" size="4 100%-20 20 100%-4" name="city_struct[1]_prod_city[n]"
+				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+			/>
+		</repeat>
+	</object>
+	
+	<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16+14" name="city_struct[2]">
+		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_struct_name_speci[2]"/>
+		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_struct_icon[2]"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		<repeat count="16">
+			<object type="image" size="4 100%-20 20 100%-4" name="city_struct[2]_prod_city[n]"
+				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+			/>
+		</repeat>
+	</object>
+	
+	<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16+14" name="city_struct[3]">
+		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_struct_name_speci[3]"/>
+		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_struct_icon[3]"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		<repeat count="16">
+			<object type="image" size="4 100%-20 20 100%-4" name="city_struct[3]_prod_city[n]"
+				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+			/>
+		</repeat>
+	</object>
+	
+	<object type="image" sprite="TranslucentPanelThinBorder" size="4 320+4 84 320+84+16+14" name="city_struct[4]">
+		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="city_struct_name_speci[4]"/>
+		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="city_struct_icon[4]"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		<repeat count="16">
+			<object type="image" size="4 100%-20 20 100%-4" name="city_struct[4]_prod_city[n]"
+				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+			/>
+		</repeat>
+	</object>
+	
+</object>
