@@ -35,9 +35,9 @@
 		</object>
 
 		<!-- Data display -->
-		<object size="16 54 100%-16 100%-54">
-			<object type="image" sprite="TranslucentPanelThinBorder" size="0 0 100% 100%">
-		<!--		<object
+		<object size="0 54 100% 100%-54">
+		<!--	<object type="image" sprite="TranslucentPanelThinBorder" size="0 0 100% 100%">
+				<object
 					name="civGameplayHeading"
 					type="text"
 					font="sans-bold-16"
@@ -45,23 +45,23 @@
 					text_align="left"
 					text_valign="center"
 					size="10 0 100% 100%"
-				/>-->
-			</object>
+				/>
+			</object>-->
 			
 			<!-- village_phase.png doesn't exist -->
-			<object type="image" size="8 8 64-4 64-4"
+			<object type="image" size="16 32 48+16 48+32"
 				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 			/>
 			
-			<object type="image" size="8 160+8 64-4 160+64-4"
+			<object type="image" size="16 32+160+20 48+16 48+32+160+20"
 				sprite="stretched:session/portraits/technologies/town_phase.png"
 			/>
 			
-			<object type="image" size="8 320+8 64-4 320+64-4"
+			<object type="image" size="16 32+320 48+16 48+32+320"
 				sprite="stretched:session/portraits/technologies/city_phase.png"
 			/>
 			
-			<object type="image" style="TreeDisplay" size="64 8 100% 100%-8">
+			<object type="image" style="TreeDisplay" size="48+16+8 0 100%-16 100%">
 				
 				<!-- Village Structures -->
 				<include file="gui/structree/rows/village_phase.xml"/>

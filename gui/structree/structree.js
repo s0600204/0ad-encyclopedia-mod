@@ -3,6 +3,20 @@ var g_ParsedData = {};
 var g_Lists = {};
 var g_CivData = {};
 var g_SelectedCiv = "";
+var g_drawPhases = { // hard-coded values. See comment of draw() for reason
+		"village" : {
+			"structQuant": 10
+		,	"prodQuant": {"village":9, "town":4, "city":4}
+		}
+	,	"town" : {
+			"structQuant": 10
+		,	"prodQuant": {"town":6, "city":8}
+		}
+	,	"city" : {
+			"structQuant": 5
+		,	"prodQuant": {"city":16}
+		}
+	};
 
 function init (settings)
 {
@@ -244,188 +258,75 @@ function selectCiv (civCode)
  *
  * (Actually moves and changes visibility of elements, and populates text)
  *
- * This is the only function in the mod where the phases are hard-coded. This
+ * This is one of two functions in the mod where the phases are hard-coded. The hard-coding
  *   is due to limitations in the GUI Engine preventing dynamic creation of UI Elements.
  */
 function draw () {
 	var defWidth = 96;
 	var defMargin = 4;
 	
-	// village
-	var i = 0;
-	var y = defMargin;
-	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_village)
+	for (var pha in g_drawPhases)
 	{
-		var thisEle = Engine.GetGUIObjectByName("village_struct["+i+"]");
+		var i = 0;
+		var y = 0;
+		var c = 0;
 		
-		var stru = g_ParsedData.structures[stru];
-		Engine.GetGUIObjectByName("village_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
-		Engine.GetGUIObjectByName("village_struct_name_speci["+i+"]").caption = stru.name.specific;
-		thisEle.hidden = false;
-		
-		var len = {"village":9, "town":4, "city":4, "max":0};
-		for (var ph of ["village", "town", "city"])
+		for (var stru of g_CivData[g_SelectedCiv].buildList["phase_"+pha])
 		{
-			var p = 0;
-			if (stru.production.units["phase_"+ph])
-			{
-				for (var prod of stru.production.units["phase_"+ph])
-				{
-					var prod = g_ParsedData.units[prod];
-					Engine.GetGUIObjectByName("village_struct["+i+"]_prod_"+ph+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
-					Engine.GetGUIObjectByName("village_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = false;
-					p++;
-				}
-			}
-			if (stru.production.technology["phase_"+ph])
-			{
-				for (var prod of stru.production.technology["phase_"+ph])
-				{
-					if (prod.slice(0,5) == "phase")
-						var prod = g_ParsedData.phases[prod];
-					else
-						var prod = g_ParsedData.techs[prod];
-					Engine.GetGUIObjectByName("village_struct["+i+"]_prod_"+ph+"["+p+"]").sprite = "stretched:session/portraits/technologies/"+prod.icon;
-					Engine.GetGUIObjectByName("village_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = false;
-					p++;
-				}
-			}
-			if (p>len.max)
-				len.max = p;
-			for (p; p<len[ph]; p++)
-				Engine.GetGUIObjectByName("village_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = true;
-		}
-		
-		var size = thisEle.size;
-		size.left = y;
-		size.right = size.left + ((len.max*20 < defWidth)?defWidth:len.max*20) + 4;
-		y = size.right + defMargin;
-		thisEle.size = size;
-		
-		i++;
-	}
-	for (i; i<10; i++)
-	{
-		Engine.GetGUIObjectByName("village_struct["+i+"]").hidden = true;
-	//	Engine.GetGUIObjectByName("village_struct_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
-	//	Engine.GetGUIObjectByName("village_struct_name_speci["+i+"]").caption = "--";
-	}
-	
-	// town
-	var i = 0;
-	var y = defMargin;
-	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_town)
-	{
-		var thisEle = Engine.GetGUIObjectByName("town_struct["+i+"]");
-		
-		var stru = g_ParsedData.structures[stru];
-		Engine.GetGUIObjectByName("town_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
-		Engine.GetGUIObjectByName("town_struct_name_speci["+i+"]").caption = stru.name.specific;
-		thisEle.hidden = false;
-		
-		var len = {"town":6, "city":8, "max":0};
-		for (var ph of ["town", "city"])
-		{
+			var thisEle = Engine.GetGUIObjectByName(pha+"_struct["+i+"]");
 			
-			var p = 0;
-			if (stru.production.units["phase_"+ph])
+			var stru = g_ParsedData.structures[stru];
+			Engine.GetGUIObjectByName(pha+"_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
+			Engine.GetGUIObjectByName(pha+"_struct_name_speci["+i+"]").caption = stru.name.specific;
+			thisEle.hidden = false;
+			
+			for (var prod_pha in g_drawPhases[pha].prodQuant)
 			{
-				for (var prod of stru.production.units["phase_"+ph])
+				var p = 0;
+				if (stru.production.units["phase_"+prod_pha])
 				{
-					var prod = g_ParsedData.units[prod];
-					Engine.GetGUIObjectByName("town_struct["+i+"]_prod_"+ph+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
-					Engine.GetGUIObjectByName("town_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = false;
-					p++;
+					for (var prod of stru.production.units["phase_"+prod_pha])
+					{
+						var prod = g_ParsedData.units[prod];
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
+						p++;
+					}
 				}
-			}
-			if (stru.production.technology["phase_"+ph])
-			{
-				for (var prod of stru.production.technology["phase_"+ph])
+				if (stru.production.technology["phase_"+prod_pha])
 				{
-					if (prod.slice(0,5) == "phase")
-						var prod = g_ParsedData.phases[prod];
-					else
-						var prod = g_ParsedData.techs[prod];
-					Engine.GetGUIObjectByName("town_struct["+i+"]_prod_"+ph+"["+p+"]").sprite = "stretched:session/portraits/technologies/"+prod.icon;
-					Engine.GetGUIObjectByName("town_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = false;
-					p++;
+					for (var prod of stru.production.technology["phase_"+prod_pha])
+					{
+						if (prod.slice(0,5) == "phase")
+							var prod = g_ParsedData.phases[prod];
+						else
+							var prod = g_ParsedData.techs[prod];
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/technologies/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
+						p++;
+					}
 				}
+				if (p>c)
+					c = p;
+				for (p; p<g_drawPhases[pha].prodQuant[prod_pha]; p++)
+					Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = true;
 			}
-			if (p>len.max)
-				len.max = p;
-			for (p; p<len[ph]; p++)
-				Engine.GetGUIObjectByName("town_struct["+i+"]_prod_"+ph+"["+p+"]").hidden = true;
+			
+			var size = thisEle.size;
+			size.left = y;
+			size.right = size.left + ((c*20 < defWidth)?defWidth:c*20)+4;
+			y = size.right + defMargin;
+			thisEle.size = size;
+			
+			i++;
 		}
-		
-		var size = thisEle.size;
-		size.left = y;
-		size.right = size.left + ((len.max*20 < defWidth)?defWidth:len.max*20) + 4;
-		y = size.right + defMargin;
-		thisEle.size = size;
-		
-		i++;
-	}
-	for (i; i<10; i++)
-	{
-		Engine.GetGUIObjectByName("town_struct["+i+"]").hidden = true;
-	//	Engine.GetGUIObjectByName("town_struct_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
-	//	Engine.GetGUIObjectByName("town_struct_name_speci["+i+"]").caption = "--";
-	}
-	
-	// city
-	var i = 0;
-	var y = defMargin;
-	for (var stru of g_CivData[g_SelectedCiv].buildList.phase_city)
-	{
-		var thisEle = Engine.GetGUIObjectByName("city_struct["+i+"]");
-		
-		var stru = g_ParsedData.structures[stru];
-		Engine.GetGUIObjectByName("city_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
-		Engine.GetGUIObjectByName("city_struct_name_speci["+i+"]").caption = stru.name.specific;
-		thisEle.hidden = false;
-		
-		var p = 0;
-		if (stru.production.units.phase_city)
+		for (i; i<g_drawPhases[pha].structQuant; i++)
 		{
-			for (var prod of stru.production.units.phase_city)
-			{
-				var prod = g_ParsedData.units[prod];
-				Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
-				Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]").hidden = false;
-				p++;
-			}
+			Engine.GetGUIObjectByName(pha+"_struct["+i+"]").hidden = true;
+		//	Engine.GetGUIObjectByName(pha+"_struct_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
+		//	Engine.GetGUIObjectByName(pha+"_struct_name_speci["+i+"]").caption = "--";
 		}
-		if (stru.production.technology.phase_city)
-		{
-			for (var prod of stru.production.technology.phase_city)
-			{
-				var prod = g_ParsedData.techs[prod];
-				Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]").sprite = "stretched:session/portraits/technologies/"+prod.icon;
-				Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]").hidden = false;
-				p++;
-			}
-		}
-		
-		var size = thisEle.size;
-//		warn(size.left+"/"+size.right+" -> "+ p +":"+ (p*20) + " -> " + (size.left+p*20));
-		size.left = y;
-		size.right = size.left + ((p*20 < defWidth)?defWidth:p*20) + 4;
-		y = size.right + defMargin;
-//		warn(y);
-		thisEle.size = size;
-		
-		for (p; p<16; p++)
-			Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]").hidden = true;
-		
-		i++;
 	}
-	for (i; i<5; i++)
-	{
-		Engine.GetGUIObjectByName("city_struct["+i+"]").hidden = true;
-	//	Engine.GetGUIObjectByName("city_struct_icon["+i+"]").sprite = "stretched:pregame/shell/logo/wfg_logo_white.png";
-	//	Engine.GetGUIObjectByName("city_struct_name_speci["+i+"]").caption = "--";
-	}
-	
 }
 
 /**
@@ -440,68 +341,28 @@ function predraw ()
 		"village": Engine.GetGUIObjectByName("village_struct[0]_prod_village[0]").size
 	,	"town": Engine.GetGUIObjectByName("town_struct[0]_prod_town[0]").size
 	,	"city": Engine.GetGUIObjectByName("city_struct[0]_prod_city[0]").size
-	}
+	};
 	
-	/* Village Phase */
-	for (var i=1; i<10; i++)
+	for (var pha in g_drawPhases)
 	{
-		for (var p=1; p<9; p++)
+		for (var i=0; i<g_drawPhases[pha].structQuant; i++)
 		{
-			var prodEle = Engine.GetGUIObjectByName("village_struct["+i+"]_prod_village["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.village.right * p + initSizes.village.left;
-			prodsize.right = initSizes.village.right * (p+1);
-			prodEle.size = prodsize;
-		}
-		for (var p=1; p<4; p++)
-		{
-			var prodEle = Engine.GetGUIObjectByName("village_struct["+i+"]_prod_town["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.village.right * p + initSizes.village.left;
-			prodsize.right = initSizes.village.right * (p+1);
-			prodEle.size = prodsize;
-		}
-		for (var p=1; p<4; p++)
-		{
-			var prodEle = Engine.GetGUIObjectByName("village_struct["+i+"]_prod_city["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.village.right * p + initSizes.village.left;
-			prodsize.right = initSizes.village.right * (p+1);
-			prodEle.size = prodsize;
-		}
-	}
-	
-	/* Town Phase */
-	for (var i=0; i<10; i++)
-	{
-		for (var p=1; p<6; p++)
-		{
-			var prodEle = Engine.GetGUIObjectByName("town_struct["+i+"]_prod_town["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.town.right * p + initSizes.town.left;
-			prodsize.right = initSizes.town.right * (p+1);
-			prodEle.size = prodsize;
-		}
-		for (var p=1; p<8; p++)
-		{
-			var prodEle = Engine.GetGUIObjectByName("town_struct["+i+"]_prod_city["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.town.right * p + initSizes.town.left;
-			prodsize.right = initSizes.town.right * (p+1);
-			prodEle.size = prodsize;
-		}
-	}
-	
-	/* City Phase */
-	for (var i=0; i<5; i++)
-	{
-		for (var p=1; p<16; p++)
-		{
-			var prodEle = Engine.GetGUIObjectByName("city_struct["+i+"]_prod_city["+p+"]");
-			var prodsize = prodEle.size;
-			prodsize.left = initSizes.city.right * p + initSizes.city.left;
-			prodsize.right = initSizes.city.right * (p+1);
-			prodEle.size = prodsize;
+			var ele = Engine.GetGUIObjectByName(pha+"_struct["+i+"]");
+			var size = ele.size;
+			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*20;
+			ele.size = size;
+			
+			for (var prod_pha in g_drawPhases[pha].prodQuant)
+			{
+				for (var p=1; p<g_drawPhases[pha].prodQuant[prod_pha]; p++)
+				{
+					var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]");
+					var prodsize = prodEle.size;
+					prodsize.left = (initSizes[pha].right+4) * p;
+					prodsize.right = (initSizes[pha].right+4) * (p+1) - 4;
+					prodEle.size = prodsize;
+				}
+			}
 		}
 	}
 }

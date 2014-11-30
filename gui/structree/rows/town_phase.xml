@@ -1,175 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<object name="row_town_phase">
+<object name="row_town_phase" size="8 16+160+10 100% 100%">
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[0]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[0]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[0]"
+	<object type="image" style="StructBox" name="town_struct[0]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[0]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[0]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[0]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[0]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[0]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[0]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[1]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[1]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[1]"
+	<object type="image" style="StructBox" name="town_struct[1]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[1]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[1]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[1]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[1]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[1]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[1]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[2]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[2]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[2]"
+	<object type="image" style="StructBox" name="town_struct[2]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[2]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[2]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[2]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[2]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[2]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[2]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[3]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[3]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[3]"
+	<object type="image" style="StructBox" name="town_struct[3]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[3]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[3]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[3]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[3]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[3]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[3]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[4]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[4]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[4]"
+	<object type="image" style="StructBox" name="town_struct[4]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[4]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[4]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[4]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[4]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[4]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[4]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[5]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[5]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[5]"
+	<object type="image" style="StructBox" name="town_struct[5]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[5]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[5]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[5]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[5]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[5]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[5]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[6]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[6]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[6]"
+	<object type="image" style="StructBox" name="town_struct[6]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[6]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[6]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[6]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[6]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[6]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[6]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[7]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[7]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[7]"
+	<object type="image" style="StructBox" name="town_struct[7]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[7]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[7]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[7]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[7]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[7]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[7]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[8]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[8]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[8]"
+	<object type="image" style="StructBox" name="town_struct[8]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[8]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[8]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[8]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[8]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[8]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[8]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
-	<object type="image" sprite="TranslucentPanelThinBorder" size="4 160+4 84 160+84+16+34" name="town_struct[9]">
-		<object type="text" size="8 0 100%-8 20" style="StructNameSpecific" name="town_struct_name_speci[9]"/>
-		<object type="image" size="50%-32 8+16 50%+32 80-8+16" name="town_struct_icon[9]"
+	<object type="image" style="StructBox" name="town_struct[9]">
+		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[9]"/>
+		<object type="image" style="StructIcon" name="town_struct_icon[9]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<repeat count="6">
-			<object type="image" size="4 100%-40 20 100%-24" name="town_struct[9]_prod_town[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
-		<repeat count="8">
-			<object type="image" size="4 100%-20 20 100%-4" name="town_struct[9]_prod_city[n]"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-			/>
-		</repeat>
+		<object style="TownPhaseProdRow">
+			<repeat count="6">
+				<object type="image" style="ProdBox" name="town_struct[9]_prod_town[n]"/>
+			</repeat>
+		</object>
+		<object style="CityPhaseProdRow">
+			<repeat count="8">
+				<object type="image" style="ProdBox" name="town_struct[9]_prod_city[n]"/>
+			</repeat>
+		</object>
 	</object>
 	
 </object>

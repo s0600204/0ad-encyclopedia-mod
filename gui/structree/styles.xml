@@ -3,7 +3,7 @@
 <styles>
 	
 	<style name="TreeDisplay"
-		sprite="TranslucentPanelThinBorder"
+		sprite="ModernDarkBoxGold"
 		scrollbar="true"
 		scrollbar_style="ModernScrollBar"
 	/>
@@ -12,6 +12,31 @@
 		textcolor="white"
 		font="sans-12"
 		text_align="center"
+		size="8 0 100%-8 20"
+	/>
+	
+	<style name="StructBox"
+		sprite="ModernDarkBoxGold"
+		size="4 4 84 84+16"
+	/>
+	
+	<style name="StructIcon"
+		size="50%-32 8+16 50%+32 80-8+16"
+	/>
+	
+	<style name="ProdBox"
+		size="0 0 16 16"
+		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+	/>
+	
+	<style name="VillagePhaseProdRow"
+		size="4 100%-60 100%-4 100%"
+	/>
+	<style name="TownPhaseProdRow"
+		size="4 100%-40 100%-4 100%"
+	/>
+	<style name="CityPhaseProdRow"
+		size="4 100%-20 100%-4 100%"
 	/>
 	
 </styles>
