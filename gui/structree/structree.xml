@@ -48,12 +48,11 @@
 				/>
 			</object>-->
 			
-			<!-- village_phase.png doesn't exist -->
 			<object type="image" size="16 32 48+16 48+32"
-				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+				sprite="stretched:session/portraits/technologies/village_phase.png"
 			/>
 			
-			<object type="image" size="16 32+160+20 48+16 48+32+160+20"
+			<object type="image" size="16 32+160+10 48+16 48+32+160+10"
 				sprite="stretched:session/portraits/technologies/town_phase.png"
 			/>
 			
