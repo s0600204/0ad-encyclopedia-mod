@@ -51,10 +51,30 @@
 			<object type="image" size="16 32 48+16 48+32"
 				sprite="stretched:session/portraits/technologies/village_phase.png"
 			/>
+		<!--	<object type="image" size="40 1+98 100%-8 1+98+22" sprite="ProdBar">
+				<object type="image" size="2 2 20 20"
+					sprite="stretched:session/portraits/technologies/village_phase.png"
+				/>
+			</object>-->
+			<object type="image" size="40 25+98 100%-8 25+98+22" sprite="ProdBar">
+				<object type="image" size="2 2 20 20"
+					sprite="stretched:session/portraits/technologies/town_phase.png"
+				/>
+			</object>
+			<object type="image" size="40 49+98 100%-8 49+98+22" sprite="ProdBar">
+				<object type="image" size="2 2 20 20"
+					sprite="stretched:session/portraits/technologies/city_phase.png"
+				/>
+			</object>
 			
 			<object type="image" size="16 32+160+10 48+16 48+32+160+10"
 				sprite="stretched:session/portraits/technologies/town_phase.png"
 			/>
+			<object type="image" size="40 25+268 100%-8 25+268+22" sprite="ProdBar">
+				<object type="image" size="2 2 20 20"
+					sprite="stretched:session/portraits/technologies/city_phase.png"
+				/>
+			</object>
 			
 			<object type="image" size="16 32+320 48+16 48+32+320"
 				sprite="stretched:session/portraits/technologies/city_phase.png"

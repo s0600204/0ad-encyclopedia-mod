@@ -11,7 +11,7 @@
     <include>common/common_styles.xml</include>
 
     <include>structree/styles.xml</include>
+    <include>structree/sprites.xml</include>
     <include>structree/structree.xml</include>
-<!--    <include>civinfo/setup.xml</include>
-    <include>civinfo/sprites.xml</include>-->
+<!--    <include>civinfo/setup.xml</include>-->
 </page>

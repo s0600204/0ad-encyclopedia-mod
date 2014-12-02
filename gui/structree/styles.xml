@@ -17,26 +17,26 @@
 	
 	<style name="StructBox"
 		sprite="ModernDarkBoxGold"
-		size="4 4 84 84+16"
+		size="4 4 68 68+16"
 	/>
 	
 	<style name="StructIcon"
-		size="50%-32 8+16 50%+32 80-8+16"
+		size="50%-24 8+16 50%+24 8+16+48"
 	/>
 	
 	<style name="ProdBox"
-		size="0 0 16 16"
+		size="0 0 20 20"
 		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 	/>
 	
 	<style name="VillagePhaseProdRow"
-		size="4 100%-60 100%-4 100%"
+		size="4 100%-72 100%-4 100%"
 	/>
 	<style name="TownPhaseProdRow"
-		size="4 100%-40 100%-4 100%"
+		size="4 100%-48 100%-4 100%"
 	/>
 	<style name="CityPhaseProdRow"
-		size="4 100%-20 100%-4 100%"
+		size="4 100%-24 100%-4 100%"
 	/>
 	
 </styles>

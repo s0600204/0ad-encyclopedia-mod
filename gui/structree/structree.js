@@ -314,7 +314,7 @@ function draw () {
 			
 			var size = thisEle.size;
 			size.left = y;
-			size.right = size.left + ((c*20 < defWidth)?defWidth:c*20)+4;
+			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
 			y = size.right + defMargin;
 			thisEle.size = size;
 			
@@ -349,7 +349,7 @@ function predraw ()
 		{
 			var ele = Engine.GetGUIObjectByName(pha+"_struct["+i+"]");
 			var size = ele.size;
-			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*20;
+			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*24;
 			ele.size = size;
 			
 			for (var prod_pha in g_drawPhases[pha].prodQuant)
