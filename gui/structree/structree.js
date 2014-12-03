@@ -280,6 +280,7 @@ function draw () {
 			
 			var stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
+			Engine.GetGUIObjectByName(pha+"_struct_icon["+i+"]").tooltip = assembleTooltip(stru);
 			Engine.GetGUIObjectByName(pha+"_struct_name_speci["+i+"]").caption = stru.name.specific;
 			thisEle.hidden = false;
 			
@@ -292,6 +293,7 @@ function draw () {
 					{
 						var prod = g_ParsedData.units[prod];
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").tooltip = assembleTooltip(prod);
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
 						p++;
 					}
@@ -301,6 +303,7 @@ function draw () {
 					for (var prod of [stru.wallset.Gate, stru.wallset.Tower])
 					{
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").tooltip = assembleTooltip(prod);
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
 						p++;
 					}
@@ -314,6 +317,7 @@ function draw () {
 						else
 							var prod = g_ParsedData.techs[prod];
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/technologies/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").tooltip = assembleTooltip(prod);
 						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
 						p++;
 					}
@@ -390,16 +394,33 @@ function predraw ()
 	}
 }
 
+function assembleTooltip (info)
+{
+	var txt = "";
+	var speciName = (info.name[g_SelectedCiv]) ? info.name[g_SelectedCiv] : info.name.specific;
+	
+	if (speciName !== undefined)
+		txt = speciName + " (" + info.name.generic + ")";
+	else
+		txt = info.name.generic;
+	
+	if (info.tooltip && !Array.isArray(info.tooltip))
+		txt += "\n" + info.tooltip;
+	
+	return txt;
+}
+
 function load_unit (unitCode)
 {
 	var unitInfo = loadTemplate(unitCode);
 	
 	var unit = {
-			"name" : {
+			"name"    : {
 					"generic" : fetchValue(unitInfo, "Identity/GenericName")
 				,	"specific" : fetchValue(unitInfo, "Identity/SpecificName")
 				}
-		,	"icon" : fetchValue(unitInfo, "Identity/Icon")
+		,	"icon"    : fetchValue(unitInfo, "Identity/Icon")
+		,	"tooltip" : fetchValue(unitInfo, "Identity/Tooltip")
 		};
 	
 	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
@@ -430,6 +451,7 @@ function load_structure (structCode)
 				,	"units"      : []
 				}
 		,	"phase"      : false
+		,	"tooltip"    : fetchValue(structInfo, "Identity/Tooltip")
 		};
 	
 	var reqTech = fetchValue(structInfo, "Identity/RequiredTechnology");
@@ -478,11 +500,12 @@ function load_tech (techCode)
 	var techInfo = loadTechData(techCode);
 	
 	var tech = {
-			"reqs" : {}
-		,	"name" : {
+			"reqs"    : {}
+		,	"name"    : {
 					"generic" : techInfo.genericName
 				}
-		,	"icon" : (techInfo.icon) ? techInfo.icon : ""
+		,	"icon"    : (techInfo.icon) ? techInfo.icon : ""
+		,	"tooltip" : (techInfo.tooltip) ? techInfo.tooltip : ""
 		};
 	
 	if (techInfo.pair !== undefined)
@@ -555,6 +578,7 @@ function load_phase (phaseCode)
 					"generic"  : phaseInfo.genericName
 				}
 		,	"actualPhase" : ""
+		,	"tooltip"     : (phaseInfo.tooltip) ? phaseInfo.tooltip : ""
 		};
 	
 	if (phaseInfo.specificName !== undefined)

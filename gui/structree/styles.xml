@@ -22,11 +22,13 @@
 	
 	<style name="StructIcon"
 		size="50%-24 8+16 50%+24 8+16+48"
+		tooltip_style="treeTooltip"
 	/>
 	
 	<style name="ProdBox"
 		size="0 0 20 20"
 		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		tooltip_style="treeTooltip"
 	/>
 	
 	<style name="VillagePhaseProdRow"
