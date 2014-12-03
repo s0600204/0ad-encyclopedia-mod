@@ -7,7 +7,7 @@
 		<object type="image" style="StructIcon" name="city_struct_icon[0]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="CityPhaseProdRow">
+		<object style="CityPhaseProdRow" name="city_struct[0]_prod_row_city">
 			<repeat count="16">
 				<object type="image" style="ProdBox" name="city_struct[0]_prod_city[n]"/>
 			</repeat>
@@ -19,7 +19,7 @@
 		<object type="image" style="StructIcon" name="city_struct_icon[1]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="CityPhaseProdRow">
+		<object style="CityPhaseProdRow" name="city_struct[1]_prod_row_city">
 			<repeat count="16">
 				<object type="image" style="ProdBox" name="city_struct[1]_prod_city[n]"/>
 			</repeat>
@@ -31,7 +31,7 @@
 		<object type="image" style="StructIcon" name="city_struct_icon[2]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="CityPhaseProdRow">
+		<object style="CityPhaseProdRow" name="city_struct[2]_prod_row_city">
 			<repeat count="16">
 				<object type="image" style="ProdBox" name="city_struct[2]_prod_city[n]"/>
 			</repeat>
@@ -43,7 +43,7 @@
 		<object type="image" style="StructIcon" name="city_struct_icon[3]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="CityPhaseProdRow">
+		<object style="CityPhaseProdRow" name="city_struct[3]_prod_row_city">
 			<repeat count="16">
 				<object type="image" style="ProdBox" name="city_struct[3]_prod_city[n]"/>
 			</repeat>
@@ -55,7 +55,7 @@
 		<object type="image" style="StructIcon" name="city_struct_icon[4]"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="CityPhaseProdRow">
+		<object style="CityPhaseProdRow" name="city_struct[4]_prod_row_city">
 			<repeat count="16">
 				<object type="image" style="ProdBox" name="city_struct[4]_prod_city[n]"/>
 			</repeat>

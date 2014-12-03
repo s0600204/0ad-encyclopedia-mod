@@ -7,14 +7,17 @@ var g_drawPhases = { // hard-coded values. See comment of draw() for reason
 		"village" : {
 			"structQuant": 10
 		,	"prodQuant": {"village":9, "town":4, "city":4}
+		,	"prodCount": {}
 		}
 	,	"town" : {
 			"structQuant": 10
 		,	"prodQuant": {"town":6, "city":8}
+		,	"prodCount": {}
 		}
 	,	"city" : {
 			"structQuant": 5
 		,	"prodQuant": {"city":16}
+		,	"prodCount": {}
 		}
 	};
 
@@ -269,11 +272,11 @@ function draw () {
 	{
 		var i = 0;
 		var y = 0;
-		var c = 0;
 		
 		for (var stru of g_CivData[g_SelectedCiv].buildList["phase_"+pha])
 		{
 			var thisEle = Engine.GetGUIObjectByName(pha+"_struct["+i+"]");
+			var c = 0;
 			
 			var stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct_icon["+i+"]").sprite = "stretched:session/portraits/"+stru.icon;
@@ -306,6 +309,7 @@ function draw () {
 						p++;
 					}
 				}
+				g_drawPhases[pha].prodCount[prod_pha] = p;
 				if (p>c)
 					c = p;
 				for (p; p<g_drawPhases[pha].prodQuant[prod_pha]; p++)
@@ -317,6 +321,16 @@ function draw () {
 			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
 			y = size.right + defMargin;
 			thisEle.size = size;
+			
+			var eleWidth = size.right - size.left;
+			for (var prod_pha in g_drawPhases[pha].prodCount)
+			{
+				var wid = g_drawPhases[pha].prodCount[prod_pha] * 24 - 4;
+				var phaEle = Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_row_"+prod_pha);
+				var size = phaEle.size;
+				size.left = (eleWidth - wid)/2;
+				phaEle.size = size;
+			}
 			
 			i++;
 		}
