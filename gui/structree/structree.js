@@ -296,6 +296,15 @@ function draw () {
 						p++;
 					}
 				}
+				if (stru.wallset && prod_pha == pha)
+				{
+					for (var prod of [stru.wallset.Gate, stru.wallset.Tower])
+					{
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").sprite = "stretched:session/portraits/"+prod.icon;
+						Engine.GetGUIObjectByName(pha+"_struct["+i+"]_prod_"+prod_pha+"["+p+"]").hidden = false;
+						p++;
+					}
+				}
 				if (stru.production.technology["phase_"+prod_pha])
 				{
 					for (var prod of stru.production.technology["phase_"+prod_pha])
@@ -442,6 +451,23 @@ function load_structure (structCode)
 		structure.production.technology.push(research);
 		if (g_Lists.techs.indexOf(research) < 0)
 			g_Lists.techs.push(research);
+	}
+	
+	if (structInfo["WallSet"] !== undefined)
+	{
+		structure.wallset = {};
+		
+		for (var wSegm in structInfo.WallSet.Templates)
+		{
+			var wCode = structInfo.WallSet.Templates[wSegm];
+			var wPart = load_structure(wCode); //loadTemplate(wCode);
+			structure.wallset[wSegm] = wPart; //load_structure(wCode);
+			structure.wallset[wSegm].code = wCode;
+			
+		//	for (var research of fetchValue(wPart, "ProductionQueue/Technologies", true))
+			for (var research of wPart.production.technology)
+				structure.production.technology.push(research);
+		}
 	}
 	
 	return structure;
