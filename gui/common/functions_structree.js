@@ -16,8 +16,7 @@ function loadTemplate (code)
 		// Load XML file and convert into JS Object data if valid file
 		var filename = "simulation/templates/" + code + ".xml";
 		var data = ReadXMLFile(filename);
-		// translation call goes here. Below is copy of civ's call
-		// translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
+		translateObjectKeys(data, ["GenericName", "Tooltip"]);
 		
 		g_TemplateData[code] = data;
 	}
@@ -31,8 +30,7 @@ function loadTechData (code)
 	{
 		var filename = "simulation/data/technologies/" + code + ".json";
 		var data = parseJSONData(filename);
-		// translation call goes here. Below is copy of civ's call
-		// translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
+		translateObjectKeys(data, ["genericName", "tooltip"]);
 		
 		g_TechnologyData[code] = data;
 	}
