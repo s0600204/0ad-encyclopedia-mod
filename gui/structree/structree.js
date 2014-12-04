@@ -20,6 +20,14 @@ var g_drawPhases = { // hard-coded values. See comment of draw() for reason
 		,	"prodCount": {}
 		}
 	};
+var costIcons = {
+		"food"       : "[icon=\"iconFood\"]"
+	,	"wood"       : "[icon=\"iconWood\"]"
+	,	"stone"      : "[icon=\"iconStone\"]"
+	,	"metal"      : "[icon=\"iconMetal\"]"
+	,	"time"       : "[icon=\"iconTime\"]"
+	,	"population" : "[icon=\"iconPopulation\"]"
+};
 
 function init (settings)
 {
@@ -400,12 +408,32 @@ function assembleTooltip (info)
 	var speciName = (info.name[g_SelectedCiv]) ? info.name[g_SelectedCiv] : info.name.specific;
 	
 	if (speciName !== undefined)
-		txt = speciName + " (" + info.name.generic + ")";
+	{
+		txt = '[font="sans-bold-16"]' + speciName[0] + '[/font]';
+		txt += '[font="sans-bold-12"]' + speciName.slice(1).toUpperCase() + '[/font]';
+		txt += '[font="sans-bold-12"] (' + info.name.generic + ')[/font]';
+	}
 	else
-		txt = info.name.generic;
+		txt = '[font="sans-bold-16"]' + info.name.generic + '[/font]';
+	
+	txt += '\n[font="sans-12"]';
+	for (var res in info.cost)
+	{
+		if (info.cost[res] > 0 || Array.isArray(info.cost[res]) && info.cost[res].length > 1)
+		{
+			txt += costIcons[res];
+			
+			if (Array.isArray(info.cost[res]))
+				txt += Array.min(info.cost[res]) +"-"+ Array.max(info.cost[res]);
+			else
+				txt += info.cost[res];
+			txt += "  ";
+		}
+	}
+	txt += "[/font]";
 	
 	if (info.tooltip && !Array.isArray(info.tooltip))
-		txt += "\n" + info.tooltip;
+		txt += '\n[font="sans-13"]' + info.tooltip + '[/font]';
 	
 	return txt;
 }
@@ -420,6 +448,14 @@ function load_unit (unitCode)
 				,	"specific" : fetchValue(unitInfo, "Identity/SpecificName")
 				}
 		,	"icon"    : fetchValue(unitInfo, "Identity/Icon")
+		,	"cost"       : {
+					"food"       : +fetchValue(unitInfo, "Cost/Resources/food")
+				,	"wood"       : +fetchValue(unitInfo, "Cost/Resources/wood")
+				,	"stone"      : +fetchValue(unitInfo, "Cost/Resources/stone")
+				,	"metal"      : +fetchValue(unitInfo, "Cost/Resources/metal")
+				,	"population" : +fetchValue(unitInfo, "Cost/Population")
+				,	"time"       : +fetchValue(unitInfo, "Cost/BuildTime")
+				}
 		,	"tooltip" : fetchValue(unitInfo, "Identity/Tooltip")
 		};
 	
@@ -451,6 +487,13 @@ function load_structure (structCode)
 				,	"units"      : []
 				}
 		,	"phase"      : false
+		,	"cost"       : {
+					"food"  : +fetchValue(structInfo, "Cost/Resources/food")
+				,	"wood"  : +fetchValue(structInfo, "Cost/Resources/wood")
+				,	"stone" : +fetchValue(structInfo, "Cost/Resources/stone")
+				,	"metal" : +fetchValue(structInfo, "Cost/Resources/metal")
+				,	"time"  : +fetchValue(structInfo, "Cost/BuildTime")
+				}
 		,	"tooltip"    : fetchValue(structInfo, "Identity/Tooltip")
 		};
 	
@@ -478,6 +521,8 @@ function load_structure (structCode)
 	if (structInfo["WallSet"] !== undefined)
 	{
 		structure.wallset = {};
+		for (var res in structure.cost)
+			structure.cost[res] = [];
 		
 		for (var wSegm in structInfo.WallSet.Templates)
 		{
@@ -489,7 +534,15 @@ function load_structure (structCode)
 		//	for (var research of fetchValue(wPart, "ProductionQueue/Technologies", true))
 			for (var research of wPart.production.technology)
 				structure.production.technology.push(research);
+			
+			if (wSegm.slice(0,4) == "Wall")
+				for (var res in wPart.cost)
+					if (wPart.cost[res] > 0)
+						structure.cost[res].push(wPart.cost[res]);
 		}
+		
+		for (var res in structure.cost)
+			structure.cost[res] = structure.cost[res].sort(function (a,b) { return a-b; });
 	}
 	
 	return structure;
@@ -505,6 +558,7 @@ function load_tech (techCode)
 					"generic" : techInfo.genericName
 				}
 		,	"icon"    : (techInfo.icon) ? techInfo.icon : ""
+		,	"cost"    : (techInfo.cost) ? techInfo.cost : ""
 		,	"tooltip" : (techInfo.tooltip) ? techInfo.tooltip : ""
 		};
 	
@@ -517,6 +571,9 @@ function load_tech (techCode)
 		else
 			for (var sn in techInfo.specificName)
 				tech.name[sn] = techInfo.specificName[sn];
+	
+	if (techInfo.researchTime !== undefined)
+		tech.cost["time"] = techInfo.researchTime;
 	
 	if (techInfo.requirements !== undefined)
 	{
@@ -578,6 +635,7 @@ function load_phase (phaseCode)
 					"generic"  : phaseInfo.genericName
 				}
 		,	"actualPhase" : ""
+		,	"cost"        : (phaseInfo.cost) ? phaseInfo.cost : ""
 		,	"tooltip"     : (phaseInfo.tooltip) ? phaseInfo.tooltip : ""
 		};
 	
@@ -591,6 +649,9 @@ function load_phase (phaseCode)
 		else
 			for (var sn in phaseInfo.specificName)
 				phase.name[sn] = phaseInfo.specificName[sn];
+	
+	if (phaseInfo.researchTime !== undefined)
+		phase.cost["time"] = phaseInfo.researchTime;
 	
 	if (phaseInfo.icon !== undefined)
 		phase.icon = phaseInfo.icon;

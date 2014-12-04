@@ -277,3 +277,21 @@ function depath (path)
 	
 	return path;
 }
+
+Array.max = function (arr)
+{
+	var max = -Infinity;
+	for (var i in arr)
+		if (+arr[i] > max)
+			max = +arr[i];
+	return max;
+}
+
+Array.min = function (arr)
+{
+	var min = Infinity;
+	for (var i in arr)
+		if (+arr[i] < min)
+			min = +arr[i];
+	return min;
+}
