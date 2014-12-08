@@ -515,7 +515,7 @@ function assembleTooltip (info)
 		// Speed
 		if (info.stats.speed)
 		{
-			txt += '\n[font="sans-bold-13"]Speed:[/font] ';
+			txt += '\n[font="sans-bold-13"]Movement Speed:[/font] ';
 			var speed = [];
 			for (var stat in info.stats.speed)
 				speed.push(
@@ -524,6 +524,20 @@ function assembleTooltip (info)
 			txt += speed.join(", ");
 		}
 		
+		// Gather
+		if (info.gather)
+		{
+			txt += '\n[font="sans-bold-13"]Gather Rates:[/font] ';
+			var rates = [];
+			for (var gType in info.gather)
+			{
+				if (info.gather[gType] > 0)
+					rates.push(
+							info.gather[gType] + ' [font="sans-10"][color="orange"]'+ gType +"[/color][/font]"
+						);
+			}
+			txt += rates.join(", ");
+		}
 	}
 	
 	return txt;
@@ -592,6 +606,14 @@ function load_unit (unitCode)
 	
 	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
 		unit["reqTech"] = unitInfo.Identity["RequiredTechnology"];
+	
+	var gatherer = derive_gatherRates(unitInfo);
+	for (var gType in gatherer)
+		if (gatherer[gType] > 0)
+		{
+			unit.gather = gatherer;
+			break;
+		}
 	
 	var healer = fetchValue(unitInfo, "Heal");
 	if (Object.keys(healer).length > 0)
@@ -919,4 +941,34 @@ function unravel_phases (techs)
 		}
 	}
 	return phaseList;
+}
+
+function derive_gatherRates (unitInfo)
+{
+	var gatherTypes = {
+			"Food"  : [ "food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk" ]
+		,	"Wood"  : [ "wood", "wood.tree"/*, "wood.ruins"*/ ]
+		,	"Stone" : [ "stone", "stone.rock"/*, "stone.ruins"*/ ]
+		,	"Metal" : [ "metal", "metal.ore" ]
+	/*	,	"treasure" : [ "treasure", "treasure.food", "treasure.wood", "treasure.stone", "treasure.metal" ] */
+		};
+	var gatherRates = {};
+	
+	for (var gType in gatherTypes)
+	{
+		var gCount = 0;
+		gatherRates[gType] = 0;
+		for (var gather of gatherTypes[gType])
+		{
+			var rate = +fetchValue(unitInfo, "ResourceGatherer/Rates/"+gather);
+			if (rate > 0)
+			{
+				gatherRates[gType] += rate;
+				gCount++;
+			}
+		}
+		if (gCount > 0)
+			gatherRates[gType] = Math.round(gatherRates[gType] / gCount * 100) / 100;
+	}
+	return gatherRates;
 }
