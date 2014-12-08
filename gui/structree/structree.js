@@ -447,6 +447,28 @@ function assembleTooltip (info)
 		else
 			txt += info.stats.health;
 		
+		// Healer
+		if (info.stats.healer)
+		{
+			txt += '\n[font="sans-bold-13"]Heal:[/font] ';
+			var healer = [];
+			healer.push(
+					info.stats.healer["HP"] +
+					' [font="sans-10"][color="orange"]'+ "HP" +"[/color][/font]"
+				);
+			healer.push(
+					'[font="sans-bold-13"]Range:[/font] ' +
+					info.stats.healer["Range"] +
+					' [font="sans-10"][color="orange"]metres[/color][/font]'
+				);
+			healer.push(
+					'[font="sans-bold-13"]Rate:[/font] ' +
+					(info.stats.healer["Rate"]/1000) +
+					' [font="sans-10"][color="orange"]seconds[/color][/font]'
+				);
+			txt += healer.join(", ");
+		}
+		
 		// Attack
 		for (var atkType in info.stats.attack)
 		{
@@ -461,9 +483,11 @@ function assembleTooltip (info)
 			
 		/*	if (info.stats.attack[atkType].RepeatTime > 0)
 				damage.push(
-						info.stats.attack[atkType].RepeatTime/1000 + 's [font="sans-10"][color="orange"]Repeat[/color][/font]'
+						'[font="sans-bold-13"]Rate:[/font] ' +
+						info.stats.attack[atkType].RepeatTime/1000 +
+						' [font="sans-10"][color="orange"]seconds[/color][/font]'
 					);	*/
-				
+			
 			if (atkType == "Ranged")
 			{
 				damage.push(
@@ -552,7 +576,15 @@ function load_unit (unitCode)
 	
 	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
 		unit["reqTech"] = unitInfo.Identity["RequiredTechnology"];
-
+	
+	var healer = fetchValue(unitInfo, "Heal");
+	if (Object.keys(healer).length > 0)
+		unit.stats["healer"] = {
+				"Range": (healer.Range) ? +healer.Range : 0
+			,	"HP"   : (healer.HP)    ? +healer.HP    : 0
+			,	"Rate" : (healer.Rate)  ? +healer.Rate  : 0
+			};
+	
 	for (var build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
