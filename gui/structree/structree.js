@@ -435,7 +435,93 @@ function assembleTooltip (info)
 	if (info.tooltip && !Array.isArray(info.tooltip))
 		txt += '\n[font="sans-13"]' + info.tooltip + '[/font]';
 	
+	if (info.stats)
+	{
+		// Health
+		txt += '\n[font="sans-bold-13"]Health:[/font] ';
+		if (Array.isArray(info.stats.health))
+			if (Array.min(info.stats.health) == Array.max(info.stats.health))
+				txt += info.stats.health[0];
+			else
+				txt += Array.min(info.stats.health) +"-"+ Array.max(info.stats.health);
+		else
+			txt += info.stats.health;
+		
+		// Attack
+		for (var atkType in info.stats.attack)
+		{
+			txt += '\n[font="sans-bold-13"]' + atkType +" Attack:[/font] ";
+			var damage = [];
+			
+			for (var stat of ["Hack", "Pierce", "Crush"])
+				if (info.stats.attack[atkType][stat] > 0)
+					damage.push(
+							info.stats.attack[atkType][stat] + ' [font="sans-10"][color="orange"]'+ stat +"[/color][/font]"
+						);
+			
+		/*	if (info.stats.attack[atkType].RepeatTime > 0)
+				damage.push(
+						info.stats.attack[atkType].RepeatTime/1000 + 's [font="sans-10"][color="orange"]Repeat[/color][/font]'
+					);	*/
+				
+			if (atkType == "Ranged")
+			{
+				damage.push(
+						'[font="sans-bold-13"]Range:[/font] ' +
+						((info.stats.attack["Ranged"].MinRange > 0) ? info.stats.attack["Ranged"].MinRange + "-" : "") +
+						info.stats.attack["Ranged"].MaxRange + ' [font="sans-10"][color="orange"]metres[/color][/font]'
+					);
+			}
+			
+			txt += damage.join(", ");
+		}
+		
+		// Armour
+		txt += '\n[font="sans-bold-13"]Armour:[/font] ';
+		var armour = [];
+		for (var stat in info.stats.armour)
+		{
+			armour.push(
+					((Array.isArray(info.stats.armour[stat])) ? info.stats.armour[stat][0] : info.stats.armour[stat]) +
+					' [font="sans-10"][color="orange"]'+ stat +"[/color][/font]"
+				);
+		}
+		txt += armour.join(", ");
+		
+	}
+	
 	return txt;
+}
+
+function getAttackValues (entityInfo)
+{
+	var attacks = {};
+	var atkMethods = ["Melee", "Ranged", "Charge"];
+	var atkDamages = ["Crush", "Hack", "Pierce", "MinRange", "MaxRange", "RepeatTime"];
+	for (var meth of atkMethods)
+	{
+		var atk = {};
+		var keep = false;
+		for (var dama of atkDamages)
+		{
+			atk[dama] = +fetchValue(entityInfo, "Attack/"+meth+"/"+dama);
+			if (atk[dama] > 0)
+				keep = true;
+		}
+		if (keep)
+			attacks[meth] = atk;
+	}
+	return attacks;
+}
+function getArmourValues (entityInfo)
+{
+	var armours = {};
+	var armResists = ["Crush", "Hack", "Pierce"];
+	for (var resist of armResists)
+	{
+		armours[resist] = +fetchValue(entityInfo, "Armour/"+resist);
+	}
+	return armours;
 }
 
 function load_unit (unitCode)
@@ -457,6 +543,11 @@ function load_unit (unitCode)
 				,	"time"       : +fetchValue(unitInfo, "Cost/BuildTime")
 				}
 		,	"tooltip" : fetchValue(unitInfo, "Identity/Tooltip")
+		,	"stats"      : {
+					"health" : +fetchValue(unitInfo, "Health/Max")
+				,	"attack" : getAttackValues(unitInfo)
+				,	"armour" : getArmourValues(unitInfo)
+				}
 		};
 	
 	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
@@ -495,6 +586,11 @@ function load_structure (structCode)
 				,	"time"  : +fetchValue(structInfo, "Cost/BuildTime")
 				}
 		,	"tooltip"    : fetchValue(structInfo, "Identity/Tooltip")
+		,	"stats"      : {
+					"health" : +fetchValue(structInfo, "Health/Max")
+				,	"attack" : getAttackValues(structInfo) //fetchValue(structInfo, "Attack")
+				,	"armour" : getArmourValues(structInfo) //fetchValue(structInfo, "Armour")
+				}
 		};
 	
 	var reqTech = fetchValue(structInfo, "Identity/RequiredTechnology");
@@ -502,6 +598,9 @@ function load_structure (structCode)
 		structure.phase = reqTech;
 	else if (typeof reqTech == "string" || reqTech.length > 0)
 		structure.required = reqTech;
+	
+	if (structure.stats.armour["Foundation"])
+		delete structure.stats.armour["Foundation"];
 	
 	for (var build of fetchValue(structInfo, "ProductionQueue/Entities", true))
 	{
@@ -527,18 +626,29 @@ function load_structure (structCode)
 		for (var wSegm in structInfo.WallSet.Templates)
 		{
 			var wCode = structInfo.WallSet.Templates[wSegm];
-			var wPart = load_structure(wCode); //loadTemplate(wCode);
-			structure.wallset[wSegm] = wPart; //load_structure(wCode);
+			var wPart = load_structure(wCode);
+			structure.wallset[wSegm] = wPart;
 			structure.wallset[wSegm].code = wCode;
 			
-		//	for (var research of fetchValue(wPart, "ProductionQueue/Technologies", true))
 			for (var research of wPart.production.technology)
 				structure.production.technology.push(research);
 			
 			if (wSegm.slice(0,4) == "Wall")
+			{
 				for (var res in wPart.cost)
 					if (wPart.cost[res] > 0)
 						structure.cost[res].push(wPart.cost[res]);
+				
+				for (var armourType in wPart.stats.armour)
+				{
+					if (!Array.isArray(structure.stats.armour[armourType]))
+						structure.stats.armour[armourType] = [];
+					structure.stats.armour[armourType].push(wPart.stats.armour[armourType]);
+				}
+				if (!Array.isArray(structure.stats.health))
+					structure.stats.health = [];
+				structure.stats.health.push(wPart.stats.health);
+			}
 		}
 		
 		for (var res in structure.cost)
