@@ -512,6 +512,18 @@ function assembleTooltip (info)
 		}
 		txt += armour.join(", ");
 		
+		// Speed
+		if (info.stats.speed)
+		{
+			txt += '\n[font="sans-bold-13"]Speed:[/font] ';
+			var speed = [];
+			for (var stat in info.stats.speed)
+				speed.push(
+						info.stats.speed[stat] + ' [font="sans-10"][color="orange"]'+ stat +"[/color][/font]"
+					);
+			txt += speed.join(", ");
+		}
+		
 	}
 	
 	return txt;
@@ -571,6 +583,10 @@ function load_unit (unitCode)
 					"health" : +fetchValue(unitInfo, "Health/Max")
 				,	"attack" : getAttackValues(unitInfo)
 				,	"armour" : getArmourValues(unitInfo)
+				,	"speed"  : {
+							"Walk" : +fetchValue(unitInfo, "UnitMotion/WalkSpeed")
+						,	"Run"  : +fetchValue(unitInfo, "UnitMotion/Run/Speed")
+						}
 				}
 		};
 	
