@@ -1,3 +1,5 @@
+/* global draw, loadCivData, load_unit, load_structure, load_tech, load_phase, load_pair, sortNameIgnoreCase, depath, unravel_phases, loadTechData */
+/* exported init, selectCiv */
 
 var g_ParsedData = {};
 var g_Lists = {};
@@ -118,8 +120,10 @@ function selectCiv (civCode)
 				if ("generic" in newTech.reqs)
 					newTech.reqs.generic.concat(techPairs[pairinfo.req].techs);
 				else
+				{ // E084
 					for (let civkey of Object.keys(newTech.reqs))
 						newTech.reqs[civkey].concat(techPairs[pairinfo.req].techs);
+				}
 			}
 			g_ParsedData.techs[techcode] = newTech;
 		}

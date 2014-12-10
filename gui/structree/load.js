@@ -1,3 +1,5 @@
+/* global g_Lists, g_SelectedCiv, fetchValue, loadTemplate, loadTechData, depath */
+/* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
 
 /**
  * Load attack values
@@ -300,8 +302,10 @@ function load_tech (techCode)
 		if (typeof techInfo.specificName == "string")
 			tech.name.specific = techInfo.specificName;
 		else
+		{ // E048
 			for (let sn in techInfo.specificName)
 				tech.name[sn] = techInfo.specificName[sn];
+		}
 	
 	if (techInfo.researchTime !== undefined)
 		tech.cost.time = techInfo.researchTime;
@@ -325,6 +329,7 @@ function load_tech (techCode)
 			
 			case "any":
 				if (req[0].length > 0)
+				{ // E084
 					for (let r of req[0])
 					{
 						let v = req[0][r];
@@ -333,6 +338,7 @@ function load_tech (techCode)
 						else
 							tech.reqs[r] = v;
 					}
+				}
 				if (req[1].length > 0)
 					tech.reqs.generic = req[1];
 				break;
@@ -349,8 +355,10 @@ function load_tech (techCode)
 		if (tech.reqs.generic !== undefined)
 			tech.reqs.generic.push(techInfo.supersedes);
 		else
+		{ // E048
 			for (let ck of Object.keys(tech.reqs))
 				tech.reqs[ck].push(techInfo.supersedes);
+		}
 	
 	return tech;
 }
@@ -376,15 +384,19 @@ function load_phase (phaseCode)
 		};
 	
 	if (phaseInfo.specificName !== undefined)
+	{ // E084
 		for (let sn in phaseInfo.specificName)
 			phase.name[sn] = phaseInfo.specificName[sn];
+	}
 	
 	if (phaseInfo.specificName !== undefined)
 		if (typeof phaseInfo.specificName == "string")
 			phase.name.specific = phaseInfo.specificName;
 		else
+		{ // E084
 			for (let sn in phaseInfo.specificName)
 				phase.name[sn] = phaseInfo.specificName[sn];
+		}
 	
 	if (phaseInfo.researchTime !== undefined)
 		phase.cost.time = phaseInfo.researchTime;

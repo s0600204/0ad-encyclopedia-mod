@@ -1,3 +1,5 @@
+/* global g_ParsedData, g_CivData, g_SelectedCiv */
+/* exported draw */
 
 var g_drawLimits = {}; // GUI limits. Populated by predraw()
 var costIcons = {
@@ -249,9 +251,11 @@ function assembleTooltip (info)
 	{
 		// Auras
 		if (info.auras)
+		{ // E084
 			for (let aura of info.auras)
 				txt += "\n" + txtFormats.subheader[0] + translate(aura.name) + ":" + txtFormats.subheader[1] +
 						" " + txtFormats.body[0] + translate(aura.description) + txtFormats.body[1];
+		}
 		
 		// Health
 		txt += "\n" + txtFormats.subheader[0] + translate("Health:") + txtFormats.subheader[1] + " " + txtFormats.body[0];

@@ -1,3 +1,6 @@
+/* global parseJSONData */
+/* exported loadTechData, fetchValue, depath */
+
 /*
 	DESCRIPTION	: Functions related to reading templates
 	NOTES		: 
