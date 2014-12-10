@@ -7,6 +7,8 @@
 	<script file="gui/common/functions_global_object.js"/>
 	<script file="gui/common/functions_utility.js"/>
 	<script file="gui/structree/structree.js"/>
+	<script file="gui/structree/draw.js"/>
+	<script file="gui/structree/load.js"/>
 
 	<!-- Add a translucent black background to fade out the menu page -->
 	<object type="image" z="0" sprite="bkTranslucent"/>
