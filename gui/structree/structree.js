@@ -11,6 +11,12 @@ function init (settings)
 {
 	predraw();
 	
+	// Set base, empty state
+	g_ParsedData["units"] = {};
+	g_ParsedData["structures"] = {};
+	g_ParsedData["techs"] = {};
+	g_ParsedData["phases"] = {};
+	
 	// Initialize civ list
 	initCivNameList();
 }
@@ -46,15 +52,19 @@ function selectCiv (civCode)
 	warn(civCode + " has been selected in the structree page");
 	g_SelectedCiv = civCode;
 	
-	g_ParsedData["units"] = {};
-	g_ParsedData["structures"] = {};
-	g_ParsedData["techs"] = {};
-	g_ParsedData["phases"] = {};
+	/* If a buildList already exists,
+		then this civ has already been parsed */
+	if (g_CivData[g_SelectedCiv].buildList)
+	{
+		draw();
+		return;
+	}
+	
 	g_Lists["units"] = [];
 	g_Lists["structures"] = [];
 	g_Lists["techs"] = [];
 	
-	// get initial units
+	/* get initial units */
 	for (var entity of g_CivData[civCode].StartEntities)
 	{
 		if (entity.Template.slice(0, 5) == "units")
@@ -62,19 +72,21 @@ function selectCiv (civCode)
 	}
 	
 	/* Load units and structures */
+	var unitCount = 0;
 	do {
 		for (var u of g_Lists.units)
 		{
 			if (!g_ParsedData.units[u])
 				g_ParsedData.units[u] = load_unit(u);
 		}
+		unitCount = g_Lists.units.length;
 		
 		for (var s of g_Lists.structures)
 		{
 			if (!g_ParsedData.structures[s])
 				g_ParsedData.structures[s] = load_structure(s);
 		}
-	} while (Object.keys(g_ParsedData.units).length < g_Lists.units.length);
+	} while (unitCount < g_Lists.units.length);
 	
 	/* Load technologies */
 	var techPairs = {};
@@ -141,6 +153,11 @@ function selectCiv (civCode)
 	for (var structCode of g_Lists.structures)
 	{
 		var structInfo = g_ParsedData.structures[structCode]
+		
+		/* If this building is shared with another civ,
+			it may have already gone through the grouping process already */
+		if (!Array.isArray(structInfo.production.technology))
+			continue;
 		
 		/* Expand tech pairs */
 		for (var prod of structInfo.production.technology)
