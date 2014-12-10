@@ -7,7 +7,7 @@
 		buffer_zone="4"
 		delay="50"
 		font="sans-14"
-		maxwidth="320"
+		maxwidth="480"
 		offset="16 24"
 		sprite="bkTooltip"
 		textcolor="white"
