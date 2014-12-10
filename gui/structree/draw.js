@@ -53,7 +53,7 @@ function draw ()
 			stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
-			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_name").caption = stru.name.specific;
+			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
 			
 			for (let r in g_drawLimits[pha].prodQuant)
@@ -206,15 +206,17 @@ function assembleTooltip (info)
 {
 	var txt = "";
 	var speciName = (info.name[g_SelectedCiv]) ? info.name[g_SelectedCiv] : info.name.specific;
+	var generiName = translate(info.name.generic);
 	
 	if (speciName !== undefined)
 	{
+		speciName = translate(speciName);
 		txt = '[font="sans-bold-16"]' + speciName[0] + '[/font]';
 		txt += '[font="sans-bold-12"]' + speciName.slice(1).toUpperCase() + '[/font]';
-		txt += '[font="sans-bold-12"] (' + info.name.generic + ')[/font]';
+		txt += '[font="sans-bold-12"] (' + generiName + ')[/font]';
 	}
 	else
-		txt = '[font="sans-bold-16"]' + info.name.generic + '[/font]';
+		txt = '[font="sans-bold-16"]' + generiName + '[/font]';
 	
 	txt += "\n" + txtFormats.resources[0];
 	for (let res in info.cost)
@@ -233,18 +235,18 @@ function assembleTooltip (info)
 	txt += txtFormats.resources[1];
 	
 	if (info.tooltip && !Array.isArray(info.tooltip))
-		txt += "\n" + txtFormats.body[0] + info.tooltip + txtFormats.body[1];
+		txt += "\n" + txtFormats.body[0] + translate(info.tooltip) + txtFormats.body[1];
 	
 	if (info.stats)
 	{
 		// Auras
 		if (info.auras)
 			for (let aura of info.auras)
-				txt += "\n" + txtFormats.subheader[0] + aura.name + ":" + txtFormats.subheader[1] +
-						" " + txtFormats.body[0] + aura.description + txtFormats.body[1];
+				txt += "\n" + txtFormats.subheader[0] + translate(aura.name) + ":" + txtFormats.subheader[1] +
+						" " + txtFormats.body[0] + translate(aura.description) + txtFormats.body[1];
 		
 		// Health
-		txt += "\n" + txtFormats.subheader[0] + "Health:" + txtFormats.subheader[1] + " " + txtFormats.body[0];
+		txt += "\n" + txtFormats.subheader[0] + translate("Health:") + txtFormats.subheader[1] + " " + txtFormats.body[0];
 		if (Array.isArray(info.stats.health))
 			if (Array.min(info.stats.health) == Array.max(info.stats.health))
 				txt += info.stats.health[0];
@@ -257,21 +259,21 @@ function assembleTooltip (info)
 		// Healer
 		if (info.stats.healer)
 		{
-			txt += "\n" + txtFormats.subheader[0] + "Heal:" + txtFormats.subheader[1] + " ";
+			txt += "\n" + txtFormats.subheader[0] + translate("Heal:") + txtFormats.subheader[1] + " ";
 			var healer = [];
 			healer.push(
 					txtFormats.body[0] + info.stats.healer.HP + txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + "HP" + txtFormats.subtext[1]
+					" " + txtFormats.subtext[0] + translate("HP") + txtFormats.subtext[1]
 				);
 			healer.push(
-					txtFormats.subheader[0] + "Range:" + txtFormats.subheader[1] + " " +
+					txtFormats.subheader[0] + translate("Range:") + txtFormats.subheader[1] + " " +
 					txtFormats.body[0] + info.stats.healer.Range + txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + "metres" + txtFormats.subtext[1]
+					" " + txtFormats.subtext[0] + translate("metres") + txtFormats.subtext[1]
 				);
 			healer.push(
-					txtFormats.subheader[0] + "Rate:" + txtFormats.subheader[1] + " " +
+					txtFormats.subheader[0] + translate("Rate:") + txtFormats.subheader[1] + " " +
 					txtFormats.body[0] + (info.stats.healer.Rate/1000) + txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + "seconds" + txtFormats.subtext[1]
+					" " + txtFormats.subtext[0] + translate("seconds") + txtFormats.subtext[1]
 				);
 			txt += healer.join(", ");
 		}
@@ -279,31 +281,31 @@ function assembleTooltip (info)
 		// Attack
 		for (let atkType in info.stats.attack)
 		{
-			txt += "\n" + txtFormats.subheader[0] + atkType +" Attack:" + txtFormats.subheader[1] + " ";
+			txt += "\n" + txtFormats.subheader[0] + translate(atkType +" Attack:") + txtFormats.subheader[1] + " ";
 			let damage = [];
 			
 			for (let stat of ["Hack", "Pierce", "Crush"])
 				if (info.stats.attack[atkType][stat] > 0)
 					damage.push(
 							txtFormats.body[0] + info.stats.attack[atkType][stat] + txtFormats.body[1] +
-							" " + txtFormats.subtext[0] + stat + txtFormats.subtext[1]
+							" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
 						);
 			/*
 			if (info.stats.attack[atkType].RepeatTime > 0)
 				damage.push(
-						txtFormats.subheader[0] + "Rate:" + txtFormats.subheader[1] + " " +
+						txtFormats.subheader[0] + translate("Rate:") + txtFormats.subheader[1] + " " +
 						txtFormats.body[0] + info.stats.attack[atkType].RepeatTime/1000 + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + "seconds" + txtFormats.subtext[1]
+						" " + txtFormats.subtext[0] + translate("seconds") + txtFormats.subtext[1]
 					);
 			*/
 			if (atkType == "Ranged")
 			{
 				damage.push(
-						txtFormats.subheader[0] + "Range:" + txtFormats.subheader[1] + " " +
+						txtFormats.subheader[0] + translate("Range:") + txtFormats.subheader[1] + " " +
 						txtFormats.body[0] +
 						((info.stats.attack.Ranged.MinRange > 0) ? info.stats.attack.Ranged.MinRange + "-" : "") +
 						info.stats.attack.Ranged.MaxRange + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + "metres" + txtFormats.subtext[1]
+						" " + txtFormats.subtext[0] + translate("metres") + txtFormats.subtext[1]
 					);
 			}
 			
@@ -311,7 +313,7 @@ function assembleTooltip (info)
 		}
 		
 		// Armour
-		txt += "\n" + txtFormats.subheader[0] + "Armour:" + txtFormats.subheader[1] + " ";
+		txt += "\n" + txtFormats.subheader[0] + translate("Armor:") + txtFormats.subheader[1] + " ";
 		var armour = [];
 		for (let stat in info.stats.armour)
 		{
@@ -319,7 +321,7 @@ function assembleTooltip (info)
 					txtFormats.body[0] + 
 					((Array.isArray(info.stats.armour[stat])) ? info.stats.armour[stat][0] : info.stats.armour[stat]) +
 					txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + stat + txtFormats.subtext[1]
+					" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
 				);
 		}
 		txt += armour.join(", ");
@@ -327,12 +329,12 @@ function assembleTooltip (info)
 		// Speed
 		if (info.stats.speed)
 		{
-			txt += "\n" + txtFormats.subheader[0] + "Movement Speed:" + txtFormats.subheader[1] + " ";
+			txt += "\n" + txtFormats.subheader[0] + translate("Speed:") + txtFormats.subheader[1] + " ";
 			var speed = [];
 			for (let stat in info.stats.speed)
 				speed.push(
 						txtFormats.body[0] + info.stats.speed[stat] + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + stat + txtFormats.subtext[1]
+						" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
 					);
 			txt += speed.join(", ");
 		}
@@ -340,13 +342,13 @@ function assembleTooltip (info)
 		// Gather
 		if (info.gather)
 		{
-			txt += "\n" + txtFormats.subheader[0] + "Gather Rates:" + txtFormats.subheader[1] + " ";
+			txt += "\n" + txtFormats.subheader[0] + translate("Gather Rates:") + txtFormats.subheader[1] + " ";
 			var rates = [];
 			for (let gType in info.gather)
 				if (info.gather[gType] > 0)
 					rates.push(
 							txtFormats.body[0] + info.gather[gType] + txtFormats.body[1] +
-							" " + txtFormats.subtext[0] + gType + txtFormats.subtext[1]
+							" " + txtFormats.subtext[0] + translate(gType) + txtFormats.subtext[1]
 						);
 			txt += rates.join(", ");
 		}
