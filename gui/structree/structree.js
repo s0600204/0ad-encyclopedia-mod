@@ -437,6 +437,13 @@ function assembleTooltip (info)
 	
 	if (info.stats)
 	{
+		// Auras
+		if (info.auras)
+		{
+			for (var aura of info.auras)
+				txt += '\n[font="sans-bold-13"]'+aura.name+':[/font] ' + aura.description;
+		}
+		
 		// Health
 		txt += '\n[font="sans-bold-13"]Health:[/font] ';
 		if (Array.isArray(info.stats.health))
@@ -538,6 +545,7 @@ function assembleTooltip (info)
 			}
 			txt += rates.join(", ");
 		}
+		
 	}
 	
 	return txt;
@@ -623,6 +631,18 @@ function load_unit (unitCode)
 			,	"Rate" : (healer.Rate)  ? +healer.Rate  : 0
 			};
 	
+	if (unitInfo.Auras)
+	{
+		unit.auras = [];
+		for (var auraID in unitInfo.Auras)
+		{
+			unit.auras.push({
+					"name"        : unitInfo.Auras[auraID].AuraName
+				,	"description" : unitInfo.Auras[auraID].AuraDescription
+				});
+		}
+	}
+	
 	for (var build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
@@ -669,8 +689,16 @@ function load_structure (structCode)
 	else if (typeof reqTech == "string" || reqTech.length > 0)
 		structure.required = reqTech;
 	
-	if (structure.stats.armour["Foundation"])
-		delete structure.stats.armour["Foundation"];
+	var auras = fetchValue(structInfo, "Auras");
+	if (Object.keys(auras).length > 0)
+	{
+		structure.auras = [];
+		for (var auraID in auras)
+			structure.auras.push({
+					"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura"
+				,	"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
+				});
+	}
 	
 	for (var build of fetchValue(structInfo, "ProductionQueue/Entities", true))
 	{
