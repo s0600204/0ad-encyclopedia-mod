@@ -1,12 +1,12 @@
 
 var g_drawPhases = { // hard-coded values. See comment of draw() for reason
 		"village" : {
-			"structQuant": 10
+			"structQuant": 11
 		,	"prodQuant": {"village":9, "town":4, "city":4}
 		,	"prodCount": {}
 		}
 	,	"town" : {
-			"structQuant": 10
+			"structQuant": 9
 		,	"prodQuant": {"town":6, "city":8}
 		,	"prodCount": {}
 		}

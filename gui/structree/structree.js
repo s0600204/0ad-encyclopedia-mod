@@ -65,10 +65,13 @@ function selectCiv (civCode)
 	g_Lists["techs"] = [];
 	
 	/* get initial units */
+	var startStructs = [];
 	for (var entity of g_CivData[civCode].StartEntities)
 	{
 		if (entity.Template.slice(0, 5) == "units")
 			g_Lists.units.push(entity.Template);
+		else if (entity.Template.slice(0, 6) == "struct")
+			startStructs.push(entity.Template);
 	}
 	
 	/* Load units and structures */
@@ -248,7 +251,7 @@ function selectCiv (civCode)
 	var buildList = {};
 	for (var structCode of g_Lists.structures)
 	{
-		if (!g_ParsedData.structures[structCode].phase)
+		if (!g_ParsedData.structures[structCode].phase || startStructs.indexOf(structCode) > -1)
 			g_ParsedData.structures[structCode].phase = g_ParsedData.phaseList[0];
 		
 		var myPhase = g_ParsedData.structures[structCode].phase; 
