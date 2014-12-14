@@ -1,18 +1,18 @@
 
-var g_drawPhases = { // hard-coded values. See comment of draw() for reason
+var g_drawPhases = { // semi-hard-coded values. See comment of draw() for reason. *Quant values are populated by predraw()
 		"phase_village" : {
-			"structQuant": 11
-		,	"prodQuant": [ 9, 4, 4 ]
+			"structQuant": 0
+		,	"prodQuant": []
 		,	"prodCount": []
 		}
 	,	"phase_town" : {
-			"structQuant": 9
-		,	"prodQuant": [ 6,  8 ]
+			"structQuant": 0
+		,	"prodQuant": []
 		,	"prodCount": []
 		}
 	,	"phase_city" : {
-			"structQuant": 5
-		,	"prodQuant": [ 16 ]
+			"structQuant": 0
+		,	"prodQuant": []
 		,	"prodCount": []
 		}
 	};
@@ -148,28 +148,46 @@ function predraw ()
 	,	"phase_town": Engine.GetGUIObjectByName("phase_town_struct[0]_row[0]_prod[0]").size
 	,	"phase_city": Engine.GetGUIObjectByName("phase_city_struct[0]_row[0]_prod[0]").size
 	};
+	var phases = Object.keys(g_drawPhases);
 	
 	for (var pha in g_drawPhases)
 	{
-		for (var s=0; s<g_drawPhases[pha].structQuant; s++)
+		var s = 0;
+		var ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+		
+		do
 		{
-			var ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
-			var size = ele.size;
-			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*24;
-			ele.size = size;
-			
-			for (var r in g_drawPhases[pha].prodQuant)
+			// Position production icons
+			for (var r in phases.slice(phases.indexOf(pha)))
 			{
-				for (var p=1; p<g_drawPhases[pha].prodQuant[r]; p++)
+				var p=1;
+				var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
+				
+				do
 				{
-					var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
 					var prodsize = prodEle.size;
 					prodsize.left = (initSizes[pha].right+4) * p;
 					prodsize.right = (initSizes[pha].right+4) * (p+1) - 4;
 					prodEle.size = prodsize;
-				}
+					
+					p++;
+					prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
+				} while (prodEle !== undefined);
+				
+				// Set quantity of productions in this row
+				g_drawPhases[pha].prodQuant[r] = p;
 			}
-		}
+			
+			var size = ele.size;
+			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*24;
+			ele.size = size;
+			
+			s++;
+			ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+		} while (ele !== undefined);
+		
+		// Set quantity of structures in each phase
+		g_drawPhases[pha].structQuant = s;
 	}
 }
 
