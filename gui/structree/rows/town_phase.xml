@@ -2,155 +2,155 @@
 
 <object name="row_town_phase" size="8 16+160+10 100% 100%">
 	
-	<object type="image" style="StructBox" name="town_struct[0]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[0]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[0]"
+	<object type="image" style="StructBox" name="phase_town_struct[0]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[0]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[0]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[0]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[0]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[0]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[0]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[0]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[0]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[0]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[0]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[1]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[1]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[1]"
+	<object type="image" style="StructBox" name="phase_town_struct[1]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[1]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[1]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[1]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[1]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[1]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[1]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[1]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[1]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[1]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[1]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[2]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[2]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[2]"
+	<object type="image" style="StructBox" name="phase_town_struct[2]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[2]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[2]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[2]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[2]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[2]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[2]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[2]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[2]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[2]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[2]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[3]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[3]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[3]"
+	<object type="image" style="StructBox" name="phase_town_struct[3]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[3]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[3]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[3]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[3]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[3]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[3]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[3]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[3]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[3]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[3]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[4]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[4]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[4]"
+	<object type="image" style="StructBox" name="phase_town_struct[4]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[4]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[4]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[4]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[4]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[4]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[4]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[4]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[4]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[4]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[4]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[5]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[5]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[5]"
+	<object type="image" style="StructBox" name="phase_town_struct[5]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[5]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[5]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[5]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[5]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[5]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[5]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[5]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[5]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[5]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[5]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[6]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[6]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[6]"
+	<object type="image" style="StructBox" name="phase_town_struct[6]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[6]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[6]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[6]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[6]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[6]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[6]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[6]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[6]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[6]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[6]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[7]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[7]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[7]"
+	<object type="image" style="StructBox" name="phase_town_struct[7]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[7]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[7]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[7]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[7]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[7]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[7]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[7]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[7]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[7]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[7]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
 	
-	<object type="image" style="StructBox" name="town_struct[8]">
-		<object type="text" style="StructNameSpecific" name="town_struct_name_speci[8]"/>
-		<object type="image" style="StructIcon" name="town_struct_icon[8]"
+	<object type="image" style="StructBox" name="phase_town_struct[8]">
+		<object type="text" style="StructNameSpecific" name="phase_town_struct[8]_name"/>
+		<object type="image" style="StructIcon" name="phase_town_struct[8]_icon"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		/>
-		<object style="TownPhaseProdRow" name="town_struct[8]_prod_row_town">
+		<object style="TownPhaseProdRow" name="phase_town_struct[8]_row[0]">
 			<repeat count="6">
-				<object type="image" style="ProdBox" name="town_struct[8]_prod_town[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[8]_row[0]_prod[n]"/>
 			</repeat>
 		</object>
-		<object style="CityPhaseProdRow" name="town_struct[8]_prod_row_city">
+		<object style="CityPhaseProdRow" name="phase_town_struct[8]_row[1]">
 			<repeat count="8">
-				<object type="image" style="ProdBox" name="town_struct[8]_prod_city[n]"/>
+				<object type="image" style="ProdBox" name="phase_town_struct[8]_row[1]_prod[n]"/>
 			</repeat>
 		</object>
 	</object>
