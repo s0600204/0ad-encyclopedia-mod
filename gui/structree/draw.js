@@ -1,21 +1,5 @@
 
-var g_drawPhases = { // semi-hard-coded values. See comment of draw() for reason. *Quant values are populated by predraw()
-		"phase_village" : {
-			"structQuant": 0
-		,	"prodQuant": []
-		,	"prodCount": []
-		}
-	,	"phase_town" : {
-			"structQuant": 0
-		,	"prodQuant": []
-		,	"prodCount": []
-		}
-	,	"phase_city" : {
-			"structQuant": 0
-		,	"prodQuant": []
-		,	"prodCount": []
-		}
-	};
+var g_drawLimits = {}; // GUI limits. Populated by predraw()
 var costIcons = {
 		"food"       : "[icon=\"iconFood\"]"
 	,	"wood"       : "[icon=\"iconWood\"]"
@@ -34,18 +18,19 @@ var txtFormats = {
 /**
  * Draw the structree
  *
- * (Actually moves and changes visibility of elements, and populates text)
- *
- * This is one of two functions in the mod where the phases are hard-coded. The hard-coding
- *   is due to limitations in the GUI Engine preventing dynamic creation of UI Elements.
+ * (Actually resizes and changes visibility of elements, and populates text)
  */
 function draw ()
 {
+	// Set basic state (positioning of elements mainly), but only once
+	if (Object.keys(g_drawLimits).length <= 0)
+		predraw();
+	
 	var defWidth = 96;
 	var defMargin = 4;
-	var phaseList = Object.keys(g_drawPhases);
+	var phaseList = g_ParsedData.phaseList;
 	
-	for (var pha in g_drawPhases)
+	for (var pha of phaseList)
 	{
 		var s = 0;
 		var y = 0;
@@ -54,6 +39,7 @@ function draw ()
 		{
 			var thisEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
 			var c = 0;
+			var rowCounts = [];
 			
 			var stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
@@ -61,7 +47,7 @@ function draw ()
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_name").caption = stru.name.specific;
 			thisEle.hidden = false;
 			
-			for (var r in g_drawPhases[pha].prodQuant)
+			for (var r in g_drawLimits[pha].prodQuant)
 			{
 				var p = 0;
 				var prod_pha = phaseList[phaseList.indexOf(pha) + +r];
@@ -103,10 +89,10 @@ function draw ()
 						p++;
 					}
 				}
-				g_drawPhases[pha].prodCount[r] = p;
+				rowCounts[r] = p;
 				if (p>c)
 					c = p;
-				for (p; p<g_drawPhases[pha].prodQuant[r]; p++)
+				for (p; p<g_drawLimits[pha].prodQuant[r]; p++)
 					Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]").hidden = true;
 			}
 			
@@ -117,9 +103,9 @@ function draw ()
 			thisEle.size = size;
 			
 			var eleWidth = size.right - size.left;
-			for (var r in g_drawPhases[pha].prodCount)
+			for (var r in rowCounts)
 			{
-				var wid = g_drawPhases[pha].prodCount[r] * 24 - 4;
+				var wid = rowCounts[r] * 24 - 4;
 				var phaEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]");
 				var size = phaEle.size;
 				size.left = (eleWidth - wid)/2;
@@ -128,7 +114,7 @@ function draw ()
 			
 			s++;
 		}
-		for (s; s<g_drawPhases[pha].structQuant; s++)
+		for (s; s<g_drawLimits[pha].structQuant; s++)
 		{
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]").hidden = true;
 		}
@@ -138,27 +124,29 @@ function draw ()
 /**
  * Positions certain elements that only need to be positioned once
  *   (as `<repeat>` doesn't reposition automatically)
- *
- * Again, phases are hard coded :-(
+ * 
+ * Also detects limits on what the GUI can display by iterating through the set
+ *   elements of the GUI. These limits are then used by the draw() function
+ *   above
  */
 function predraw ()
 {
-	var initSizes = {
-		"phase_village": Engine.GetGUIObjectByName("phase_village_struct[0]_row[0]_prod[0]").size
-	,	"phase_town": Engine.GetGUIObjectByName("phase_town_struct[0]_row[0]_prod[0]").size
-	,	"phase_city": Engine.GetGUIObjectByName("phase_city_struct[0]_row[0]_prod[0]").size
-	};
-	var phases = Object.keys(g_drawPhases);
+	var phaseList = g_ParsedData.phaseList;
+	var initIconSize = Engine.GetGUIObjectByName(phaseList[0]+"_struct[0]_row[0]_prod[0]").size;
 	
-	for (var pha in g_drawPhases)
+	for (var pha of phaseList)
 	{
 		var s = 0;
 		var ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+		g_drawLimits[pha] = {
+				structQuant: 0
+			,	prodQuant: []
+			};
 		
 		do
 		{
 			// Position production icons
-			for (var r in phases.slice(phases.indexOf(pha)))
+			for (var r in phaseList.slice(phaseList.indexOf(pha)))
 			{
 				var p=1;
 				var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
@@ -166,8 +154,8 @@ function predraw ()
 				do
 				{
 					var prodsize = prodEle.size;
-					prodsize.left = (initSizes[pha].right+4) * p;
-					prodsize.right = (initSizes[pha].right+4) * (p+1) - 4;
+					prodsize.left = (initIconSize.right+4) * p;
+					prodsize.right = (initIconSize.right+4) * (p+1) - 4;
 					prodEle.size = prodsize;
 					
 					p++;
@@ -175,11 +163,11 @@ function predraw ()
 				} while (prodEle !== undefined);
 				
 				// Set quantity of productions in this row
-				g_drawPhases[pha].prodQuant[r] = p;
+				g_drawLimits[pha].prodQuant[r] = p;
 			}
 			
 			var size = ele.size;
-			size.bottom += Object.keys(g_drawPhases[pha].prodQuant).length*24;
+			size.bottom += Object.keys(g_drawLimits[pha].prodQuant).length*24;
 			ele.size = size;
 			
 			s++;
@@ -187,7 +175,7 @@ function predraw ()
 		} while (ele !== undefined);
 		
 		// Set quantity of structures in each phase
-		g_drawPhases[pha].structQuant = s;
+		g_drawLimits[pha].structQuant = s;
 	}
 }
 

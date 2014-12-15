@@ -9,8 +9,6 @@ var g_SelectedCiv = "";
  */
 function init (settings)
 {
-	predraw();
-	
 	// Set base, empty state
 	g_ParsedData["units"] = {};
 	g_ParsedData["structures"] = {};
