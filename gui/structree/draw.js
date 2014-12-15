@@ -38,9 +38,14 @@ function draw ()
 		for (var stru of g_CivData[g_SelectedCiv].buildList[pha])
 		{
 			var thisEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+			if (thisEle === undefined)
+			{
+				error("\""+g_SelectedCiv+"\" has more structures in the \""+pha+"\" phase than can be supported by the current GUI layout");
+				break;
+			}
+			
 			var c = 0;
 			var rowCounts = [];
-			
 			var stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
@@ -56,10 +61,8 @@ function draw ()
 					for (var prod of stru.production.units[prod_pha])
 					{
 						var prod = g_ParsedData.units[prod];
-						var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
-						prodEle.sprite = "stretched:session/portraits/"+prod.icon;
-						prodEle.tooltip = assembleTooltip(prod);
-						prodEle.hidden = false;
+						if (!draw_prodIcon(pha, s, r, p, prod))
+							break;
 						p++;
 					}
 				}
@@ -67,10 +70,8 @@ function draw ()
 				{
 					for (var prod of [stru.wallset.Gate, stru.wallset.Tower])
 					{
-						var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
-						prodEle.sprite = "stretched:session/portraits/"+prod.icon;
-						prodEle.tooltip = assembleTooltip(prod);
-						prodEle.hidden = false;
+						if (!draw_prodIcon(pha, s, r, p, prod))
+							break;
 						p++;
 					}
 				}
@@ -78,14 +79,9 @@ function draw ()
 				{
 					for (var prod of stru.production.technology[prod_pha])
 					{
-						if (prod.slice(0,5) == "phase")
-							var prod = g_ParsedData.phases[prod];
-						else
-							var prod = g_ParsedData.techs[prod];
-						var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
-						prodEle.sprite = "stretched:session/portraits/technologies/"+prod.icon;
-						prodEle.tooltip = assembleTooltip(prod);
-						prodEle.hidden = false;
+						var prod = (prod.slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
+						if (!draw_prodIcon(pha, s, r, p, prod))
+							break;
 						p++;
 					}
 				}
@@ -119,6 +115,21 @@ function draw ()
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]").hidden = true;
 		}
 	}
+}
+
+function draw_prodIcon (pha, s, r, p, prod)
+{
+	var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
+	if (prodEle === undefined)
+	{
+		error("The structures of \""+g_SelectedCiv+"\" have more production icons in the \""+pha+"\" phase than can be supported by the current GUI layout");
+		return false;
+	}
+	
+	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
+	prodEle.tooltip = assembleTooltip(prod);
+	prodEle.hidden = false;
+	return true;
 }
 
 /**

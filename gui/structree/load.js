@@ -288,7 +288,7 @@ function load_tech (techCode)
 		,	"name"    : {
 					"generic" : techInfo.genericName
 				}
-		,	"icon"    : (techInfo.icon) ? techInfo.icon : ""
+		,	"icon"    : (techInfo.icon) ? "technologies/"+techInfo.icon : ""
 		,	"cost"    : (techInfo.cost) ? techInfo.cost : ""
 		,	"tooltip" : (techInfo.tooltip) ? techInfo.tooltip : ""
 		};
@@ -392,11 +392,11 @@ function load_phase (phaseCode)
 		phase.cost["time"] = phaseInfo.researchTime;
 	
 	if (phaseInfo.icon !== undefined)
-		phase.icon = phaseInfo.icon;
+		phase.icon = "technologies/" + phaseInfo.icon;
 	else
 	{
 		phase.icon = phaseCode.indexOf("_");
-		phase.icon = phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png";
+		phase.icon = "technologies/" + phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png";
 	}
 	
 	return phase;
