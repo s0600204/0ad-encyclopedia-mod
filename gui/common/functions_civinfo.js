@@ -10,11 +10,12 @@ function loadCivData (playableOnly)
 {	// Load all JSON files containing civ data
 	var civData = {};
 	var civFiles = Engine.BuildDirEntList("civs/", "*.json", false);
-	playableOnly = (playableOnly == undefined) ? false : true;
+	playableOnly = (playableOnly === undefined) ? false : true;
 	
-	for each (var filename in civFiles)
-	{	// Parse data if valid file
-		var data = parseJSONData(filename);
+	for (let filename of civFiles)
+	{
+		// Parse data if valid file
+		let data = parseJSONData(filename);
 		translateObjectKeys(data, ["Name", "Description", "History", "Special"]);
 		
 		if (!playableOnly || data.SelectableInGameSetup)

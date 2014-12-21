@@ -11,11 +11,11 @@ function getAttackValues (entityInfo)
 	var attacks = {};
 	var atkMethods = ["Melee", "Ranged", "Charge"];
 	var atkDamages = ["Crush", "Hack", "Pierce", "MinRange", "MaxRange", "RepeatTime"];
-	for (var meth of atkMethods)
+	for (let meth of atkMethods)
 	{
-		var atk = {};
-		var keep = false;
-		for (var dama of atkDamages)
+		let atk = {};
+		let keep = false;
+		for (let dama of atkDamages)
 		{
 			atk[dama] = +fetchValue(entityInfo, "Attack/"+meth+"/"+dama);
 			if (atk[dama] > 0)
@@ -38,7 +38,7 @@ function getArmourValues (entityInfo)
 {
 	var armours = {};
 	var armResists = ["Crush", "Hack", "Pierce"];
-	for (var resist of armResists)
+	for (let resist of armResists)
 	{
 		armours[resist] = +fetchValue(entityInfo, "Armour/"+resist);
 	}
@@ -65,13 +65,13 @@ function derive_gatherRates (unitInfo)
 		};
 	var gatherRates = {};
 	
-	for (var gType in gatherTypes)
+	for (let gType in gatherTypes)
 	{
-		var gCount = 0;
+		let gCount = 0;
 		gatherRates[gType] = 0;
-		for (var gather of gatherTypes[gType])
+		for (let gather of gatherTypes[gType])
 		{
-			var rate = +fetchValue(unitInfo, "ResourceGatherer/Rates/"+gather);
+			let rate = +fetchValue(unitInfo, "ResourceGatherer/Rates/"+gather);
 			if (rate > 0)
 			{
 				gatherRates[gType] += rate;
@@ -121,11 +121,11 @@ function load_unit (unitCode)
 				}
 		};
 	
-	if (unitInfo.Identity["RequiredTechnology"] !== undefined)
-		unit["reqTech"] = unitInfo.Identity["RequiredTechnology"];
+	if (unitInfo.Identity.RequiredTechnology !== undefined)
+		unit.reqTech = unitInfo.Identity.RequiredTechnology;
 	
 	var gatherer = derive_gatherRates(unitInfo);
-	for (var gType in gatherer)
+	for (let gType in gatherer)
 		if (gatherer[gType] > 0)
 		{
 			unit.gather = gatherer;
@@ -134,7 +134,7 @@ function load_unit (unitCode)
 	
 	var healer = fetchValue(unitInfo, "Heal");
 	if (Object.keys(healer).length > 0)
-		unit.stats["healer"] = {
+		unit.stats.healer = {
 				"Range": (healer.Range) ? +healer.Range : 0
 			,	"HP"   : (healer.HP)    ? +healer.HP    : 0
 			,	"Rate" : (healer.Rate)  ? +healer.Rate  : 0
@@ -143,7 +143,7 @@ function load_unit (unitCode)
 	if (unitInfo.Auras)
 	{
 		unit.auras = [];
-		for (var auraID in unitInfo.Auras)
+		for (let auraID in unitInfo.Auras)
 		{
 			unit.auras.push({
 					"name"        : unitInfo.Auras[auraID].AuraName
@@ -152,7 +152,7 @@ function load_unit (unitCode)
 		}
 	}
 	
-	for (var build of fetchValue(unitInfo, "Builder/Entities", true))
+	for (let build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
 		if (g_Lists.structures.indexOf(build) < 0)
@@ -209,14 +209,14 @@ function load_structure (structCode)
 	if (Object.keys(auras).length > 0)
 	{
 		structure.auras = [];
-		for (var auraID in auras)
+		for (let auraID in auras)
 			structure.auras.push({
 					"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura"
 				,	"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
 				});
 	}
 	
-	for (var build of fetchValue(structInfo, "ProductionQueue/Entities", true))
+	for (let build of fetchValue(structInfo, "ProductionQueue/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
 		structure.production.units.push(build);
@@ -224,36 +224,36 @@ function load_structure (structCode)
 			g_Lists.units.push(build);
 	}
 	
-	for (var research of fetchValue(structInfo, "ProductionQueue/Technologies", true))
+	for (let research of fetchValue(structInfo, "ProductionQueue/Technologies", true))
 	{
 		structure.production.technology.push(research);
 		if (g_Lists.techs.indexOf(research) < 0)
 			g_Lists.techs.push(research);
 	}
 	
-	if (structInfo["WallSet"] !== undefined)
+	if (structInfo.WallSet !== undefined)
 	{
 		structure.wallset = {};
-		for (var res in structure.cost)
+		for (let res in structure.cost)
 			structure.cost[res] = [];
 		
-		for (var wSegm in structInfo.WallSet.Templates)
+		for (let wSegm in structInfo.WallSet.Templates)
 		{
-			var wCode = structInfo.WallSet.Templates[wSegm];
-			var wPart = load_structure(wCode);
+			let wCode = structInfo.WallSet.Templates[wSegm];
+			let wPart = load_structure(wCode);
 			structure.wallset[wSegm] = wPart;
 			structure.wallset[wSegm].code = wCode;
 			
-			for (var research of wPart.production.technology)
+			for (let research of wPart.production.technology)
 				structure.production.technology.push(research);
 			
 			if (wSegm.slice(0,4) == "Wall")
 			{
-				for (var res in wPart.cost)
+				for (let res in wPart.cost)
 					if (wPart.cost[res] > 0)
 						structure.cost[res].push(wPart.cost[res]);
 				
-				for (var armourType in wPart.stats.armour)
+				for (let armourType in wPart.stats.armour)
 				{
 					if (!Array.isArray(structure.stats.armour[armourType]))
 						structure.stats.armour[armourType] = [];
@@ -265,7 +265,7 @@ function load_structure (structCode)
 			}
 		}
 		
-		for (var res in structure.cost)
+		for (let res in structure.cost)
 			structure.cost[res] = structure.cost[res].sort(function (a,b) { return a-b; });
 	}
 	
@@ -300,18 +300,18 @@ function load_tech (techCode)
 		if (typeof techInfo.specificName == "string")
 			tech.name.specific = techInfo.specificName;
 		else
-			for (var sn in techInfo.specificName)
+			for (let sn in techInfo.specificName)
 				tech.name[sn] = techInfo.specificName[sn];
 	
 	if (techInfo.researchTime !== undefined)
-		tech.cost["time"] = techInfo.researchTime;
+		tech.cost.time = techInfo.researchTime;
 	
 	if (techInfo.requirements !== undefined)
 	{
-		for (var op in techInfo.requirements)
+		for (let op in techInfo.requirements)
 		{
-			var val = techInfo.requirements[op];	
-			var req = calcReqs(op, val);
+			let val = techInfo.requirements[op];	
+			let req = calcReqs(op, val);
 			
 			switch (op)
 			{
@@ -325,20 +325,20 @@ function load_tech (techCode)
 			
 			case "any":
 				if (req[0].length > 0)
-					for (var r of req[0])
+					for (let r of req[0])
 					{
-						var v = req[0][r];
+						let v = req[0][r];
 						if (typeof r == "number")
 							tech.reqs[v] = [];
 						else
 							tech.reqs[r] = v;
 					}
 				if (req[1].length > 0)
-					tech.reqs["generic"] = req[1];
+					tech.reqs.generic = req[1];
 				break;
 			
 			case "all":
-				for (var r of req[0])
+				for (let r of req[0])
 					tech.reqs[r] = req[1];
 				break;
 			}
@@ -346,13 +346,11 @@ function load_tech (techCode)
 	}
 	
 	if (techInfo.supersedes !== undefined)
-	{
 		if (tech.reqs.generic !== undefined)
 			tech.reqs.generic.push(techInfo.supersedes);
 		else
-			for (var ck of Object.keys(tech.reqs))
+			for (let ck of Object.keys(tech.reqs))
 				tech.reqs[ck].push(techInfo.supersedes);
-	}
 	
 	return tech;
 }
@@ -378,18 +376,18 @@ function load_phase (phaseCode)
 		};
 	
 	if (phaseInfo.specificName !== undefined)
-		for (var sn in phaseInfo.specificName)
+		for (let sn in phaseInfo.specificName)
 			phase.name[sn] = phaseInfo.specificName[sn];
 	
 	if (phaseInfo.specificName !== undefined)
 		if (typeof phaseInfo.specificName == "string")
 			phase.name.specific = phaseInfo.specificName;
 		else
-			for (var sn in phaseInfo.specificName)
+			for (let sn in phaseInfo.specificName)
 				phase.name[sn] = phaseInfo.specificName[sn];
 	
 	if (phaseInfo.researchTime !== undefined)
-		phase.cost["time"] = phaseInfo.researchTime;
+		phase.cost.time = phaseInfo.researchTime;
 	
 	if (phaseInfo.icon !== undefined)
 		phase.icon = "technologies/" + phaseInfo.icon;
@@ -439,14 +437,14 @@ function calcReqs (op, val)
 	
 	case "all":
 	case "any":
-		var t = [];
-		var c = [];
-		for (var nv of val)
+		let t = [];
+		let c = [];
+		for (let nv of val)
 		{
-			for (var o in nv)
+			for (let o in nv)
 			{
-				var v = nv[o];
-				var r = calcReqs(o, v);
+				let v = nv[o];
+				let r = calcReqs(o, v);
 				switch (o)
 				{
 				case "civ":
@@ -463,7 +461,7 @@ function calcReqs (op, val)
 					break;
 				
 				case "all":
-					for (var ci in r[0])
+					for (let ci in r[0])
 						c[ci] = r[1];
 					t = t;
 				}
@@ -488,26 +486,26 @@ function unravel_phases (techs)
 {
 	var phaseList = [];
 	
-	for (var techcode in techs)
+	for (let techcode in techs)
 	{
-		var techdata = techs[techcode];
+		let techdata = techs[techcode];
 		
 		if ("generic" in techdata.reqs && techdata.reqs.generic.length > 1)
 		{
-			var reqTech = techs[techcode].reqs.generic[1];
+			let reqTech = techs[techcode].reqs.generic[1];
 			if (!("generic" in techs[reqTech].reqs))
 				continue;
 			
-			var reqPhase = techs[reqTech].reqs.generic[0];
-			var myPhase = techs[techcode].reqs.generic[0];
+			let reqPhase = techs[reqTech].reqs.generic[0];
+			let myPhase = techs[techcode].reqs.generic[0];
 			
 			if(reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
 				continue;
 			
-			var reqPhasePos = phaseList.indexOf(reqPhase);
-			var myPhasePos = phaseList.indexOf(myPhase);
+			let reqPhasePos = phaseList.indexOf(reqPhase);
+			let myPhasePos = phaseList.indexOf(myPhase);
 			
-			if (phaseList.length == 0)
+			if (phaseList.length === 0)
 			{
 				phaseList = [reqPhase, myPhase];
 			}
@@ -523,4 +521,3 @@ function unravel_phases (techs)
 	}
 	return phaseList;
 }
-

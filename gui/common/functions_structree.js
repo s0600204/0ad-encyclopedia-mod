@@ -1,4 +1,4 @@
-	/*
+/*
 	DESCRIPTION	: Functions related to reading templates
 	NOTES		: 
 */
@@ -53,11 +53,11 @@ function loadTechData (code)
 function mergeTokenArray (arr1, arr2) {
 	var ret = [];
 	
-	for (var tok of arr1)
+	for (let tok of arr1)
 		if (arr2.indexOf("-"+tok) == -1 && arr2.indexOf(tok.slice(1)) == -1)
 			ret.push(tok);
 	
-	for (var tok of arr2)
+	for (let tok of arr2)
 		if (arr1.indexOf("-"+tok) == -1 && arr1.indexOf(tok.slice(1)) == -1)
 			ret.push(tok);
 	
@@ -100,7 +100,7 @@ function fetchValue(template, keypath, collate)
 		return [];
 	}
 	
-	for (var k=0; k < keys.length; k++)
+	for (let k=0; k < keys.length; k++)
 	{
 		if (template[keys[k]] !== undefined)
 		{
@@ -110,7 +110,7 @@ function fetchValue(template, keypath, collate)
 				// unless we're collating tokens, return it directly
 				// if we are collating, we add it to the collection, then continue with this template's parent
 				if (collate) {
-					ret = mergeTokenArray(ret, template[keys[k]])
+					ret = mergeTokenArray(ret, template[keys[k]]);
 					if (tParent)
 						ret = mergeTokenArray(ret, fetchValue(tParent, keypath, collate));
 					break;
@@ -165,7 +165,7 @@ function fetchValue(template, keypath, collate)
  *  - The converter below has a case for dealing with datatype=tokens, something
  *     that wouldn't ordinarily be a part of an XML-JSON convertor
  */
-var ReadXMLFile = function (pathname) {
+function ReadXMLFile (pathname) {
 	
 	var xmlString = Engine.ReadFile(pathname);
 	if (!xmlString)
@@ -179,15 +179,15 @@ var ReadXMLFile = function (pathname) {
 	var lastTag = "";
 	
 	do {
-		var b1 = xmlString.indexOf("<", pos);
+		let b1 = xmlString.indexOf("<", pos);
 		if (b1 < 0)
 			break;
 		
-		var content = xmlString.slice(pos, b1).trim();
+		let content = xmlString.slice(pos, b1).trim();
 		b1 += 1;
-		var b2 = xmlString.indexOf(">", b1);
+		let b2 = xmlString.indexOf(">", b1);
 		pos = b2 + 1;
-		var tag = xmlString.slice(b1, b2).split(" ");
+		let tag = xmlString.slice(b1, b2).split(" ");
 		
 		if (xmlString.charAt(b1) == "!")
 		{
@@ -225,9 +225,9 @@ var ReadXMLFile = function (pathname) {
 			lastTag = tag[0];
 		}
 		
-		for (var a = 1; a < tag.length; a++)
+		for (let a = 1; a < tag.length; a++)
 		{
-			var attr = tag[a].split("=");
+			let attr = tag[a].split("=");
 			if (attr[0] == "datatype" && attr[1].slice(0,8) == "\"tokens\"") {
 				if (attr[1].charAt(8) == "/")
 					jsonString = jsonString.slice(0,-1) + "[],";
@@ -247,24 +247,25 @@ var ReadXMLFile = function (pathname) {
 	} while (pos < xmlString.length);
 	
 	jsonString = jsonString.slice(0, -1) + "}";
+	var jsonObject;
 	
 	try
 	{
-		var jsonObject = JSON.parse(jsonString);
+		jsonObject = JSON.parse(jsonString);
 	}
 	catch (err)
 	{
 		error(sprintf("%(error)s: parsing XML data in '%(path)s'", { error: err.toString(), path: pathname }));
 		
 		var ll = 140;
-		for (var i=0; i<jsonString.length; i) {
+		for (let i=0; i<jsonString.length; i) {
 			error(jsonString.slice(i, i+ll));
 			i += ll;
 		}
 	}
 	
 	if (jsonObject !== undefined)
-		return jsonObject["Entity"];
+		return jsonObject.Entity;
 	else
 		return {};	
 }
@@ -281,17 +282,17 @@ function depath (path)
 Array.max = function (arr)
 {
 	var max = -Infinity;
-	for (var i in arr)
+	for (let i in arr)
 		if (+arr[i] > max)
 			max = +arr[i];
 	return max;
-}
+};
 
 Array.min = function (arr)
 {
 	var min = Infinity;
-	for (var i in arr)
+	for (let i in arr)
 		if (+arr[i] < min)
 			min = +arr[i];
 	return min;
-}
+};

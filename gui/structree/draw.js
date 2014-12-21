@@ -30,37 +30,38 @@ function draw ()
 	var defMargin = 4;
 	var phaseList = g_ParsedData.phaseList;
 	
-	for (var pha of phaseList)
+	for (let pha of phaseList)
 	{
-		var s = 0;
-		var y = 0;
+		let s = 0;
+		let y = 0;
 		
-		for (var stru of g_CivData[g_SelectedCiv].buildList[pha])
+		for (let stru of g_CivData[g_SelectedCiv].buildList[pha])
 		{
-			var thisEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+			let thisEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
 			if (thisEle === undefined)
 			{
 				error("\""+g_SelectedCiv+"\" has more structures in the \""+pha+"\" phase than can be supported by the current GUI layout");
 				break;
 			}
 			
-			var c = 0;
-			var rowCounts = [];
-			var stru = g_ParsedData.structures[stru];
+			let c = 0;
+			let rowCounts = [];
+			stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
 			Engine.GetGUIObjectByName(pha+"_struct["+s+"]_name").caption = stru.name.specific;
 			thisEle.hidden = false;
 			
-			for (var r in g_drawLimits[pha].prodQuant)
+			for (let r in g_drawLimits[pha].prodQuant)
 			{
-				var p = 0;
-				var prod_pha = phaseList[phaseList.indexOf(pha) + +r];
+				let p = 0;
+				r = +r; // force int
+				let prod_pha = phaseList[phaseList.indexOf(pha) + r];
 				if (stru.production.units[prod_pha])
 				{
-					for (var prod of stru.production.units[prod_pha])
+					for (let prod of stru.production.units[prod_pha])
 					{
-						var prod = g_ParsedData.units[prod];
+						prod = g_ParsedData.units[prod];
 						if (!draw_prodIcon(pha, s, r, p, prod))
 							break;
 						p++;
@@ -68,7 +69,7 @@ function draw ()
 				}
 				if (stru.wallset && prod_pha == pha)
 				{
-					for (var prod of [stru.wallset.Gate, stru.wallset.Tower])
+					for (let prod of [stru.wallset.Gate, stru.wallset.Tower])
 					{
 						if (!draw_prodIcon(pha, s, r, p, prod))
 							break;
@@ -77,9 +78,9 @@ function draw ()
 				}
 				if (stru.production.technology[prod_pha])
 				{
-					for (var prod of stru.production.technology[prod_pha])
+					for (let prod of stru.production.technology[prod_pha])
 					{
-						var prod = (prod.slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
+						prod = (prod.slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
 						if (!draw_prodIcon(pha, s, r, p, prod))
 							break;
 						p++;
@@ -92,18 +93,18 @@ function draw ()
 					Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]").hidden = true;
 			}
 			
-			var size = thisEle.size;
+			let size = thisEle.size;
 			size.left = y;
 			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
 			y = size.right + defMargin;
 			thisEle.size = size;
 			
-			var eleWidth = size.right - size.left;
-			for (var r in rowCounts)
+			let eleWidth = size.right - size.left;
+			for (let r in rowCounts)
 			{
-				var wid = rowCounts[r] * 24 - 4;
-				var phaEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]");
-				var size = phaEle.size;
+				let wid = rowCounts[r] * 24 - 4;
+				let phaEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]");
+				size = phaEle.size;
 				size.left = (eleWidth - wid)/2;
 				phaEle.size = size;
 			}
@@ -145,10 +146,10 @@ function predraw ()
 	var phaseList = g_ParsedData.phaseList;
 	var initIconSize = Engine.GetGUIObjectByName(phaseList[0]+"_struct[0]_row[0]_prod[0]").size;
 	
-	for (var pha of phaseList)
+	for (let pha of phaseList)
 	{
-		var s = 0;
-		var ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
+		let s = 0;
+		let ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
 		g_drawLimits[pha] = {
 				structQuant: 0
 			,	prodQuant: []
@@ -157,14 +158,14 @@ function predraw ()
 		do
 		{
 			// Position production icons
-			for (var r in phaseList.slice(phaseList.indexOf(pha)))
+			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
-				var p=1;
-				var prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
+				let p=1;
+				let prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
 				
 				do
 				{
-					var prodsize = prodEle.size;
+					let prodsize = prodEle.size;
 					prodsize.left = (initIconSize.right+4) * p;
 					prodsize.right = (initIconSize.right+4) * (p+1) - 4;
 					prodEle.size = prodsize;
@@ -177,7 +178,7 @@ function predraw ()
 				g_drawLimits[pha].prodQuant[r] = p;
 			}
 			
-			var size = ele.size;
+			let size = ele.size;
 			size.bottom += Object.keys(g_drawLimits[pha].prodQuant).length*24;
 			ele.size = size;
 			
@@ -212,7 +213,7 @@ function assembleTooltip (info)
 		txt = '[font="sans-bold-16"]' + info.name.generic + '[/font]';
 	
 	txt += "\n" + txtFormats.resources[0];
-	for (var res in info.cost)
+	for (let res in info.cost)
 	{
 		if (info.cost[res] > 0 || Array.isArray(info.cost[res]) && info.cost[res].length > 1)
 		{
@@ -235,7 +236,7 @@ function assembleTooltip (info)
 		// Auras
 		if (info.auras)
 		{
-			for (var aura of info.auras)
+			for (let aura of info.auras)
 				txt += "\n" + txtFormats.subheader[0] + aura.name + ":" + txtFormats.subheader[1] +
 						" " + txtFormats.body[0] + aura.description + txtFormats.body[1];
 		}
@@ -257,29 +258,29 @@ function assembleTooltip (info)
 			txt += "\n" + txtFormats.subheader[0] + "Heal:" + txtFormats.subheader[1] + " ";
 			var healer = [];
 			healer.push(
-					txtFormats.body[0] + info.stats.healer["HP"] + txtFormats.body[1] +
+					txtFormats.body[0] + info.stats.healer.HP + txtFormats.body[1] +
 					" " + txtFormats.subtext[0] + "HP" + txtFormats.subtext[1]
 				);
 			healer.push(
 					txtFormats.subheader[0] + "Range:" + txtFormats.subheader[1] + " " +
-					txtFormats.body[0] + info.stats.healer["Range"] + txtFormats.body[1] +
+					txtFormats.body[0] + info.stats.healer.Range + txtFormats.body[1] +
 					" " + txtFormats.subtext[0] + "metres" + txtFormats.subtext[1]
 				);
 			healer.push(
 					txtFormats.subheader[0] + "Rate:" + txtFormats.subheader[1] + " " +
-					txtFormats.body[0] + (info.stats.healer["Rate"]/1000) + txtFormats.body[1] +
+					txtFormats.body[0] + (info.stats.healer.Rate/1000) + txtFormats.body[1] +
 					" " + txtFormats.subtext[0] + "seconds" + txtFormats.subtext[1]
 				);
 			txt += healer.join(", ");
 		}
 		
 		// Attack
-		for (var atkType in info.stats.attack)
+		for (let atkType in info.stats.attack)
 		{
 			txt += "\n" + txtFormats.subheader[0] + atkType +" Attack:" + txtFormats.subheader[1] + " ";
-			var damage = [];
+			let damage = [];
 			
-			for (var stat of ["Hack", "Pierce", "Crush"])
+			for (let stat of ["Hack", "Pierce", "Crush"])
 				if (info.stats.attack[atkType][stat] > 0)
 					damage.push(
 							txtFormats.body[0] + info.stats.attack[atkType][stat] + txtFormats.body[1] +
@@ -298,8 +299,8 @@ function assembleTooltip (info)
 				damage.push(
 						txtFormats.subheader[0] + "Range:" + txtFormats.subheader[1] + " " +
 						txtFormats.body[0] +
-						((info.stats.attack["Ranged"].MinRange > 0) ? info.stats.attack["Ranged"].MinRange + "-" : "") +
-						info.stats.attack["Ranged"].MaxRange + txtFormats.body[1] +
+						((info.stats.attack.Ranged.MinRange > 0) ? info.stats.attack.Ranged.MinRange + "-" : "") +
+						info.stats.attack.Ranged.MaxRange + txtFormats.body[1] +
 						" " + txtFormats.subtext[0] + "metres" + txtFormats.subtext[1]
 					);
 			}
@@ -310,7 +311,7 @@ function assembleTooltip (info)
 		// Armour
 		txt += "\n" + txtFormats.subheader[0] + "Armour:" + txtFormats.subheader[1] + " ";
 		var armour = [];
-		for (var stat in info.stats.armour)
+		for (let stat in info.stats.armour)
 		{
 			armour.push(
 					txtFormats.body[0] + 
@@ -326,7 +327,7 @@ function assembleTooltip (info)
 		{
 			txt += "\n" + txtFormats.subheader[0] + "Movement Speed:" + txtFormats.subheader[1] + " ";
 			var speed = [];
-			for (var stat in info.stats.speed)
+			for (let stat in info.stats.speed)
 				speed.push(
 						txtFormats.body[0] + info.stats.speed[stat] + txtFormats.body[1] +
 						" " + txtFormats.subtext[0] + stat + txtFormats.subtext[1]
@@ -339,7 +340,7 @@ function assembleTooltip (info)
 		{
 			txt += "\n" + txtFormats.subheader[0] + "Gather Rates:" + txtFormats.subheader[1] + " ";
 			var rates = [];
-			for (var gType in info.gather)
+			for (let gType in info.gather)
 			{
 				if (info.gather[gType] > 0)
 					rates.push(
