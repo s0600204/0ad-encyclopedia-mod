@@ -77,19 +77,18 @@ function selectCiv (civCode)
 	
 	/* Load units and structures */
 	var unitCount = 0;
-	do {
+	do
+	{
 		for (let u of g_Lists.units)
-		{
 			if (!g_ParsedData.units[u])
 				g_ParsedData.units[u] = load_unit(u);
-		}
+		
 		unitCount = g_Lists.units.length;
 		
 		for (let s of g_Lists.structures)
-		{
 			if (!g_ParsedData.structures[s])
 				g_ParsedData.structures[s] = load_structure(s);
-		}
+		
 	} while (unitCount < g_Lists.units.length);
 	
 	/* Load technologies */
@@ -134,12 +133,10 @@ function selectCiv (civCode)
 		g_ParsedData.phases[phasecode] = load_phase(phasecode);
 		
 		if ("requirements" in phaseInfo)
-		{
 			for (let op in phaseInfo.requirements)
 			{
 				let val = phaseInfo.requirements[op];
 				if (op == "any")
-				{
 					for (let v of val)
 					{
 						let k = Object.keys(v);
@@ -148,9 +145,7 @@ function selectCiv (civCode)
 						if (k == "tech" && v in g_ParsedData.phases)
 							g_ParsedData.phases[v].actualPhase = phasecode;
 					}
-				}
 			}
-		}
 	}
 	
 	/* Group production lists of structures by phase */

@@ -7,7 +7,8 @@
 
 
 function loadCivData (playableOnly)
-{	// Load all JSON files containing civ data
+{
+	// Load all JSON files containing civ data
 	var civData = {};
 	var civFiles = Engine.BuildDirEntList("civs/", "*.json", false);
 	playableOnly = (playableOnly === undefined) ? false : true;

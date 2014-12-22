@@ -239,11 +239,9 @@ function assembleTooltip (info)
 	{
 		// Auras
 		if (info.auras)
-		{
 			for (let aura of info.auras)
 				txt += "\n" + txtFormats.subheader[0] + aura.name + ":" + txtFormats.subheader[1] +
 						" " + txtFormats.body[0] + aura.description + txtFormats.body[1];
-		}
 		
 		// Health
 		txt += "\n" + txtFormats.subheader[0] + "Health:" + txtFormats.subheader[1] + " " + txtFormats.body[0];
@@ -345,13 +343,11 @@ function assembleTooltip (info)
 			txt += "\n" + txtFormats.subheader[0] + "Gather Rates:" + txtFormats.subheader[1] + " ";
 			var rates = [];
 			for (let gType in info.gather)
-			{
 				if (info.gather[gType] > 0)
 					rates.push(
 							txtFormats.body[0] + info.gather[gType] + txtFormats.body[1] +
 							" " + txtFormats.subtext[0] + gType + txtFormats.subtext[1]
 						);
-			}
 			txt += rates.join(", ");
 		}
 		

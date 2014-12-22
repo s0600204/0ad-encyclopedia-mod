@@ -12,7 +12,8 @@ var g_TechnologyData = {};
 function loadTemplate (code)
 {
 	if (!(code in g_TemplateData))
-	{	// Load XML file and convert into JS Object data if valid file
+	{
+		// Load XML file and convert into JS Object data if valid file
 		var filename = "simulation/templates/" + code + ".xml";
 		var data = ReadXMLFile(filename);
 		// translation call goes here. Below is copy of civ's call
@@ -50,7 +51,8 @@ function loadTechData (code)
  * @return  The merged array, with token matches such as "exampleToken" and
  *           "-exampleToken" resolved
  */
-function mergeTokenArray (arr1, arr2) {
+function mergeTokenArray (arr1, arr2)
+{
 	var ret = [];
 	
 	for (let tok of arr1)
@@ -109,7 +111,8 @@ function fetchValue(template, keypath, collate)
 				// if we've come to the end of the key path, then this is the value we want
 				// unless we're collating tokens, return it directly
 				// if we are collating, we add it to the collection, then continue with this template's parent
-				if (collate) {
+				if (collate)
+				{
 					ret = mergeTokenArray(ret, template[keys[k]]);
 					if (tParent)
 						ret = mergeTokenArray(ret, fetchValue(tParent, keypath, collate));
@@ -169,16 +172,15 @@ function ReadXMLFile (pathname) {
 	
 	var xmlString = Engine.ReadFile(pathname);
 	if (!xmlString)
-	{
 		error(sprintf("Failed to read file: %(path)s", { path: pathname }));
-	}
 	
 	var jsonString = "{";
 	var pos = xmlString.indexOf("?"); // so we don't pick up the <?xml ... ?> definition tag
 	var tokens = false;
 	var lastTag = "";
 	
-	do {
+	do
+	{
 		let b1 = xmlString.indexOf("<", pos);
 		if (b1 < 0)
 			break;
@@ -201,7 +203,7 @@ function ReadXMLFile (pathname) {
 			if (content !== "")
 			{
 				if (content.indexOf("\n") > -1) // may need to rethink this at a later time, as it removes newlines that may
-					content = content.replace("\n", "", "g"); // have been placed there purposely (ie. in the case of tooltips)
+					content = content.replace(/[\n\t]/g, ""); // have been placed there purposely (ie. in the case of tooltips)
 				
 				if (content.indexOf("\"") > -1)
 					content = content.replace("\"", "\\\"", "g");
@@ -217,18 +219,17 @@ function ReadXMLFile (pathname) {
 		else
 		{
 			if (tag[0].endsWith("/"))
-			{	
 				jsonString += " \"" + tag[0].slice(0,-1) + "\":" + true + ",";
-			} else {
+			else
 				jsonString += " \"" + tag[0] + "\":{";
-			}
 			lastTag = tag[0];
 		}
 		
 		for (let a = 1; a < tag.length; a++)
 		{
 			let attr = tag[a].split("=");
-			if (attr[0] == "datatype" && attr[1].slice(0,8) == "\"tokens\"") {
+			if (attr[0] == "datatype" && attr[1].slice(0,8) == "\"tokens\"")
+			{
 				if (attr[1].charAt(8) == "/")
 					jsonString = jsonString.slice(0,-1) + "[],";
 				else
@@ -237,11 +238,9 @@ function ReadXMLFile (pathname) {
 			}
 			jsonString += "\"@"+attr[0]+"\":";
 			if (attr[1].endsWith("/"))
-			{
 				jsonString += attr[1].slice(0,-1)+"},";
-			} else {
+			else
 				jsonString += attr[1]+",";
-			}
 		}
 		
 	} while (pos < xmlString.length);
@@ -258,7 +257,8 @@ function ReadXMLFile (pathname) {
 		error(sprintf("%(error)s: parsing XML data in '%(path)s'", { error: err.toString(), path: pathname }));
 		
 		var ll = 140;
-		for (let i=0; i<jsonString.length; i) {
+		for (let i=0; i<jsonString.length; i)
+		{
 			error(jsonString.slice(i, i+ll));
 			i += ll;
 		}

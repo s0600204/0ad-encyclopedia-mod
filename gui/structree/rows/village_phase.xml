@@ -18,7 +18,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[0]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[0]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -40,7 +40,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[1]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[1]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -62,7 +62,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[2]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[2]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -84,7 +84,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[3]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[3]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -106,7 +106,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[4]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[4]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -128,7 +128,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[5]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[5]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -150,7 +150,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[6]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[6]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -172,7 +172,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[7]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[7]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -194,7 +194,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[8]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[8]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -216,7 +216,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[9]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[9]_row[2]_prod[n]"/>
 			</repeat>
 		</object>
@@ -238,7 +238,7 @@
 			</repeat>
 		</object>
 		<object style="CityPhaseProdRow" name="phase_village_struct[10]_row[2]">
-			<repeat count="4">
+			<repeat count="5">
 				<object type="image" style="ProdBox" name="phase_village_struct[10]_row[2]_prod[n]"/>
 			</repeat>
 		</object>

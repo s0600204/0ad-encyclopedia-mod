@@ -506,17 +506,11 @@ function unravel_phases (techs)
 			let myPhasePos = phaseList.indexOf(myPhase);
 			
 			if (phaseList.length === 0)
-			{
 				phaseList = [reqPhase, myPhase];
-			}
 			else if (reqPhasePos < 0 && myPhasePos > -1)
-			{
 				phaseList.splice(myPhasePos, 0, reqPhase);
-			}
 			else if (myPhasePos < 0 && reqPhasePos > -1)
-			{
 				phaseList.splice(reqPhasePos+1, 0, myPhase);
-			}
 		}
 	}
 	return phaseList;
