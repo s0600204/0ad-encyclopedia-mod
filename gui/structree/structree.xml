@@ -12,9 +12,9 @@
 
 	<!-- Add a translucent black background to fade out the menu page -->
 	<object type="image" z="0" sprite="bkTranslucent"/>
-
+	
 	<object type="image" style="ModernDialog" size="50%-500 50%-368 50%+500 50%+370">
-
+		
 		<object style="TitleText" type="text" size="50%-128 -18 50%+128 14">
 			<translatableAttribute id="caption">Structure Tree</translatableAttribute>
 		</object>
@@ -35,20 +35,38 @@
 				<action on="SelectionChange">selectCiv(this.list_data[this.selected]);</action>
 			</object>
 		</object>
-
+		
+		<object
+			name="civEmblem"
+			type="image"
+			size="6 6 96+6 96+6"
+			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		/>
+		
+		<object
+			name="civName"
+			type="text"
+			font="sans-bold-20"
+			textcolor="white"
+			text_align="left"
+			text_valign="top"
+			size="104 32 100%-8 96">
+			<translatableAttribute id="caption">What's in a name?</translatableAttribute>
+		</object>
+		
+		<object
+			name="civHistory"
+			type="text"
+			font="sans-12"
+			textcolor="white"
+			text_align="left"
+			text_valign="top"
+			size="104 52 100%-8 100%">
+			<translatableAttribute id="caption">Ah, history.</translatableAttribute>
+		</object>
+		
 		<!-- Data display -->
-		<object size="0 54 100% 100%-54">
-		<!--	<object type="image" sprite="TranslucentPanelThinBorder" size="0 0 100% 100%">
-				<object
-					name="civGameplayHeading"
-					type="text"
-					font="sans-bold-16"
-					textcolor="white"
-					text_align="left"
-					text_valign="center"
-					size="10 0 100% 100%"
-				/>
-			</object>-->
+		<object size="0 54+64 100% 100%-54">
 			
 			<object type="image" size="16 32 48+16 48+32"
 				sprite="stretched:session/portraits/technologies/village_phase.png"

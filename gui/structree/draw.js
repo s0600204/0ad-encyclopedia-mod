@@ -30,6 +30,10 @@ function draw ()
 	var defMargin = 4;
 	var phaseList = g_ParsedData.phaseList;
 	
+	Engine.GetGUIObjectByName("civEmblem").sprite = "stretched:"+g_CivData[g_SelectedCiv].Emblem;
+	Engine.GetGUIObjectByName("civName").caption = g_CivData[g_SelectedCiv].Name;
+	Engine.GetGUIObjectByName("civHistory").caption = g_CivData[g_SelectedCiv].History;
+	
 	for (let pha of phaseList)
 	{
 		let s = 0;
