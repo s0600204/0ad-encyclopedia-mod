@@ -210,10 +210,18 @@ function assembleTooltip (info)
 	
 	if (speciName !== undefined)
 	{
-		speciName = translate(speciName);
-		txt = '[font="sans-bold-16"]' + speciName[0] + '[/font]';
-		txt += '[font="sans-bold-12"]' + speciName.slice(1).toUpperCase() + '[/font]';
-		txt += '[font="sans-bold-12"] (' + generiName + ')[/font]';
+		speciName = translate(speciName).split(" ");
+		for (let word of speciName)
+		{
+			let wordCaps = word.toUpperCase();
+			if (word[0].toLowerCase() !== word[0])
+			{
+				txt += '[font="sans-bold-16"]' + wordCaps[0] + '[/font]';
+				wordCaps = wordCaps.slice(1);
+			}
+			txt += '[font="sans-bold-12"]' + wordCaps + '[/font] ';
+		}
+		txt += '[font="sans-bold-12"](' + generiName + ')[/font]';
 	}
 	else
 		txt = '[font="sans-bold-16"]' + generiName + '[/font]';
