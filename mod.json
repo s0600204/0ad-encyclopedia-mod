@@ -2,7 +2,7 @@
     "name": "structree",
     "version": "0.0.17",
     "label": "Structure and Technology Tree",
-    "url": "https://github.com/s0600204/0ad-techtree-v2",
+    "url": "https://github.com/s0600204/0ad-structree-mod",
     "description": "Visualisation of the Structure and Technology Tree within 0AD",
     "dependencies": ["0ad"],
     "type": "visualisation"

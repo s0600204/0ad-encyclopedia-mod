@@ -1,0 +1,37 @@
+
+Structure Tree Visualisation Mod for 0AD : Empires Ascendant
+
+
+Description
+------------------------------------------------------------------------
+Visualisation of the structures in 0AD: Empires Ascendant
+depicting their trainable units and researchable technologies
+
+Installation
+------------------------------------------------------------------------
+1. Acquire zip
+   - (https://github.com/s0600204/0ad-structree-mod/archive/master.zip)
+2. Move to the mods folder, default locations are:
+   - Linux   : /usr/share/.../data/mods
+   - OSX     : /Applications/0ad.app/Contents/Resources/data/mods
+   - Windows : C:\...\data\mods
+3. Unzip archive
+4. Rename the resulting folder to "structree"
+5. Start 0AD
+6. From main menu, "Tools & Options" > "Mod Selection"
+7. Select "structree" from upper section
+8. Press buttons captioned with "Enable", "Save Configuration", and then
+   "Start Mods" in that order
+9. From main menu "Learn" > "Structure Tree"
+
+Credits
+------------------------------------------------------------------------
+My thanks go to the main development team at Wildfire Games, the
+independent teams working on modifying and expanding the game, not to
+mention all the volunteers and members of the further community.
+
+License
+------------------------------------------------------------------------
+This work is released under the Creative Commons Attribution ShareAlike
+3.0 license. Details may be found at
+http://creativecommons.org/licenses/by-sa/3.0/
