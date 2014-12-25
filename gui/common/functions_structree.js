@@ -150,6 +150,7 @@ function fetchValue(template, keypath, collate)
 // ====================================================================
 
 
+// TODO expose TemplateLoader to GUI
 /*
  * This is a crude and possibly inefficient XML-File to JSON converter
  *
