@@ -64,25 +64,15 @@
 
 		<!-- Data display -->
 		<object size="0 54+64 100% 100%-54">
-			<!--<object type="image" size="40 25+98 100%-8 25+98+22" sprite="ProdBar">
-				<object type="image" size="2 2 20 20"
-					sprite="stretched:session/portraits/technologies/town_phase.png"
-				/>
-			</object>
-			<object type="image" size="40 49+98 100%-8 49+98+22" sprite="ProdBar">
-				<object type="image" size="2 2 20 20"
-					sprite="stretched:session/portraits/technologies/city_phase.png"
-				/>
-			</object>
-			
-			<object type="image" size="40 25+268 100%-8 25+268+22" sprite="ProdBar">
-				<object type="image" size="2 2 20 20"
-					sprite="stretched:session/portraits/technologies/city_phase.png"
-				/>
-			</object>
-			-->
 			<repeat count="3" var="n">
 				<object name="phase_[n]_phase" type="image"/>
+				<object>
+					<repeat count="3" var="k">
+						<object name="phase_[n]_bar_[k]" type="image" sprite="ProdBar">
+							<object name="phase_[n]_bar_[k]_icon" type="image" size="2 2 20 20"/>
+						</object>
+					</repeat>
+				</object>
 			</repeat>
 
 			<object type="image" style="TreeDisplay" size="48+16+8 0 100%-16 100%">

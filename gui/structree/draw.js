@@ -156,6 +156,7 @@ function predraw()
 
 	let remainingPhases = phaseList.length;
 	let i = 0;
+	// TODO make size dependent on number of phases
 	for (let pha of phaseList)
 	{
 		// Align the phase row
@@ -166,8 +167,19 @@ function predraw()
 		phaseIcon.sprite = "stretched:session/portraits/technologies/"+pha.slice(pha.indexOf('_')+1)+"_phase.png"; // TODO rename icon?
 		phaseIcon.size = "16 32+"+(160*i)+" 48+16 48+32+"+(160*i);
 
-		// TODO positon prod bars (hide unused ones)
-
+		// Position prod bars
+		let j = 1;
+		for (; j < remainingPhases; ++j)
+		{
+			let prodBar = Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+(j-1)+"]");
+			prodBar.size = "40 "+(25*j)+"+98+"+(160*i)+" 100%-8 "+(25*j)+"+98+"+(160*i)+"+22";
+			// Set phase icon
+			let prodBarIcon = Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+(j-1)+"]_icon");
+			prodBarIcon.sprite = "stretched:session/portraits/technologies/"+phaseList[i+j].slice(phaseList[i+j].indexOf('_')+1)+"_phase.png";
+		}
+		// Hide remaining prod bars
+		for (--j; j < phaseList.length; ++j)
+			Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+j+"]").hidden = true;
 
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]");
