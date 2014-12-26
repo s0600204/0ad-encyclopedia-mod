@@ -151,7 +151,8 @@ function predraw ()
 {
 	var phaseList = g_ParsedData.phaseList;
 	var initIconSize = Engine.GetGUIObjectByName(phaseList[0]+"_struct[0]_row[0]_prod[0]").size;
-	
+
+	let remainingPhases = phaseList.length;
 	for (let pha of phaseList)
 	{
 		let s = 0;
@@ -160,40 +161,48 @@ function predraw ()
 				structQuant: 0
 			,	prodQuant: []
 			};
-		
+
 		do
 		{
+			let rowSize = phaseList.length;
 			// Position production icons
 			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
 				let p=1;
 				let prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
-				
+
 				do
 				{
 					let prodsize = prodEle.size;
 					prodsize.left = (initIconSize.right+4) * p;
 					prodsize.right = (initIconSize.right+4) * (p+1) - 4;
 					prodEle.size = prodsize;
-					
+
 					p++;
 					prodEle = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]_prod["+p+"]");
 				} while (prodEle !== undefined);
-				
+
 				// Set quantity of productions in this row
 				g_drawLimits[pha].prodQuant[r] = p;
+
+				// Position the prod row
+				let prodRow = Engine.GetGUIObjectByName(pha+"_struct["+s+"]_row["+r+"]");
+				let prodRowSize = prodRow.size;
+				prodRowSize = "4 100%-"+24*(remainingPhases-r)+" 100%-4 100%";
+				prodRow.size = prodRowSize;
 			}
-			
+
 			let size = ele.size;
 			size.bottom += Object.keys(g_drawLimits[pha].prodQuant).length*24;
 			ele.size = size;
-			
+
 			s++;
 			ele = Engine.GetGUIObjectByName(pha+"_struct["+s+"]");
 		} while (ele !== undefined);
-		
+
 		// Set quantity of structures in each phase
 		g_drawLimits[pha].structQuant = s;
+		--remainingPhases;
 	}
 }
 
