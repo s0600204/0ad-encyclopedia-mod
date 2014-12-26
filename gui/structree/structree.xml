@@ -65,11 +65,11 @@
 		<!-- Data display -->
 		<object size="0 54+64 100% 100%-54">
 			<repeat count="3" var="n">
-				<object name="phase_[n]_phase" type="image"/>
+				<object name="phase[n]_phase" type="image"/>
 				<object>
 					<repeat count="3" var="k">
-						<object name="phase_[n]_bar_[k]" type="image" sprite="ProdBar">
-							<object name="phase_[n]_bar_[k]_icon" type="image" size="2 2 20 20"/>
+						<object name="phase[n]_bar[k]" type="image" sprite="ProdBar">
+							<object name="phase[n]_bar[k]_icon" type="image" size="2 2 20 20"/>
 						</object>
 					</repeat>
 				</object>

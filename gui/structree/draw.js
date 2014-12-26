@@ -44,7 +44,7 @@ function draw()
 		
 		for (let stru of g_CivData[g_SelectedCiv].buildList[pha])
 		{
-			let thisEle = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]");
+			let thisEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
 			if (thisEle === undefined)
 			{
 				error("\""+g_SelectedCiv+"\" has more structures in phase "+pha+" than can be supported by the current GUI layout");
@@ -54,9 +54,9 @@ function draw()
 			let c = 0;
 			let rowCounts = [];
 			stru = g_ParsedData.structures[stru];
-			Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
-			Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
-			Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
+			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
+			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
+			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
 			
 			for (let r in g_drawLimits[pha].prodQuant)
@@ -96,10 +96,10 @@ function draw()
 				rowCounts[r] = p;
 				if (p>c)
 					c = p;
-				for (p; p<g_drawLimits[pha].prodQuant[r]; p++)
-					Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]").hidden = true;
+				for (; p < g_drawLimits[pha].prodQuant[r]; ++p)
+					Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]").hidden = true;
 			}
-			
+
 			let size = thisEle.size;
 			size.left = y;
 			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
@@ -110,7 +110,7 @@ function draw()
 			for (let r in rowCounts)
 			{
 				let wid = rowCounts[r] * 24 - 4;
-				let phaEle = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_row["+r+"]");
+				let phaEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]");
 				size = phaEle.size;
 				size.left = (eleWidth - wid)/2;
 				phaEle.size = size;
@@ -118,9 +118,9 @@ function draw()
 			
 			++s;
 		}
-		for (s; s<g_drawLimits[pha].structQuant; s++)
+		for (; s < g_drawLimits[pha].structQuant; ++s)
 		{
-			Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]").hidden = true;
+			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]").hidden = true;
 		}
 		++i;
 	}
@@ -128,7 +128,7 @@ function draw()
 
 function draw_prodIcon(pha, s, r, p, prod)
 {
-	var prodEle = Engine.GetGUIObjectByName("phase_["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
+	var prodEle = Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 	if (prodEle === undefined)
 	{
 		error("The structures of \""+g_SelectedCiv+"\" have more production icons in phase "+pha+" than can be supported by the current GUI layout");
@@ -152,7 +152,7 @@ function draw_prodIcon(pha, s, r, p, prod)
 function predraw()
 {
 	var phaseList = g_ParsedData.phaseList;
-	var initIconSize = Engine.GetGUIObjectByName("phase_[0]_struct[0]_row[0]_prod[0]").size;
+	var initIconSize = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
 
 	let remainingPhases = phaseList.length;
 	let i = 0;
@@ -160,10 +160,10 @@ function predraw()
 	for (let pha of phaseList)
 	{
 		// Align the phase row
-		Engine.GetGUIObjectByName("phase_["+i+"]").size = "8 16+"+(160*i)+" 100% 100%";
+		Engine.GetGUIObjectByName("phase["+i+"]").size = "8 16+"+(160*i)+" 100% 100%";
 
 		// Set phase icon
-		let phaseIcon = Engine.GetGUIObjectByName("phase_["+i+"]_phase");
+		let phaseIcon = Engine.GetGUIObjectByName("phase["+i+"]_phase");
 		phaseIcon.sprite = "stretched:session/portraits/technologies/"+pha.slice(pha.indexOf('_')+1)+"_phase.png"; // TODO rename icon?
 		phaseIcon.size = "16 32+"+(160*i)+" 48+16 48+32+"+(160*i);
 
@@ -171,18 +171,18 @@ function predraw()
 		let j = 1;
 		for (; j < remainingPhases; ++j)
 		{
-			let prodBar = Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+(j-1)+"]");
+			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
 			prodBar.size = "40 "+(25*j)+"+98+"+(160*i)+" 100%-8 "+(25*j)+"+98+"+(160*i)+"+22";
 			// Set phase icon
-			let prodBarIcon = Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+(j-1)+"]_icon");
+			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
 			prodBarIcon.sprite = "stretched:session/portraits/technologies/"+phaseList[i+j].slice(phaseList[i+j].indexOf('_')+1)+"_phase.png";
 		}
 		// Hide remaining prod bars
 		for (--j; j < phaseList.length; ++j)
-			Engine.GetGUIObjectByName("phase_["+i+"]_bar_["+j+"]").hidden = true;
+			Engine.GetGUIObjectByName("phase["+i+"]_bar["+j+"]").hidden = true;
 
 		let s = 0;
-		let ele = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]");
+		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
 		g_drawLimits[pha] = {
 				structQuant: 0
 			,	prodQuant: []
@@ -195,7 +195,7 @@ function predraw()
 			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
 				let p=1;
-				let prodEle = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
+				let prodEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 
 				do
 				{
@@ -205,22 +205,26 @@ function predraw()
 					prodEle.size = prodsize;
 
 					p++;
-					prodEle = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
+					prodEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 				} while (prodEle !== undefined);
 
 				// Set quantity of productions in this row
 				g_drawLimits[pha].prodQuant[r] = p;
 
 				// Position the prod row
-				Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(remainingPhases-r)+" 100%-4 100%";
+				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(remainingPhases-r)+" 100%-4 100%";
 			}
+
+			// Hide unused struct rows
+			for (let j = remainingPhases; j < phaseList.length; ++j)
+				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+j+"]").hidden = true;
 
 			let size = ele.size;
 			size.bottom += Object.keys(g_drawLimits[pha].prodQuant).length*24;
 			ele.size = size;
 
 			s++;
-			ele = Engine.GetGUIObjectByName("phase_["+i+"]_struct["+s+"]");
+			ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
 		} while (ele !== undefined);
 
 		// Set quantity of structures in each phase
