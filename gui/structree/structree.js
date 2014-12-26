@@ -74,7 +74,10 @@ function selectCiv (civCode)
 		if (entity.Template.slice(0, 5) == "units")
 			g_Lists.units.push(entity.Template);
 		else if (entity.Template.slice(0, 6) == "struct")
+		{
+			g_Lists.structures.push(entity.Template);
 			startStructs.push(entity.Template);
+		}
 	}
 	
 	/* Load units and structures */
