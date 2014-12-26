@@ -9,7 +9,7 @@
 				sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 			/>
 			<repeat count="3" var="r">
-				<object style="VillagePhaseProdRow" name="phase_village_struct[s]_row[r]">
+				<object name="phase_village_struct[s]_row[r]">
 					<repeat count="9" var="p">
 						<object type="image" style="ProdBox" name="phase_village_struct[s]_row[r]_prod[p]"/>
 					</repeat>
