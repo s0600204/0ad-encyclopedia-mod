@@ -87,6 +87,40 @@ function derive_gatherRates (unitInfo)
 }
 
 /**
+ * Load Attributes common to Units and Structures
+ *
+ * @param  entityData  Object containing either a structure or a unit
+ *
+ * @return  Object with common attributes filled
+ */
+function load_common_fromEnt (entityData)
+{
+	if (typeof entityData !== "object" || Array.isArray(entityData) === true)
+		return {};
+	
+	return {
+			"name"    : {
+					"generic"  : fetchValue(entityData, "Identity/GenericName")
+				,	"specific" : fetchValue(entityData, "Identity/SpecificName")
+				}
+		,	"icon"    : fetchValue(entityData, "Identity/Icon")
+		,	"cost"    : {
+					"food"  : +fetchValue(entityData, "Cost/Resources/food")
+				,	"wood"  : +fetchValue(entityData, "Cost/Resources/wood")
+				,	"stone" : +fetchValue(entityData, "Cost/Resources/stone")
+				,	"metal" : +fetchValue(entityData, "Cost/Resources/metal")
+				,	"time"  : +fetchValue(entityData, "Cost/BuildTime")
+				}
+		,	"tooltip" : fetchValue(entityData, "Identity/Tooltip")
+		,	"stats"   : {
+					"health" : +fetchValue(entityData, "Health/Max")
+				,	"attack" : getAttackValues(entityData)
+				,	"armour" : getArmourValues(entityData)
+				}
+		};
+}
+
+/**
  * Load Unit
  *
  * @param  unitCode  Identifying code of a unit. Also known as its subpath within the simulation/templates directory
@@ -96,32 +130,13 @@ function derive_gatherRates (unitInfo)
 function load_unit (unitCode)
 {
 	var unitInfo = loadTemplate(unitCode);
+	var unit = load_common_fromEnt(unitInfo);
 	
-	var unit = {
-			"name"    : {
-					"generic" : fetchValue(unitInfo, "Identity/GenericName")
-				,	"specific" : fetchValue(unitInfo, "Identity/SpecificName")
-				}
-		,	"icon"    : fetchValue(unitInfo, "Identity/Icon")
-		,	"cost"       : {
-					"food"       : +fetchValue(unitInfo, "Cost/Resources/food")
-				,	"wood"       : +fetchValue(unitInfo, "Cost/Resources/wood")
-				,	"stone"      : +fetchValue(unitInfo, "Cost/Resources/stone")
-				,	"metal"      : +fetchValue(unitInfo, "Cost/Resources/metal")
-				,	"population" : +fetchValue(unitInfo, "Cost/Population")
-				,	"time"       : +fetchValue(unitInfo, "Cost/BuildTime")
-				}
-		,	"tooltip" : fetchValue(unitInfo, "Identity/Tooltip")
-		,	"stats"      : {
-					"health" : +fetchValue(unitInfo, "Health/Max")
-				,	"attack" : getAttackValues(unitInfo)
-				,	"armour" : getArmourValues(unitInfo)
-				,	"speed"  : {
-							"Walk" : +fetchValue(unitInfo, "UnitMotion/WalkSpeed")
-						,	"Run"  : +fetchValue(unitInfo, "UnitMotion/Run/Speed")
-						}
-				}
+	unit.stats.speed = {
+			"Walk" : +fetchValue(unitInfo, "UnitMotion/WalkSpeed")
+		,	"Run"  : +fetchValue(unitInfo, "UnitMotion/Run/Speed")
 		};
+	unit.cost.population = +fetchValue(unitInfo, "Cost/Population");
 	
 	if (unitInfo.Identity.RequiredTechnology !== undefined)
 		unit.reqTech = unitInfo.Identity.RequiredTechnology;
@@ -174,33 +189,14 @@ function load_unit (unitCode)
 function load_structure (structCode)
 {
 	var structInfo = loadTemplate(structCode);
+	var structure = load_common_fromEnt(structInfo);
 	
-	var structure = {
-			"name"       : {
-					"generic"  : fetchValue(structInfo, "Identity/GenericName")
-				,	"specific" : (structInfo.Identity.SpecificName) ? structInfo.Identity.SpecificName : "?"
-				}
-		,	"icon"       : fetchValue(structInfo, "Identity/Icon")
-		,	"production" : {
-					"technology" : []
-				,	"units"      : []
-				}
-		,	"phase"      : false
-		,	"cost"       : {
-					"food"  : +fetchValue(structInfo, "Cost/Resources/food")
-				,	"wood"  : +fetchValue(structInfo, "Cost/Resources/wood")
-				,	"stone" : +fetchValue(structInfo, "Cost/Resources/stone")
-				,	"metal" : +fetchValue(structInfo, "Cost/Resources/metal")
-				,	"time"  : +fetchValue(structInfo, "Cost/BuildTime")
-				}
-		,	"tooltip"    : fetchValue(structInfo, "Identity/Tooltip")
-		,	"stats"      : {
-					"health" : +fetchValue(structInfo, "Health/Max")
-				,	"attack" : getAttackValues(structInfo) //fetchValue(structInfo, "Attack")
-				,	"armour" : getArmourValues(structInfo) //fetchValue(structInfo, "Armour")
-				}
+	structure.production = {
+			"technology" : []
+		,	"units"      : []
 		};
 	
+	structure.phase = false;
 	var reqTech = fetchValue(structInfo, "Identity/RequiredTechnology");
 	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
 		structure.phase = reqTech;
@@ -275,6 +271,34 @@ function load_structure (structCode)
 }
 
 /**
+ * Load Attributes common to Techs and Phases
+ *
+ * @param  techData  Object containing either a tech or a phase
+ *
+ * @return  Object with common attributes filled
+ */
+function load_common_fromjson (techData)
+{
+	var tech = {
+			"name"    : {
+					"generic" : techData.genericName
+				}
+		,	"cost"    : (techData.cost) ? techData.cost : ""
+		,	"tooltip" : (techData.tooltip) ? techData.tooltip : ""
+		};
+	
+	if (techData.specificName !== undefined)
+		if (typeof techData.specificName == "string")
+			tech.name.specific = techData.specificName;
+		else
+		{ // E048
+			for (let sn in techData.specificName)
+				tech.name[sn] = techData.specificName[sn];
+		}
+	return tech;
+}
+
+/**
  * Load Technology
  *
  * @param  techCode  Identifying code of a technology. Also known as its subpath within the simulation/data/technologies directory
@@ -284,28 +308,13 @@ function load_structure (structCode)
 function load_tech (techCode)
 {
 	var techInfo = loadTechData(techCode);
+	var tech = load_common_fromjson(techInfo);
 	
-	var tech = {
-			"reqs"    : {}
-		,	"name"    : {
-					"generic" : techInfo.genericName
-				}
-		,	"icon"    : (techInfo.icon) ? "technologies/"+techInfo.icon : ""
-		,	"cost"    : (techInfo.cost) ? techInfo.cost : ""
-		,	"tooltip" : (techInfo.tooltip) ? techInfo.tooltip : ""
-		};
-	
+	tech.reqs = {};
+	tech.icon = (techInfo.icon) ? "technologies/"+techInfo.icon : "";
+
 	if (techInfo.pair !== undefined)
 		tech.pair = techInfo.pair;
-	
-	if (techInfo.specificName !== undefined)
-		if (typeof techInfo.specificName == "string")
-			tech.name.specific = techInfo.specificName;
-		else
-		{ // E048
-			for (let sn in techInfo.specificName)
-				tech.name[sn] = techInfo.specificName[sn];
-		}
 	
 	if (techInfo.researchTime !== undefined)
 		tech.cost.time = techInfo.researchTime;
@@ -373,30 +382,8 @@ function load_tech (techCode)
 function load_phase (phaseCode)
 {
 	var phaseInfo = loadTechData(phaseCode);
-	
-	var phase = {
-			"name"        : {
-					"generic"  : phaseInfo.genericName
-				}
-		,	"actualPhase" : ""
-		,	"cost"        : (phaseInfo.cost) ? phaseInfo.cost : ""
-		,	"tooltip"     : (phaseInfo.tooltip) ? phaseInfo.tooltip : ""
-		};
-	
-	if (phaseInfo.specificName !== undefined)
-	{ // E084
-		for (let sn in phaseInfo.specificName)
-			phase.name[sn] = phaseInfo.specificName[sn];
-	}
-	
-	if (phaseInfo.specificName !== undefined)
-		if (typeof phaseInfo.specificName == "string")
-			phase.name.specific = phaseInfo.specificName;
-		else
-		{ // E084
-			for (let sn in phaseInfo.specificName)
-				phase.name[sn] = phaseInfo.specificName[sn];
-		}
+	var phase = load_common_fromjson(phaseInfo);
+	phase.actualPhase = "";
 	
 	if (phaseInfo.researchTime !== undefined)
 		phase.cost.time = phaseInfo.researchTime;
