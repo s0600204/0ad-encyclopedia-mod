@@ -98,7 +98,7 @@ function load_common_fromEnt (entityData)
 	if (typeof entityData !== "object" || Array.isArray(entityData) === true)
 		return {};
 	
-	return {
+	var entity = {
 			"name"    : {
 					"generic"  : fetchValue(entityData, "Identity/GenericName")
 				,	"specific" : fetchValue(entityData, "Identity/SpecificName")
@@ -117,7 +117,16 @@ function load_common_fromEnt (entityData)
 				,	"attack" : getAttackValues(entityData)
 				,	"armour" : getArmourValues(entityData)
 				}
+		,	"phase"   : false
 		};
+	
+	var reqTech = fetchValue(entityData, "Identity/RequiredTechnology");
+	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
+		entity.phase = reqTech;
+	else if (typeof reqTech == "string" || reqTech.length > 0)
+		entity.required = reqTech;
+	
+	return entity;
 }
 
 /**
@@ -137,9 +146,6 @@ function load_unit (unitCode)
 		,	"Run"  : +fetchValue(unitInfo, "UnitMotion/Run/Speed")
 		};
 	unit.cost.population = +fetchValue(unitInfo, "Cost/Population");
-	
-	if (unitInfo.Identity.RequiredTechnology !== undefined)
-		unit.reqTech = unitInfo.Identity.RequiredTechnology;
 	
 	var gatherer = derive_gatherRates(unitInfo);
 	for (let gType in gatherer)
@@ -195,13 +201,6 @@ function load_structure (structCode)
 			"technology" : []
 		,	"units"      : []
 		};
-	
-	structure.phase = false;
-	var reqTech = fetchValue(structInfo, "Identity/RequiredTechnology");
-	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
-		structure.phase = reqTech;
-	else if (typeof reqTech == "string" || reqTech.length > 0)
-		structure.required = reqTech;
 	
 	var auras = fetchValue(structInfo, "Auras");
 	if (Object.keys(auras).length > 0)

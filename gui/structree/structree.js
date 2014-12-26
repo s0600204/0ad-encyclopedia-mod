@@ -176,7 +176,7 @@ function selectCiv (civCode)
 		{
 			let phase = "";
 			
-			if (prod.slice(0,5) == "phase")
+			if (prod.slice(0,5) === "phase")
 			{
 				phase = g_ParsedData.phaseList.indexOf(g_ParsedData.phases[prod].actualPhase);
 				if (phase > 0)
@@ -216,15 +216,15 @@ function selectCiv (civCode)
 			let unit = g_ParsedData.units[prod];
 			let phase = "";
 			
-			if (unit.reqTech !== undefined)
+			if (unit.phase !== false)
+				phase = unit.phase;
+			else if (unit.required !== undefined)
 			{
-				let reqTech = unit.reqTech;
-				if (reqTech.slice(0,5) == "phase")
-					phase = reqTech;
-				else if (g_SelectedCiv in g_ParsedData.techs[reqTech].reqs)
-					phase = g_ParsedData.techs[reqTech].reqs[g_SelectedCiv][0];
+				let reqs = g_ParsedData.techs[unit.required].reqs;
+				if (g_SelectedCiv in reqs)
+					phase = reqs[g_SelectedCiv][0];
 				else
-					phase = g_ParsedData.techs[reqTech].reqs.generic[0];
+					phase = reqs.generic[0];
 			}
 			else
 			{
