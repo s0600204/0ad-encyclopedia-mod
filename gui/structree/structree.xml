@@ -64,16 +64,7 @@
 
 		<!-- Data display -->
 		<object size="0 54+64 100% 100%-54">
-
-			<object type="image" size="16 32 48+16 48+32"
-				sprite="stretched:session/portraits/technologies/village_phase.png"
-			/>
-		<!--	<object type="image" size="40 1+98 100%-8 1+98+22" sprite="ProdBar">
-				<object type="image" size="2 2 20 20"
-					sprite="stretched:session/portraits/technologies/village_phase.png"
-				/>
-			</object>-->
-			<object type="image" size="40 25+98 100%-8 25+98+22" sprite="ProdBar">
+			<!--<object type="image" size="40 25+98 100%-8 25+98+22" sprite="ProdBar">
 				<object type="image" size="2 2 20 20"
 					sprite="stretched:session/portraits/technologies/town_phase.png"
 				/>
@@ -84,30 +75,18 @@
 				/>
 			</object>
 			
-			<object type="image" size="16 32+160+10 48+16 48+32+160+10"
-				sprite="stretched:session/portraits/technologies/town_phase.png"
-			/>
 			<object type="image" size="40 25+268 100%-8 25+268+22" sprite="ProdBar">
 				<object type="image" size="2 2 20 20"
 					sprite="stretched:session/portraits/technologies/city_phase.png"
 				/>
 			</object>
-
-			<object type="image" size="16 32+320 48+16 48+32+320"
-				sprite="stretched:session/portraits/technologies/city_phase.png"
-			/>
+			-->
+			<repeat count="3" var="n">
+				<object name="phase_[n]_phase" type="image"/>
+			</repeat>
 
 			<object type="image" style="TreeDisplay" size="48+16+8 0 100%-16 100%">
-
-				<!-- Village Structures -->
-				<include file="gui/structree/rows/village_phase.xml"/>
-
-				<!-- Town Structures -->
-				<include file="gui/structree/rows/town_phase.xml"/>
-
-				<!-- City Structures -->
-				<include file="gui/structree/rows/city_phase.xml"/>
-
+				<include file="gui/structree/rows.xml"/>
 			</object>
 
 		</object>
