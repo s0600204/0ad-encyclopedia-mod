@@ -142,6 +142,20 @@ function draw_prodIcon(pha, s, r, p, prod)
 }
 
 /**
+ * Calculate row position offset (accounting for different number of prod rows per phase)
+ */
+function getPositionOffset(idx)
+{
+	var phases = g_ParsedData.phaseList.length;
+
+	var size = 92*idx; // text, image and offset
+	size += 24 * (phases*idx - (idx-1)*idx/2); // phase rows (phase-currphase+1 per row)
+
+	return size;
+}
+
+
+/**
  * Positions certain elements that only need to be positioned once
  *   (as `<repeat>` doesn't reposition automatically)
  * 
@@ -156,23 +170,23 @@ function predraw()
 
 	let remainingPhases = phaseList.length;
 	let i = 0;
-	// TODO make size dependent on number of phases
 	for (let pha of phaseList)
 	{
+		let offset = getPositionOffset(i);
 		// Align the phase row
-		Engine.GetGUIObjectByName("phase["+i+"]").size = "8 16+"+(160*i)+" 100% 100%";
+		Engine.GetGUIObjectByName("phase["+i+"]").size = "8 16+"+offset+" 100% 100%";
 
 		// Set phase icon
 		let phaseIcon = Engine.GetGUIObjectByName("phase["+i+"]_phase");
 		phaseIcon.sprite = "stretched:session/portraits/technologies/"+pha.slice(pha.indexOf('_')+1)+"_phase.png"; // TODO rename icon?
-		phaseIcon.size = "16 32+"+(160*i)+" 48+16 48+32+"+(160*i);
+		phaseIcon.size = "16 32+"+offset+" 48+16 48+32+"+offset;
 
 		// Position prod bars
 		let j = 1;
 		for (; j < remainingPhases; ++j)
 		{
 			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
-			prodBar.size = "40 "+(25*j)+"+98+"+(160*i)+" 100%-8 "+(25*j)+"+98+"+(160*i)+"+22";
+			prodBar.size = "40 1+"+(24*j)+"+98+"+offset+" 100%-8 1+"+(24*j)+"+98+"+offset+"+22";
 			// Set phase icon
 			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
 			prodBarIcon.sprite = "stretched:session/portraits/technologies/"+phaseList[i+j].slice(phaseList[i+j].indexOf('_')+1)+"_phase.png";
