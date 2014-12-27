@@ -41,9 +41,7 @@ function getArmourValues (entityInfo)
 	var armours = {};
 	var armResists = ["Crush", "Hack", "Pierce"];
 	for (let resist of armResists)
-	{
 		armours[resist] = +fetchValue(entityInfo, "Armour/"+resist);
-	}
 	return armours;
 }
 
@@ -126,6 +124,17 @@ function load_common_fromEnt (entityData)
 	else if (typeof reqTech == "string" || reqTech.length > 0)
 		entity.required = reqTech;
 	
+	var auras = fetchValue(entityData, "Auras");
+	if (Object.keys(auras).length > 0)
+	{
+		entity.auras = [];
+		for (let auraID in auras)
+			entity.auras.push({
+					"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura"
+				,	"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
+				});
+	}
+	
 	return entity;
 }
 
@@ -163,18 +172,6 @@ function load_unit (unitCode)
 			,	"Rate" : (healer.Rate)  ? +healer.Rate  : 0
 			};
 	
-	if (unitInfo.Auras)
-	{
-		unit.auras = [];
-		for (let auraID in unitInfo.Auras)
-		{
-			unit.auras.push({
-					"name"        : unitInfo.Auras[auraID].AuraName
-				,	"description" : unitInfo.Auras[auraID].AuraDescription
-				});
-		}
-	}
-	
 	for (let build of fetchValue(unitInfo, "Builder/Entities", true))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
@@ -201,17 +198,6 @@ function load_structure (structCode)
 			"technology" : []
 		,	"units"      : []
 		};
-	
-	var auras = fetchValue(structInfo, "Auras");
-	if (Object.keys(auras).length > 0)
-	{
-		structure.auras = [];
-		for (let auraID in auras)
-			structure.auras.push({
-					"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura"
-				,	"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
-				});
-	}
 	
 	for (let build of fetchValue(structInfo, "ProductionQueue/Entities", true))
 	{
@@ -294,6 +280,10 @@ function load_common_fromjson (techData)
 			for (let sn in techData.specificName)
 				tech.name[sn] = techData.specificName[sn];
 		}
+	
+	if (techData.researchTime !== undefined)
+		tech.cost.time = techData.researchTime;
+	
 	return tech;
 }
 
@@ -314,9 +304,6 @@ function load_tech (techCode)
 
 	if (techInfo.pair !== undefined)
 		tech.pair = techInfo.pair;
-	
-	if (techInfo.researchTime !== undefined)
-		tech.cost.time = techInfo.researchTime;
 	
 	if (techInfo.requirements !== undefined)
 	{
@@ -383,9 +370,6 @@ function load_phase (phaseCode)
 	var phaseInfo = loadTechData(phaseCode);
 	var phase = load_common_fromjson(phaseInfo);
 	phase.actualPhase = "";
-	
-	if (phaseInfo.researchTime !== undefined)
-		phase.cost.time = phaseInfo.researchTime;
 	
 	if (phaseInfo.icon !== undefined)
 		phase.icon = "technologies/" + phaseInfo.icon;
