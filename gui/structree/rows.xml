@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <object name="phase_rows">
-	<repeat count="3" var="k">
+	<repeat count="4" var="k">
 		<object name="phase[k]">
 			<repeat count="11" var="s">
 				<object type="image" style="StructBox" name="phase[k]_struct[s]">
@@ -9,7 +9,7 @@
 					<object type="image" style="StructIcon" name="phase[k]_struct[s]_icon"
 						sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 					/>
-					<repeat count="3" var="r">
+					<repeat count="4" var="r">
 						<object name="phase[k]_struct[s]_row[r]">
 							<repeat count="16" var="p">
 								<object type="image" style="ProdBox" name="phase[k]_struct[s]_row[r]_prod[p]"/>
