@@ -1,4 +1,4 @@
-/* global g_Lists, g_SelectedCiv, fetchValue, loadTemplate, loadTechData, depath */
+/* global g_Lists, g_SelectedCiv, fetchValue, fetchTokens, loadTechData, depath */
 /* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
 
 /**

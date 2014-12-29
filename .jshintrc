@@ -1,5 +1,4 @@
 {
-	"laxcomma": true,
 	"forin": false,
 	"moz": true,
 	"esnext": true,

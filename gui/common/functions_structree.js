@@ -1,3 +1,4 @@
+/* global clone */
 /* exported loadTechData, fetchValue, fetchTokens, depath */
 
 var g_TemplateData = {};
@@ -73,12 +74,12 @@ function fetchTokens(templateName, keypath)
 	if (!("_string" in val))
 		return [];
 
-	return val._string.split(' ');
+	return val._string.split(" ");
 }
 
 function depath(path)
 {
-	return path.slice(path.lastIndexOf('/')+1);
+	return path.slice(path.lastIndexOf("/")+1);
 }
 
 Array.max = function(arr)

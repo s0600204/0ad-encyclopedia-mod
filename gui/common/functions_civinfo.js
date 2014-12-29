@@ -1,4 +1,3 @@
-/* global parseJSONData */
 /* exported loadCivData */
 /*
 	DESCRIPTION	: Functions related to reading civ info
