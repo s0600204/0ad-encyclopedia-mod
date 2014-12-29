@@ -12,7 +12,7 @@
 	<!-- Add a translucent black background to fade out the menu page -->
 	<object type="image" z="0" sprite="bkTranslucent"/>
 
-	<object type="image" style="ModernDialog" size="16 50%-360 100%-16 50%+360">
+	<object type="image" style="ModernDialog" size="16 24 100%-16 100%-24">
 
 		<object style="TitleText" type="text" size="50%-128 -18 50%+128 14">
 			<translatableAttribute id="caption">Structure Tree</translatableAttribute>
@@ -64,10 +64,10 @@
 
 		<!-- Data display -->
 		<object size="0 54+64 100% 100%-54">
-			<repeat count="3" var="n">
+			<repeat count="4" var="n">
 				<object name="phase[n]_phase" type="image"/>
-				<object>
-					<repeat count="3" var="k">
+				<object name="phase[n]_bar">
+					<repeat count="4" var="k">
 						<object name="phase[n]_bar[k]" type="image" sprite="ProdBar">
 							<object name="phase[n]_bar[k]_icon" type="image" size="2 2 20 20"/>
 						</object>

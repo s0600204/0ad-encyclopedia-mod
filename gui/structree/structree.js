@@ -167,11 +167,11 @@ function selectCiv (civCode)
 		
 		/* Expand tech pairs */
 		for (let prod of structInfo.production.technology)
-			if (prod.slice(0,4) == "pair" || prod.indexOf("/pair") > -1)
+			if (prod in techPairs)
 				structInfo.production.technology.splice(
-						structInfo.production.technology.indexOf(prod), 1,
-						techPairs[prod].techs[0], techPairs[prod].techs[1]
-					);
+					structInfo.production.technology.indexOf(prod), 1,
+					techPairs[prod].techs[0], techPairs[prod].techs[1]
+				);
 		
 		/* Sort Techs by Phase */
 		let newProdTech = {};

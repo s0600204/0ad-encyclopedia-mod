@@ -8,7 +8,7 @@
  *
  * @return  Attack values
  */
-function getAttackValues (entityInfo)
+function getAttackValues(entityInfo)
 {
 	var attacks = {};
 	var atkMethods = ["Melee", "Ranged", "Charge"];
@@ -36,12 +36,13 @@ function getAttackValues (entityInfo)
  *
  * @return  Armour values
  */
-function getArmourValues (entityInfo)
+function getArmourValues(entityInfo)
 {
 	var armours = {};
 	var armResists = ["Crush", "Hack", "Pierce"];
 	for (let resist of armResists)
 		armours[resist] = +fetchValue(entityInfo, "Armour/"+resist);
+
 	return armours;
 }
 
@@ -50,28 +51,27 @@ function getArmourValues (entityInfo)
  *
  * All available rates that have a value greater than 0 are summed and averaged
  *
- * @param  unitInfo  Raw information about a unit, taken from loadTemplate()
+ * @param  template  Template name
  *
  * @return  Gather rates
  */
-function derive_gatherRates (unitInfo)
+function derive_gatherRates(template)
 {
 	var gatherTypes = {
-			"Food"  : [ "food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk" ]
-		,	"Wood"  : [ "wood", "wood.tree"/*, "wood.ruins"*/ ]
-		,	"Stone" : [ "stone", "stone.rock"/*, "stone.ruins"*/ ]
-		,	"Metal" : [ "metal", "metal.ore" ]
-	/*	,	"treasure" : [ "treasure", "treasure.food", "treasure.wood", "treasure.stone", "treasure.metal" ] */
-		};
+		"Food"  : [ "food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk" ],
+		"Wood"  : [ "wood", "wood.tree"/*, "wood.ruins"*/ ],
+		"Stone" : [ "stone", "stone.rock"/*, "stone.ruins"*/ ],
+		"Metal" : [ "metal", "metal.ore" ]
+	};
 	var gatherRates = {};
-	
+
 	for (let gType in gatherTypes)
 	{
 		let gCount = 0;
 		gatherRates[gType] = 0;
 		for (let gather of gatherTypes[gType])
 		{
-			let rate = +fetchValue(unitInfo, "ResourceGatherer/Rates/"+gather);
+			let rate = +fetchValue(template, "ResourceGatherer/Rates/"+gather);
 			if (rate > 0)
 			{
 				gatherRates[gType] += rate;
@@ -87,155 +87,147 @@ function derive_gatherRates (unitInfo)
 /**
  * Load Attributes common to Units and Structures
  *
- * @param  entityData  Object containing either a structure or a unit
+ * @param  template Template name
  *
  * @return  Object with common attributes filled
  */
-function load_common_fromEnt (entityData)
+function load_common_fromEnt (template)
 {
-	if (typeof entityData !== "object" || Array.isArray(entityData) === true)
-		return {};
-	
 	var entity = {
-			"name"    : {
-					"generic"  : fetchValue(entityData, "Identity/GenericName")
-				,	"specific" : fetchValue(entityData, "Identity/SpecificName")
-				}
-		,	"icon"    : fetchValue(entityData, "Identity/Icon")
-		,	"cost"    : {
-					"food"  : +fetchValue(entityData, "Cost/Resources/food")
-				,	"wood"  : +fetchValue(entityData, "Cost/Resources/wood")
-				,	"stone" : +fetchValue(entityData, "Cost/Resources/stone")
-				,	"metal" : +fetchValue(entityData, "Cost/Resources/metal")
-				,	"time"  : +fetchValue(entityData, "Cost/BuildTime")
-				}
-		,	"tooltip" : fetchValue(entityData, "Identity/Tooltip")
-		,	"stats"   : {
-					"health" : +fetchValue(entityData, "Health/Max")
-				,	"attack" : getAttackValues(entityData)
-				,	"armour" : getArmourValues(entityData)
-				}
-		,	"phase"   : false
-		};
-	
-	var reqTech = fetchValue(entityData, "Identity/RequiredTechnology");
+		"name": {
+			"generic": fetchValue(template, "Identity/GenericName"),
+			"specific": fetchValue(template, "Identity/SpecificName")
+		},
+		"icon": fetchValue(template, "Identity/Icon"),
+		"cost": {
+			"food": +fetchValue(template, "Cost/Resources/food"),
+			"wood": +fetchValue(template, "Cost/Resources/wood"),
+			"stone": +fetchValue(template, "Cost/Resources/stone"),
+			"metal": +fetchValue(template, "Cost/Resources/metal"),
+			"time": +fetchValue(template, "Cost/BuildTime")
+		},
+		"tooltip": fetchValue(template, "Identity/Tooltip"),
+		"stats": {
+			"health": +fetchValue(template, "Health/Max"),
+			"attack": getAttackValues(template),
+			"armour": getArmourValues(template)
+		},
+		"phase": false,
+		"auras": []
+	};
+
+	var reqTech = fetchValue(template, "Identity/RequiredTechnology");
 	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
 		entity.phase = reqTech;
 	else if (typeof reqTech == "string" || reqTech.length > 0)
 		entity.required = reqTech;
-	
-	var auras = fetchValue(entityData, "Auras");
-	if (Object.keys(auras).length > 0)
-	{
-		entity.auras = [];
-		for (let auraID in auras)
-			entity.auras.push({
-					"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura"
-				,	"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
-				});
-	}
-	
+
+	var auras = fetchValue(template, "Auras");
+	for (let auraID in auras)
+		entity.auras.push({
+			"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura",
+			"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
+		});
+
 	return entity;
 }
 
 /**
  * Load Unit
  *
- * @param  unitCode  Identifying code of a unit. Also known as its subpath within the simulation/templates directory
+ * @param  template Template name
  *
  * @return  Pertinent unit information
  */
-function load_unit (unitCode)
+function load_unit(template)
 {
-	var unitInfo = loadTemplate(unitCode);
-	var unit = load_common_fromEnt(unitInfo);
-	
+	var unit = load_common_fromEnt(template);
+
 	unit.stats.speed = {
-			"Walk" : +fetchValue(unitInfo, "UnitMotion/WalkSpeed")
-		,	"Run"  : +fetchValue(unitInfo, "UnitMotion/Run/Speed")
-		};
-	unit.cost.population = +fetchValue(unitInfo, "Cost/Population");
-	
-	var gatherer = derive_gatherRates(unitInfo);
+		"Walk": +fetchValue(template, "UnitMotion/WalkSpeed"),
+		"Run": +fetchValue(template, "UnitMotion/Run/Speed")
+	};
+	unit.cost.population = +fetchValue(template, "Cost/Population");
+
+	var gatherer = derive_gatherRates(template);
 	for (let gType in gatherer)
 		if (gatherer[gType] > 0)
 		{
 			unit.gather = gatherer;
 			break;
 		}
-	
-	var healer = fetchValue(unitInfo, "Heal");
+
+	var healer = fetchValue(template, "Heal");
 	if (Object.keys(healer).length > 0)
 		unit.stats.healer = {
-				"Range": (healer.Range) ? +healer.Range : 0
-			,	"HP"   : (healer.HP)    ? +healer.HP    : 0
-			,	"Rate" : (healer.Rate)  ? +healer.Rate  : 0
-			};
-	
-	for (let build of fetchValue(unitInfo, "Builder/Entities", true))
+			"Range": (healer.Range) ? +healer.Range : 0,
+			"HP"   : (healer.HP)    ? +healer.HP    : 0,
+			"Rate" : (healer.Rate)  ? +healer.Rate  : 0
+		};
+
+	for (let build of fetchTokens(template, "Builder/Entities"))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
 		if (g_Lists.structures.indexOf(build) < 0)
 			g_Lists.structures.push(build);
 	}
-	
+
 	return unit;
 }
 
 /**
  * Load Structure
  *
- * @param  structCode  Identifying code of a structure. Also known as its subpath within the simulation/templates directory
+ * @param  template Template name
  *
  * @return  Pertinent structure information
  */
-function load_structure (structCode)
+function load_structure(template)
 {
-	var structInfo = loadTemplate(structCode);
-	var structure = load_common_fromEnt(structInfo);
-	
+	var structure = load_common_fromEnt(template);
 	structure.production = {
-			"technology" : []
-		,	"units"      : []
-		};
-	
-	for (let build of fetchValue(structInfo, "ProductionQueue/Entities", true))
+		"technology": [],
+		"units": []
+	};
+
+	for (let build of fetchTokens(template, "ProductionQueue/Entities"))
 	{
 		build = build.replace("{civ}", g_SelectedCiv);
 		structure.production.units.push(build);
 		if (g_Lists.units.indexOf(build) < 0)
 			g_Lists.units.push(build);
 	}
-	
-	for (let research of fetchValue(structInfo, "ProductionQueue/Technologies", true))
+
+	for (let research of fetchTokens(template, "ProductionQueue/Technologies"))
 	{
 		structure.production.technology.push(research);
 		if (g_Lists.techs.indexOf(research) < 0)
 			g_Lists.techs.push(research);
 	}
-	
-	if (structInfo.WallSet !== undefined)
+
+	var wallSet = fetchValue(template, "WallSet");
+	if ("Templates" in wallSet)
 	{
 		structure.wallset = {};
 		for (let res in structure.cost)
 			structure.cost[res] = [];
-		
-		for (let wSegm in structInfo.WallSet.Templates)
+
+		for (let wSegm in wallSet.Templates)
 		{
-			let wCode = structInfo.WallSet.Templates[wSegm];
+			let wCode = wallSet.Templates[wSegm];
 			let wPart = load_structure(wCode);
 			structure.wallset[wSegm] = wPart;
 			structure.wallset[wSegm].code = wCode;
-			
+
 			for (let research of wPart.production.technology)
 				structure.production.technology.push(research);
-			
+
 			if (wSegm.slice(0,4) == "Wall")
 			{
 				for (let res in wPart.cost)
 					if (wPart.cost[res] > 0)
 						structure.cost[res].push(wPart.cost[res]);
-				
+
 				for (let armourType in wPart.stats.armour)
 				{
 					if (!Array.isArray(structure.stats.armour[armourType]))
@@ -247,11 +239,11 @@ function load_structure (structCode)
 				structure.stats.health.push(wPart.stats.health);
 			}
 		}
-		
+
 		for (let res in structure.cost)
 			structure.cost[res] = structure.cost[res].sort(function (a,b) { return a-b; });
 	}
-	
+
 	return structure;
 }
 
@@ -262,16 +254,16 @@ function load_structure (structCode)
  *
  * @return  Object with common attributes filled
  */
-function load_common_fromjson (techData)
+function load_common_fromjson(techData)
 {
 	var tech = {
-			"name"    : {
-					"generic" : techData.genericName
-				}
-		,	"cost"    : (techData.cost) ? techData.cost : ""
-		,	"tooltip" : (techData.tooltip) ? techData.tooltip : ""
-		};
-	
+	   "name": {
+	   		"generic" : techData.genericName
+	   	},
+		"cost": (techData.cost) ? techData.cost : "",
+		"tooltip": (techData.tooltip) ? techData.tooltip : ""
+	};
+
 	if (techData.specificName !== undefined)
 		if (typeof techData.specificName == "string")
 			tech.name.specific = techData.specificName;
@@ -283,7 +275,7 @@ function load_common_fromjson (techData)
 	
 	if (techData.researchTime !== undefined)
 		tech.cost.time = techData.researchTime;
-	
+
 	return tech;
 }
 
@@ -294,34 +286,34 @@ function load_common_fromjson (techData)
  *
  * @return  Pertinent technology information
  */
-function load_tech (techCode)
+function load_tech(techCode)
 {
 	var techInfo = loadTechData(techCode);
 	var tech = load_common_fromjson(techInfo);
-	
+
 	tech.reqs = {};
 	tech.icon = (techInfo.icon) ? "technologies/"+techInfo.icon : "";
 
 	if (techInfo.pair !== undefined)
 		tech.pair = techInfo.pair;
-	
+
 	if (techInfo.requirements !== undefined)
 	{
 		for (let op in techInfo.requirements)
 		{
 			let val = techInfo.requirements[op];	
 			let req = calcReqs(op, val);
-			
+
 			switch (op)
 			{
 			case "tech":
 				tech.reqs.generic = [ req ];
 				break;
-			
+
 			case "civ":
 				tech.reqs[req] = [];
 				break;
-			
+
 			case "any":
 				if (req[0].length > 0)
 				{ // E084
@@ -337,7 +329,7 @@ function load_tech (techCode)
 				if (req[1].length > 0)
 					tech.reqs.generic = req[1];
 				break;
-			
+
 			case "all":
 				for (let r of req[0])
 					tech.reqs[r] = req[1];
@@ -345,7 +337,7 @@ function load_tech (techCode)
 			}
 		}
 	}
-	
+
 	if (techInfo.supersedes !== undefined)
 		if (tech.reqs.generic !== undefined)
 			tech.reqs.generic.push(techInfo.supersedes);
@@ -354,7 +346,7 @@ function load_tech (techCode)
 			for (let ck of Object.keys(tech.reqs))
 				tech.reqs[ck].push(techInfo.supersedes);
 		}
-	
+
 	return tech;
 }
 
@@ -365,12 +357,12 @@ function load_tech (techCode)
  *
  * @return  Pertinent phase information
  */
-function load_phase (phaseCode)
+function load_phase(phaseCode)
 {
 	var phaseInfo = loadTechData(phaseCode);
 	var phase = load_common_fromjson(phaseInfo);
 	phase.actualPhase = "";
-	
+
 	if (phaseInfo.icon !== undefined)
 		phase.icon = "technologies/" + phaseInfo.icon;
 	else
@@ -378,7 +370,7 @@ function load_phase (phaseCode)
 		phase.icon = phaseCode.indexOf("_");
 		phase.icon = "technologies/" + phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png";
 	}
-	
+
 	return phase;
 }
 
@@ -389,14 +381,14 @@ function load_phase (phaseCode)
  *
  * @return  Pertinent phase information
  */
-function load_pair (pairCode)
+function load_pair(pairCode)
 {
 	var pairInfo = loadTechData(pairCode);
-	
+
 	return {
-			"techs" : [ pairInfo.top, pairInfo.bottom ]
-		,	"req"   : (pairInfo.supersedes !== undefined) ? pairInfo.supersedes : ""
-		};
+		"techs" : [ pairInfo.top, pairInfo.bottom ],
+		"req"   : (pairInfo.supersedes !== undefined) ? pairInfo.supersedes : ""
+	};
 }
 
 /**
@@ -408,7 +400,7 @@ function load_pair (pairCode)
  *
  * @return  Sorted requirments.
  */
-function calcReqs (op, val)
+function calcReqs(op, val)
 {
 	switch (op)
 	{
@@ -416,7 +408,7 @@ function calcReqs (op, val)
 	case "tech":
 		// nothing needs doing
 		break;
-	
+
 	case "all":
 	case "any":
 		let t = [];
@@ -432,16 +424,16 @@ function calcReqs (op, val)
 				case "civ":
 					c.push(r);
 					break;
-				
+
 				case "tech":
 					t.push(r);
 					break;
-				
+
 				case "any":
 					c = c.concat(r[0]);
 					t = t.concat(r[1]);
 					break;
-				
+
 				case "all":
 					for (let ci in r[0])
 						c[ci] = r[1];
@@ -450,7 +442,7 @@ function calcReqs (op, val)
 			}
 		}
 		return [ c, t ];
-	
+
 	default:
 		warn("Unknown reqs operator: "+op);
 	}
@@ -467,33 +459,38 @@ function calcReqs (op, val)
 function unravel_phases (techs)
 {
 	var phaseList = [];
-	
+
 	for (let techcode in techs)
 	{
 		let techdata = techs[techcode];
-		
-		if ("generic" in techdata.reqs && techdata.reqs.generic.length > 1)
-		{
-			let reqTech = techs[techcode].reqs.generic[1];
-			if (!("generic" in techs[reqTech].reqs))
-				continue;
-			
-			let reqPhase = techs[reqTech].reqs.generic[0];
-			let myPhase = techs[techcode].reqs.generic[0];
-			
-			if(reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
-				continue;
-			
-			let reqPhasePos = phaseList.indexOf(reqPhase);
-			let myPhasePos = phaseList.indexOf(myPhase);
-			
-			if (phaseList.length === 0)
-				phaseList = [reqPhase, myPhase];
-			else if (reqPhasePos < 0 && myPhasePos > -1)
-				phaseList.splice(myPhasePos, 0, reqPhase);
-			else if (myPhasePos < 0 && reqPhasePos > -1)
-				phaseList.splice(reqPhasePos+1, 0, myPhase);
-		}
+
+		if (!("generic" in techdata.reqs) || techdata.reqs.generic.length < 2)
+			continue;
+
+		let reqTech = techs[techcode].reqs.generic[1];
+
+		// Tech that can't be researched anywhere
+		if (!(reqTech in techs))
+			continue;
+
+		if (!("generic" in techs[reqTech].reqs))
+			continue;
+
+		let reqPhase = techs[reqTech].reqs.generic[0];
+		let myPhase = techs[techcode].reqs.generic[0];
+
+		if(reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
+			continue;
+
+		let reqPhasePos = phaseList.indexOf(reqPhase);
+		let myPhasePos = phaseList.indexOf(myPhase);
+
+		if (phaseList.length === 0)
+			phaseList = [reqPhase, myPhase];
+		else if (reqPhasePos < 0 && myPhasePos > -1)
+			phaseList.splice(myPhasePos, 0, reqPhase);
+		else if (myPhasePos < 0 && reqPhasePos > -1)
+			phaseList.splice(reqPhasePos+1, 0, myPhase);
 	}
 	return phaseList;
 }

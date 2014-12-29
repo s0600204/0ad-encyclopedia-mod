@@ -96,8 +96,7 @@ function draw()
 				rowCounts[r] = p;
 				if (p>c)
 					c = p;
-				for (; p < g_drawLimits[pha].prodQuant[r]; ++p)
-					Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]").hidden = true;
+				hideRemaining("phase["+i+"]_struct["+s+"]_row["+r+"]_prod[", p, "]");
 			}
 
 			let size = thisEle.size;
@@ -118,10 +117,7 @@ function draw()
 			
 			++s;
 		}
-		for (; s < g_drawLimits[pha].structQuant; ++s)
-		{
-			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]").hidden = true;
-		}
+		hideRemaining("phase["+i+"]_struct[", s, "]");
 		++i;
 	}
 }
@@ -154,6 +150,17 @@ function getPositionOffset(idx)
 	return size;
 }
 
+function hideRemaining(prefix, idx, suffix)
+{
+	let bar = Engine.GetGUIObjectByName(prefix+idx+suffix)
+	while (bar)
+	{
+		bar.hidden = true;
+		++idx;
+		bar = Engine.GetGUIObjectByName(prefix+idx+suffix)
+	}
+}
+
 
 /**
  * Positions certain elements that only need to be positioned once
@@ -168,6 +175,7 @@ function predraw()
 	var phaseList = g_ParsedData.phaseList;
 	var initIconSize = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
 
+	let phaseCount = phaseList.length;
 	let remainingPhases = phaseList.length;
 	let i = 0;
 	for (let pha of phaseList)
@@ -183,7 +191,7 @@ function predraw()
 
 		// Position prod bars
 		let j = 1;
-		for (; j < remainingPhases; ++j)
+		for (; j < phaseCount - i; ++j)
 		{
 			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
 			prodBar.size = "40 1+"+(24*j)+"+98+"+offset+" 100%-8 1+"+(24*j)+"+98+"+offset+"+22";
@@ -192,8 +200,7 @@ function predraw()
 			prodBarIcon.sprite = "stretched:session/portraits/technologies/"+phaseList[i+j].slice(phaseList[i+j].indexOf('_')+1)+"_phase.png";
 		}
 		// Hide remaining prod bars
-		for (--j; j < phaseList.length; ++j)
-			Engine.GetGUIObjectByName("phase["+i+"]_bar["+j+"]").hidden = true;
+		hideRemaining("phase["+i+"]_bar[", j-1, "]");
 
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
@@ -204,7 +211,6 @@ function predraw()
 
 		do
 		{
-			let rowSize = phaseList.length;
 			// Position production icons
 			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
@@ -226,11 +232,11 @@ function predraw()
 				g_drawLimits[pha].prodQuant[r] = p;
 
 				// Position the prod row
-				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(remainingPhases-r)+" 100%-4 100%";
+				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(phaseCount - i - r)+" 100%-4 100%";
 			}
 
 			// Hide unused struct rows
-			for (let j = remainingPhases; j < phaseList.length; ++j)
+			for (let j = phaseCount - i; j < phaseCount; ++j)
 				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+j+"]").hidden = true;
 
 			let size = ele.size;
@@ -243,9 +249,10 @@ function predraw()
 
 		// Set quantity of structures in each phase
 		g_drawLimits[pha].structQuant = s;
-		--remainingPhases;
 		++i;
 	}
+	hideRemaining("phase[", i, "]");
+	hideRemaining("phase[", i, "]_bar");
 }
 
 /**
