@@ -9,7 +9,7 @@ var g_SelectedCiv = "";
 /**
  * Run when UI Page loaded.
  */
-function init (settings)
+function init(settings)
 {
 	// Set base, empty state
 	g_ParsedData.units = {};
@@ -24,7 +24,7 @@ function init (settings)
 /**
  * Initialize the dropdown containing all the available civs
  */
-function initCivNameList ()
+function initCivNameList()
 {
 	// Cache map data
 	g_CivData = loadCivData(true);
@@ -47,16 +47,14 @@ function initCivNameList ()
 /**
  * Select Civilisation from dropdown menu
  */
-function selectCiv (civCode)
+function selectCiv(civCode)
 {
 	if (civCode === g_SelectedCiv || g_CivData[civCode] === undefined)
 		return;
 	
-//	warn("\"" + civCode + "\" has been selected in the structree page");
 	g_SelectedCiv = civCode;
 	
-	/* If a buildList already exists,
-		then this civ has already been parsed */
+	// If a buildList already exists, then this civ has already been parsed
 	if (g_CivData[g_SelectedCiv].buildList)
 	{
 		draw();
@@ -245,8 +243,8 @@ function selectCiv (civCode)
 		}
 		
 		g_ParsedData.structures[structCode].production = {
-				"technology": newProdTech
-			,	"units"		: newProdUnits
+				"technology": newProdTech,
+				"units": newProdUnits
 			};
 	}
 	

@@ -13,7 +13,5 @@
     <include>structree/styles.xml</include>
     <include>structree/sprites.xml</include>
     <include>structree/structree.xml</include>
-    <!-- for some reason, the setup file has to be after in
-    order to get transparency to work properly for the tooltip... -->
     <include>structree/setup.xml</include>
 </page>

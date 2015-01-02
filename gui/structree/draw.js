@@ -152,12 +152,12 @@ function getPositionOffset(idx)
 
 function hideRemaining(prefix, idx, suffix)
 {
-	let bar = Engine.GetGUIObjectByName(prefix+idx+suffix)
-	while (bar)
+	let obj = Engine.GetGUIObjectByName(prefix+idx+suffix)
+	while (obj)
 	{
-		bar.hidden = true;
+		obj.hidden = true;
 		++idx;
-		bar = Engine.GetGUIObjectByName(prefix+idx+suffix)
+		obj = Engine.GetGUIObjectByName(prefix+idx+suffix)
 	}
 }
 
@@ -205,8 +205,8 @@ function predraw()
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
 		g_drawLimits[pha] = {
-				structQuant: 0
-			,	prodQuant: []
+				structQuant: 0,
+				prodQuant: []
 			};
 
 		do
@@ -264,6 +264,7 @@ function predraw()
  */
 function assembleTooltip (info)
 {
+// TODO i18n
 	var txt = "";
 	var speciName = (info.name[g_SelectedCiv]) ? info.name[g_SelectedCiv] : info.name.specific;
 	var generiName = translate(info.name.generic);
@@ -360,14 +361,7 @@ function assembleTooltip (info)
 							txtFormats.body[0] + info.stats.attack[atkType][stat] + txtFormats.body[1] +
 							" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
 						);
-			/*
-			if (info.stats.attack[atkType].RepeatTime > 0)
-				damage.push(
-						txtFormats.subheader[0] + translate("Rate:") + txtFormats.subheader[1] + " " +
-						txtFormats.body[0] + info.stats.attack[atkType].RepeatTime/1000 + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + translate("seconds") + txtFormats.subtext[1]
-					);
-			*/
+
 			if (atkType == "Ranged")
 			{
 				damage.push(

@@ -91,7 +91,7 @@ function derive_gatherRates(template)
  *
  * @return  Object with common attributes filled
  */
-function load_common_fromEnt (template)
+function load_common_fromEnt(template)
 {
 	var entity = {
 		"name": {
@@ -125,8 +125,8 @@ function load_common_fromEnt (template)
 	var auras = fetchValue(template, "Auras");
 	for (let auraID in auras)
 		entity.auras.push({
-			"name"        : (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura",
-			"description" : (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
+			"name": (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura",
+			"description": (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
 		});
 
 	return entity;
@@ -161,8 +161,8 @@ function load_unit(template)
 	if (Object.keys(healer).length > 0)
 		unit.stats.healer = {
 			"Range": (healer.Range) ? +healer.Range : 0,
-			"HP"   : (healer.HP)    ? +healer.HP    : 0,
-			"Rate" : (healer.Rate)  ? +healer.Rate  : 0
+			"HP": (healer.HP) ? +healer.HP : 0,
+			"Rate": (healer.Rate) ? +healer.Rate : 0
 		};
 
 	for (let build of fetchTokens(template, "Builder/Entities"))
@@ -292,7 +292,7 @@ function load_tech(techCode)
 	var tech = load_common_fromjson(techInfo);
 
 	tech.reqs = {};
-	tech.icon = (techInfo.icon) ? "technologies/"+techInfo.icon : "";
+	tech.icon = techInfo.icon ? "technologies/"+techInfo.icon : "";
 
 	if (techInfo.pair !== undefined)
 		tech.pair = techInfo.pair;
@@ -368,7 +368,7 @@ function load_phase(phaseCode)
 	else
 	{
 		phase.icon = phaseCode.indexOf("_");
-		phase.icon = "technologies/" + phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png";
+		phase.icon = "technologies/" + phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png"; // TODO rename icon?
 	}
 
 	return phase;
@@ -386,8 +386,8 @@ function load_pair(pairCode)
 	var pairInfo = loadTechData(pairCode);
 
 	return {
-		"techs" : [ pairInfo.top, pairInfo.bottom ],
-		"req"   : (pairInfo.supersedes !== undefined) ? pairInfo.supersedes : ""
+		"techs": [ pairInfo.top, pairInfo.bottom ],
+		"req": (pairInfo.supersedes !== undefined) ? pairInfo.supersedes : ""
 	};
 }
 
