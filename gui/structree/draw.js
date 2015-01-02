@@ -3,18 +3,18 @@
 
 var g_drawLimits = {}; // GUI limits. Populated by predraw()
 var costIcons = {
-		"food"       : "[icon=\"iconFood\"]"
-	,	"wood"       : "[icon=\"iconWood\"]"
-	,	"stone"      : "[icon=\"iconStone\"]"
-	,	"metal"      : "[icon=\"iconMetal\"]"
-	,	"time"       : "[icon=\"iconTime\"]"
-	,	"population" : "[icon=\"iconPopulation\"]"
+	"food": "[icon=\"iconFood\"]",
+	"wood": "[icon=\"iconWood\"]",
+	"stone": "[icon=\"iconStone\"]",
+	"metal": "[icon=\"iconMetal\"]",
+	"time": "[icon=\"iconTime\"]",
+	"population": "[icon=\"iconPopulation\"]"
 };
 var txtFormats = {
-		"body"      : [ '[font="sans-13"]', '[/font]' ]
-	,	"subheader" : [ '[font="sans-bold-13"]', '[/font]' ]
-	,	"subtext"   : [ '[font="sans-10"][color="orange"]', '[/color][/font]' ]
-	,	"resources" : [ '[font="sans-12"]', '[/font]' ]
+	"body": [ '[font="sans-13"]', '[/font]' ],
+	"subheader": [ '[font="sans-bold-13"]', '[/font]' ],
+	"subtext": [ '[font="sans-10"][color="orange"]', '[/color][/font]' ],
+	"resources": [ '[font="sans-12"]', '[/font]' ]
 };
 
 /**
@@ -106,7 +106,8 @@ function draw()
 			thisEle.size = size;
 			
 			let eleWidth = size.right - size.left;
-			for (let r in rowCounts)
+			let r;
+			for (r in rowCounts)
 			{
 				let wid = rowCounts[r] * 24 - 4;
 				let phaEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]");
@@ -114,7 +115,7 @@ function draw()
 				size.left = (eleWidth - wid)/2;
 				phaEle.size = size;
 			}
-			
+			hideRemaining("phase["+i+"]_struct["+s+"]_row[", r, "]");
 			++s;
 		}
 		hideRemaining("phase["+i+"]_struct[", s, "]");
