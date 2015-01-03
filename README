@@ -32,5 +32,11 @@ mention all the volunteers and members of the further community.
 
 License
 ------------------------------------------------------------------------
-This work is released under the GPL-2.0 license. Details may be found
-at http://opensource.org/licenses/GPL-2.0
+The XML files within this work are based on work and examples by
+Wildfire Games, and are available under the Creative Commons Attribution
+ShareAlike 3.0 license. Details may be found at
+http://creativecommons.org/licenses/by-sa/3.0/
+
+The scripting and everything else contained within this work is
+released under the GPLv2+ license. Details may be found at
+http://opensource.org/licenses/GPL-2.0
