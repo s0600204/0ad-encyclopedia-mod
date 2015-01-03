@@ -260,8 +260,9 @@ function load_common_fromjson(techData)
 	   "name": {
 	   		"generic" : techData.genericName
 	   	},
-		"cost": (techData.cost) ? techData.cost : "",
-		"tooltip": (techData.tooltip) ? techData.tooltip : ""
+		"cost": techData.cost ? techData.cost : "",
+		"tooltip": techData.tooltip ? techData.tooltip : ""
+		"icon": techData.icon ? "technologies/"+techData.icon : ""
 	};
 
 	if (techData.specificName !== undefined)
@@ -292,7 +293,6 @@ function load_tech(techCode)
 	var tech = load_common_fromjson(techInfo);
 
 	tech.reqs = {};
-	tech.icon = techInfo.icon ? "technologies/"+techInfo.icon : "";
 
 	if (techInfo.pair !== undefined)
 		tech.pair = techInfo.pair;
@@ -362,7 +362,6 @@ function load_phase(phaseCode)
 	var phaseInfo = loadTechData(phaseCode);
 	var phase = load_common_fromjson(phaseInfo);
 	phase.actualPhase = "";
-	phase.icon = "technologies/" + phaseInfo.icon;
 
 	return phase;
 }
