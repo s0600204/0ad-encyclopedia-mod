@@ -362,14 +362,7 @@ function load_phase(phaseCode)
 	var phaseInfo = loadTechData(phaseCode);
 	var phase = load_common_fromjson(phaseInfo);
 	phase.actualPhase = "";
-
-	if (phaseInfo.icon !== undefined)
-		phase.icon = "technologies/" + phaseInfo.icon;
-	else
-	{
-		phase.icon = phaseCode.indexOf("_");
-		phase.icon = "technologies/" + phaseCode.slice(phase.icon+1) +"_"+ phaseCode.slice(0, phase.icon) +".png"; // TODO rename icon?
-	}
+	phase.icon = "technologies/" + phaseInfo.icon;
 
 	return phase;
 }

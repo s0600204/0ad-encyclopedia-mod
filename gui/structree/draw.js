@@ -187,7 +187,7 @@ function predraw()
 
 		// Set phase icon
 		let phaseIcon = Engine.GetGUIObjectByName("phase["+i+"]_phase");
-		phaseIcon.sprite = "stretched:session/portraits/technologies/"+pha.slice(pha.indexOf('_')+1)+"_phase.png"; // TODO rename icon?
+		phaseIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[pha].icon;
 		phaseIcon.size = "16 32+"+offset+" 48+16 48+32+"+offset;
 
 		// Position prod bars
@@ -198,7 +198,7 @@ function predraw()
 			prodBar.size = "40 1+"+(24*j)+"+98+"+offset+" 100%-8 1+"+(24*j)+"+98+"+offset+"+22";
 			// Set phase icon
 			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
-			prodBarIcon.sprite = "stretched:session/portraits/technologies/"+phaseList[i+j].slice(phaseList[i+j].indexOf('_')+1)+"_phase.png";
+			prodBarIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[phaseList[i+j]].icon;
 		}
 		// Hide remaining prod bars
 		hideRemaining("phase["+i+"]_bar[", j-1, "]");
