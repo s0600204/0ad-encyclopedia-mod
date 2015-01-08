@@ -115,6 +115,7 @@ function draw()
 				size.left = (eleWidth - wid)/2;
 				phaEle.size = size;
 			}
+			++r;
 			hideRemaining("phase["+i+"]_struct["+s+"]_row[", r, "]");
 			++s;
 		}
