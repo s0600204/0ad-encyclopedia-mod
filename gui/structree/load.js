@@ -2,51 +2,6 @@
 /* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
 
 /**
- * Load attack values
- *
- * @param  entityInfo  Raw information about an entity, taken from loadTemplate()
- *
- * @return  Attack values
- */
-function getAttackValues(entityInfo)
-{
-	var attacks = {};
-	var atkMethods = ["Melee", "Ranged", "Charge"];
-	var atkDamages = ["Crush", "Hack", "Pierce", "MinRange", "MaxRange", "RepeatTime"];
-	for (let meth of atkMethods)
-	{
-		let atk = {};
-		let keep = false;
-		for (let dama of atkDamages)
-		{
-			atk[dama] = +fetchValue(entityInfo, "Attack/"+meth+"/"+dama);
-			if (atk[dama] > 0)
-				keep = true;
-		}
-		if (keep)
-			attacks[meth] = atk;
-	}
-	return attacks;
-}
-
-/**
- * Load armour values
- *
- * @param  entityInfo  Raw information about an entity, taken from loadTemplate()
- *
- * @return  Armour values
- */
-function getArmourValues(entityInfo)
-{
-	var armours = {};
-	var armResists = ["Crush", "Hack", "Pierce"];
-	for (let resist of armResists)
-		armours[resist] = +fetchValue(entityInfo, "Armour/"+resist);
-
-	return armours;
-}
-
-/**
  * Derive gather rates
  *
  * All available rates that have a value greater than 0 are summed and averaged
@@ -85,71 +40,27 @@ function derive_gatherRates(template)
 }
 
 /**
- * Load Attributes common to Units and Structures
- *
- * @param  template Template name
- *
- * @return  Object with common attributes filled
- */
-function load_common_fromEnt(template)
-{
-	var entity = {
-		"name": {
-			"generic": fetchValue(template, "Identity/GenericName"),
-			"specific": fetchValue(template, "Identity/SpecificName")
-		},
-		"icon": fetchValue(template, "Identity/Icon"),
-		"cost": {
-			"food": +fetchValue(template, "Cost/Resources/food"),
-			"wood": +fetchValue(template, "Cost/Resources/wood"),
-			"stone": +fetchValue(template, "Cost/Resources/stone"),
-			"metal": +fetchValue(template, "Cost/Resources/metal"),
-			"time": +fetchValue(template, "Cost/BuildTime")
-		},
-		"tooltip": fetchValue(template, "Identity/Tooltip"),
-		"stats": {
-			"health": +fetchValue(template, "Health/Max"),
-			"attack": getAttackValues(template),
-			"armour": getArmourValues(template)
-		},
-		"phase": false,
-		"auras": []
-	};
-
-	var reqTech = fetchValue(template, "Identity/RequiredTechnology");
-	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
-		entity.phase = reqTech;
-	else if (typeof reqTech == "string" || reqTech.length > 0)
-		entity.required = reqTech;
-
-	var auras = fetchValue(template, "Auras");
-	for (let auraID in auras)
-		entity.auras.push({
-			"name": (auras[auraID].AuraName) ? auras[auraID].AuraName : "Aura",
-			"description": (auras[auraID].AuraDescription) ? auras[auraID].AuraDescription : "?"
-		});
-
-	return entity;
-}
-
-/**
  * Load Unit
  *
  * @param  template Template name
  *
  * @return  Pertinent unit information
  */
-function load_unit(template)
+function load_unit(templateName)
 {
-	var unit = load_common_fromEnt(template);
+	var template = loadTemplate(templateName)
+	var unit = GetTemplateDataHelper(template);
+	unit.phase = false;
 
-	unit.stats.speed = {
-		"Walk": +fetchValue(template, "UnitMotion/WalkSpeed"),
-		"Run": +fetchValue(template, "UnitMotion/Run/Speed")
-	};
-	unit.cost.population = +fetchValue(template, "Cost/Population");
+	if (unit.requiredTechnology)
+	{
+		if (typeof unit.requiredTechnology == "string" && unit.requiredTechnology.slice(0, 5) == "phase")
+			unit.phase = unit.requiredTechnology;
+		else if (typeof unit.requiredTechnology == "string" || unit.requiredTechnology.length > 0)
+			unit.required = unit.requiredTechnology;
+	}
 
-	var gatherer = derive_gatherRates(template);
+	var gatherer = derive_gatherRates(templateName);
 	for (let gType in gatherer)
 		if (gatherer[gType] > 0)
 		{
@@ -157,20 +68,20 @@ function load_unit(template)
 			break;
 		}
 
-	var healer = fetchValue(template, "Heal");
-	if (Object.keys(healer).length > 0)
-		unit.stats.healer = {
-			"Range": (healer.Range) ? +healer.Range : 0,
-			"HP": (healer.HP) ? +healer.HP : 0,
-			"Rate": (healer.Rate) ? +healer.Rate : 0
+	if (template.Heal)
+		unit.healer = {
+			"Range": +template.Heal.Range || 0,
+			"HP": +template.Heal.HP || 0,
+			"Rate": +template.Heal.Rate || 0
 		};
 
-	for (let build of fetchTokens(template, "Builder/Entities"))
-	{
-		build = build.replace("{civ}", g_SelectedCiv);
-		if (g_Lists.structures.indexOf(build) < 0)
-			g_Lists.structures.push(build);
-	}
+	if (template.Builder && template.Builder.Entities._string)
+		for (let build of template.Builder.Entities._string.split(' '))
+		{
+			build = build.replace("{civ}", g_SelectedCiv);
+			if (g_Lists.structures.indexOf(build) < 0)
+				g_Lists.structures.push(build);
+		}
 
 	return unit;
 }
@@ -182,39 +93,54 @@ function load_unit(template)
  *
  * @return  Pertinent structure information
  */
-function load_structure(template)
+function load_structure(templateName)
 {
-	var structure = load_common_fromEnt(template);
+	var template = loadTemplate(templateName);
+	var structure = GetTemplateDataHelper(template);
+	structure.phase = false;
+
+	if (structure.requiredTechnology)
+	{
+		if (typeof structure.requiredTechnology == "string" && structure.requiredTechnology.slice(0, 5) == "phase")
+			structure.phase = structure.requiredTechnology;
+		else if (typeof structure.requiredTechnology == "string" || structure.requiredTechnology.length > 0)
+			structure.required = structure.requiredTechnology;
+	}
+
 	structure.production = {
 		"technology": [],
 		"units": []
 	};
-
-	for (let build of fetchTokens(template, "ProductionQueue/Entities"))
+	if (template.ProductionQueue)
 	{
-		build = build.replace("{civ}", g_SelectedCiv);
-		structure.production.units.push(build);
-		if (g_Lists.units.indexOf(build) < 0)
-			g_Lists.units.push(build);
+		if (template.ProductionQueue.Entities && template.ProductionQueue.Entities._string)
+			for (let build of template.ProductionQueue.Entities._string.split(' '))
+			{
+				build = build.replace("{civ}", g_SelectedCiv);
+				structure.production.units.push(build);
+				if (g_Lists.units.indexOf(build) < 0)
+					g_Lists.units.push(build);
+			}
+
+		if (template.ProductionQueue.Technologies && template.ProductionQueue.Technologies._string)
+			for (let research of template.ProductionQueue.Technologies._string.split(' '))
+			{
+				structure.production.technology.push(research);
+				if (g_Lists.techs.indexOf(research) < 0)
+					g_Lists.techs.push(research);
+			}
 	}
 
-	for (let research of fetchTokens(template, "ProductionQueue/Technologies"))
-	{
-		structure.production.technology.push(research);
-		if (g_Lists.techs.indexOf(research) < 0)
-			g_Lists.techs.push(research);
-	}
-
-	var wallSet = fetchValue(template, "WallSet");
-	if ("Templates" in wallSet)
+	if (structure.wallSet)
 	{
 		structure.wallset = {};
-		for (let res in structure.cost)
+		structure.cost = {};
+		for (let res in ["food", "wood", "stone", "metal", "time"])
 			structure.cost[res] = [];
 
-		for (let wSegm in wallSet.Templates)
+		for (let wSegm in structure.wallSet.templates)
 		{
-			let wCode = wallSet.Templates[wSegm];
+			let wCode = structure.wallSet.templates[wSegm];
 			let wPart = load_structure(wCode);
 			structure.wallset[wSegm] = wPart;
 			structure.wallset[wSegm].code = wCode;
@@ -228,15 +154,15 @@ function load_structure(template)
 					if (wPart.cost[res] > 0)
 						structure.cost[res].push(wPart.cost[res]);
 
-				for (let armourType in wPart.stats.armour)
+				for (let armourType in wPart.armour)
 				{
-					if (!Array.isArray(structure.stats.armour[armourType]))
-						structure.stats.armour[armourType] = [];
-					structure.stats.armour[armourType].push(wPart.stats.armour[armourType]);
+					if (!Array.isArray(structure.armour[armourType]))
+						structure.armour[armourType] = [];
+					structure.armour[armourType].push(wPart.armour[armourType]);
 				}
-				if (!Array.isArray(structure.stats.health))
-					structure.stats.health = [];
-				structure.stats.health.push(wPart.stats.health);
+				if (!Array.isArray(structure.health))
+					structure.health = [];
+				structure.health.push(wPart.health);
 			}
 		}
 
@@ -248,60 +174,28 @@ function load_structure(template)
 }
 
 /**
- * Load Attributes common to Techs and Phases
- *
- * @param  techData  Object containing either a tech or a phase
- *
- * @return  Object with common attributes filled
- */
-function load_common_fromjson(techData)
-{
-	var tech = {
-	   "name": {
-	   		"generic" : techData.genericName
-	   	},
-		"cost": techData.cost ? techData.cost : "",
-		"tooltip": techData.tooltip ? techData.tooltip : ""
-		"icon": techData.icon ? "technologies/"+techData.icon : ""
-	};
-
-	if (techData.specificName !== undefined)
-		if (typeof techData.specificName == "string")
-			tech.name.specific = techData.specificName;
-		else
-		{ // E048
-			for (let sn in techData.specificName)
-				tech.name[sn] = techData.specificName[sn];
-		}
-	
-	if (techData.researchTime !== undefined)
-		tech.cost.time = techData.researchTime;
-
-	return tech;
-}
-
-/**
  * Load Technology
  *
- * @param  techCode  Identifying code of a technology. Also known as its subpath within the simulation/data/technologies directory
+ * @param  techName  Identifying code of a technology. Also known as its subpath within the simulation/data/technologies directory
  *
  * @return  Pertinent technology information
  */
-function load_tech(techCode)
+function load_tech(techName)
 {
-	var techInfo = loadTechData(techCode);
-	var tech = load_common_fromjson(techInfo);
+	var template = loadTechData(techName);
+	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
+// TODO do translation here? (see GetTechnologyData)
 
 	tech.reqs = {};
 
-	if (techInfo.pair !== undefined)
-		tech.pair = techInfo.pair;
+	if (template.pair !== undefined)
+		tech.pair = template.pair;
 
-	if (techInfo.requirements !== undefined)
+	if (template.requirements !== undefined)
 	{
-		for (let op in techInfo.requirements)
+		for (let op in template.requirements)
 		{
-			let val = techInfo.requirements[op];	
+			let val = template.requirements[op];	
 			let req = calcReqs(op, val);
 
 			switch (op)
@@ -338,13 +232,13 @@ function load_tech(techCode)
 		}
 	}
 
-	if (techInfo.supersedes !== undefined)
+	if (template.supersedes !== undefined)
 		if (tech.reqs.generic !== undefined)
-			tech.reqs.generic.push(techInfo.supersedes);
+			tech.reqs.generic.push(template.supersedes);
 		else
 		{ // E048
 			for (let ck of Object.keys(tech.reqs))
-				tech.reqs[ck].push(techInfo.supersedes);
+				tech.reqs[ck].push(template.supersedes);
 		}
 
 	return tech;
@@ -359,8 +253,8 @@ function load_tech(techCode)
  */
 function load_phase(phaseCode)
 {
-	var phaseInfo = loadTechData(phaseCode);
-	var phase = load_common_fromjson(phaseInfo);
+	var template = loadTechData(phaseCode);
+	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
 	phase.actualPhase = "";
 
 	return phase;
