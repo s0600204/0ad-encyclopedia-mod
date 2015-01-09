@@ -1,4 +1,4 @@
-/* global g_Lists, g_SelectedCiv, fetchValue, fetchTokens, loadTechData, depath */
+/* global g_Lists, g_SelectedCiv, fetchValue, loadTemplate, loadTechData, GetTemplateDataHelper, GetTechnologyDataHelper, depath */
 /* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
 
 /**
@@ -48,7 +48,7 @@ function derive_gatherRates(template)
  */
 function load_unit(templateName)
 {
-	var template = loadTemplate(templateName)
+	var template = loadTemplate(templateName);
 	var unit = GetTemplateDataHelper(template);
 	unit.phase = false;
 
@@ -76,12 +76,14 @@ function load_unit(templateName)
 		};
 
 	if (template.Builder && template.Builder.Entities._string)
-		for (let build of template.Builder.Entities._string.split(' '))
+	{ // E084
+		for (let build of template.Builder.Entities._string.split(" "))
 		{
 			build = build.replace("{civ}", g_SelectedCiv);
 			if (g_Lists.structures.indexOf(build) < 0)
 				g_Lists.structures.push(build);
 		}
+	}
 
 	return unit;
 }
@@ -114,21 +116,25 @@ function load_structure(templateName)
 	if (template.ProductionQueue)
 	{
 		if (template.ProductionQueue.Entities && template.ProductionQueue.Entities._string)
-			for (let build of template.ProductionQueue.Entities._string.split(' '))
+		{ // E084
+			for (let build of template.ProductionQueue.Entities._string.split(" "))
 			{
 				build = build.replace("{civ}", g_SelectedCiv);
 				structure.production.units.push(build);
 				if (g_Lists.units.indexOf(build) < 0)
 					g_Lists.units.push(build);
 			}
+		}
 
 		if (template.ProductionQueue.Technologies && template.ProductionQueue.Technologies._string)
-			for (let research of template.ProductionQueue.Technologies._string.split(' '))
+		{ // E084
+			for (let research of template.ProductionQueue.Technologies._string.split(" "))
 			{
 				structure.production.technology.push(research);
 				if (g_Lists.techs.indexOf(research) < 0)
 					g_Lists.techs.push(research);
 			}
+		}
 	}
 
 	if (structure.wallSet)

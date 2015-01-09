@@ -5,5 +5,5 @@
 	"unused": "strict",
 	"undef": true,
 	"quotmark": true,
-	"predef": [ "Engine", "error", "warn", "translate", "translateObjectKeys", "sprintf" ]
+	"predef": [ "Engine", "error", "warn", "sprintf" ]
 }

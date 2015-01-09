@@ -1,4 +1,4 @@
-/* global clone */
+/* global clone, translateObjectKeys */
 /* exported loadTechData, fetchValue, fetchTokens, depath */
 
 var g_TemplateData = {};

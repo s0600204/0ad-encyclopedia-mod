@@ -1,4 +1,4 @@
-/* global g_ParsedData, g_CivData, g_SelectedCiv */
+/* global g_ParsedData, g_CivData, g_SelectedCiv, translate */
 /* exported draw */
 
 var g_drawLimits = {}; // GUI limits. Populated by predraw()
@@ -155,12 +155,12 @@ function getPositionOffset(idx)
 
 function hideRemaining(prefix, idx, suffix)
 {
-	let obj = Engine.GetGUIObjectByName(prefix+idx+suffix)
+	let obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
 	while (obj)
 	{
 		obj.hidden = true;
 		++idx;
-		obj = Engine.GetGUIObjectByName(prefix+idx+suffix)
+		obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
 	}
 }
 
@@ -179,7 +179,6 @@ function predraw()
 	var initIconSize = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
 
 	let phaseCount = phaseList.length;
-	let remainingPhases = phaseList.length;
 	let i = 0;
 	for (let pha of phaseList)
 	{

@@ -138,10 +138,12 @@ function selectCiv(civCode)
 		g_ParsedData.phases[phasecode] = load_phase(phasecode);
 		
 		if ("requirements" in phaseInfo)
+		{ // E084
 			for (let op in phaseInfo.requirements)
 			{
 				let val = phaseInfo.requirements[op];
 				if (op == "any")
+				{ // E084
 					for (let v of val)
 					{
 						let k = Object.keys(v);
@@ -150,7 +152,9 @@ function selectCiv(civCode)
 						if (k == "tech" && v in g_ParsedData.phases)
 							g_ParsedData.phases[v].actualPhase = phasecode;
 					}
+				}
 			}
+		}
 	}
 	
 	/* Group production lists of structures by phase */
