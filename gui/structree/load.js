@@ -140,40 +140,40 @@ function load_structure(templateName)
 	if (structure.wallSet)
 	{
 		structure.wallset = {};
-		structure.cost = {};
-		for (let res in ["food", "wood", "stone", "metal", "time"])
-			structure.cost[res] = [];
+		// Note: Assume wall segments of all lengths have the same armor
+		structure.armour = load_structure(structure.wallSet.templates["long"]).armour;
+
+		let health;
 
 		for (let wSegm in structure.wallSet.templates)
 		{
-			let wCode = structure.wallSet.templates[wSegm];
-			let wPart = load_structure(wCode);
+			let wPart = load_structure(structure.wallSet.templates[wSegm]);
 			structure.wallset[wSegm] = wPart;
-			structure.wallset[wSegm].code = wCode;
 
 			for (let research of wPart.production.technology)
 				structure.production.technology.push(research);
 
-			if (wSegm.slice(0,4) == "Wall")
+			if (["gate", "tower"].indexOf(wSegm) != -1)
+				continue;
+
+			if (!health)
 			{
-				for (let res in wPart.cost)
-					if (wPart.cost[res] > 0)
-						structure.cost[res].push(wPart.cost[res]);
-
-				for (let armourType in wPart.armour)
-				{
-					if (!Array.isArray(structure.armour[armourType]))
-						structure.armour[armourType] = [];
-					structure.armour[armourType].push(wPart.armour[armourType]);
-				}
-				if (!Array.isArray(structure.health))
-					structure.health = [];
-				structure.health.push(wPart.health);
+				health = { "min": wPart.health, "max": wPart.health };
+				continue;
 			}
-		}
 
-		for (let res in structure.cost)
-			structure.cost[res] = structure.cost[res].sort(function (a,b) { return a-b; });
+			if (health.min > wPart.health)
+				health.min = wPart.health;
+			else if (health.max < wPart.health)
+				health.max = wPart.health;
+		}
+		if (health.min == health.max)
+			structure.health = health.min;
+		else
+			structure.health = sprintf(translate("%(val1)s to %(val2)s"), {
+				val1: health.min,
+				val2: health.max
+			});
 	}
 
 	return structure;

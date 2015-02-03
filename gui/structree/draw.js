@@ -2,20 +2,6 @@
 /* exported draw */
 
 var g_drawLimits = {}; // GUI limits. Populated by predraw()
-const costIcons = {
-	"food": "[icon=\"iconFood\"]",
-	"wood": "[icon=\"iconWood\"]",
-	"stone": "[icon=\"iconStone\"]",
-	"metal": "[icon=\"iconMetal\"]",
-	"time": "[icon=\"iconTime\"]",
-	"population": "[icon=\"iconPopulation\"]"
-};
-const txtFormats = {
-	"body": [ '[font="sans-13"]', '[/font]' ],
-	"subheader": [ '[font="sans-bold-13"]', '[/font]' ],
-	"subtext": [ '[font="sans-10"][color="orange"]', '[/color][/font]' ],
-	"resources": [ '[font="sans-12"]', '[/font]' ]
-};
 
 /**
  * Draw the structree
@@ -260,175 +246,58 @@ function predraw()
 /**
  * Assemble a tooltip text
  *
- * @param  info  Information about a Unit, a Structure or a Technology
+ * @param  template Information about a Unit, a Structure or a Technology
  *
  * @return  The tooltip text, formatted.
  */
-function assembleTooltip (info)
+function assembleTooltip(template)
 {
-// TODO i18n
-// TODO reuse in-game gui tooltip code
-	var txt = "";
-	var speciName = (info.name[g_SelectedCiv]) ? info.name[g_SelectedCiv] : info.name.specific;
-	var generiName = translate(info.name.generic);
+	var txt = getEntityNamesFormatted(template);
+	txt += "\n" + getEntityCostTooltip(template, 1);
 
-	if (speciName !== undefined)
-	{
-		speciName = translate(speciName).split(" ");
-		for (let word of speciName)
-		{
-			let wordCaps = word.toUpperCase();
-			if (word[0].toLowerCase() !== word[0])
-			{
-				txt += '[font="sans-bold-16"]' + wordCaps[0] + '[/font]';
-				wordCaps = wordCaps.slice(1);
-			}
-			txt += '[font="sans-bold-12"]' + wordCaps + '[/font] ';
-		}
-		txt += '[font="sans-bold-12"](' + generiName + ')[/font]';
-	}
-	else
-		txt = '[font="sans-bold-16"]' + generiName + '[/font]';
-
-	txt += "\n" + txtFormats.resources[0];
-	for (let res in info.cost)
-	{
-		if (res == "populationBonus")
-			continue;
-
-		if (info.cost[res] > 0 || Array.isArray(info.cost[res]) && info.cost[res].length > 1)
-		{
-			txt += costIcons[res];
-
-			if (Array.isArray(info.cost[res]))
-				txt += Array.min(info.cost[res]) +"-"+ Array.max(info.cost[res]);
-			else
-				txt += info.cost[res];
-			txt += "  ";
-		}
-	}
-	txt += txtFormats.resources[1];
-
-	if (info.tooltip && !Array.isArray(info.tooltip))
-		txt += "\n" + txtFormats.body[0] + translate(info.tooltip) + txtFormats.body[1];
+	if (template.tooltip)
+		txt += "\n" + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1];
 
 	// Auras
-	if (info.auras)
+	if (template.auras)
 	{ // E084
-		for (let aura in info.auras)
-			txt += "\n" + txtFormats.subheader[0] + translate(aura) + ":" + txtFormats.subheader[1] +
-					" " + txtFormats.body[0] + translate(info.auras[aura]) + txtFormats.body[1];
+		for (let aura in template.auras)
+			txt += '\n' + sprintf(translate("%(auralabel)s %(aurainfo)s"), {
+				auralabel: txtFormats.header[0] + sprintf(translate("%(auraname)s:"), {
+						auraname: translate(aura)
+					}) + txtFormats.header[1],
+				aurainfo: txtFormats.body[0] + translate(template.auras[aura]) + txtFormats.body[1]
+			});
 	}
 
-	if (info.health)
-	{
-		// Health
-		txt += "\n" + txtFormats.subheader[0] + translate("Health:") + txtFormats.subheader[1] + " " + txtFormats.body[0];
-		if (Array.isArray(info.health))
-			if (Array.min(info.health) == Array.max(info.health))
-				txt += info.health[0];
-			else
-				txt += Array.min(info.health) +"-"+ Array.max(info.health);
-		else
-			txt += info.health;
-		txt += txtFormats.body[1];
-	}
+	if (template.health)
+		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
+			label: txtFormats.header[0] + translate("Health:") + txtFormats.header[1],
+			details: template.health
+		});
 
-	// Healer
-	if (info.healer)
-	{
-		txt += "\n" + txtFormats.subheader[0] + translate("Heal:") + txtFormats.subheader[1] + " ";
-		var healer = [];
-		healer.push(
-				txtFormats.body[0] + info.healer.HP + txtFormats.body[1] +
-				" " + txtFormats.subtext[0] + translate("HP") + txtFormats.subtext[1]
-			);
-		healer.push(
-				txtFormats.subheader[0] + translate("Range:") + txtFormats.subheader[1] + " " +
-				txtFormats.body[0] + info.healer.Range + txtFormats.body[1] +
-				" " + txtFormats.subtext[0] + translate("metres") + txtFormats.subtext[1]
-			);
-		healer.push(
-				txtFormats.subheader[0] + translate("Rate:") + txtFormats.subheader[1] + " " +
-				txtFormats.body[0] + (info.healer.Rate/1000) + txtFormats.body[1] +
-				" " + txtFormats.subtext[0] + translate("seconds") + txtFormats.subtext[1]
-			);
-		txt += healer.join(", ");
-	}
+	if (template.healer)
+		txt += "\n" + getHealerTooltip(template);
 
-	if (info.attack)
-	{
-		// Attack
-		for (let atkType in info.attack)
-		{
-			if (atkType == "Slaughter")
-				continue;
+	if (template.attack)
+		txt += "\n" + getAttackTooltip(template);
 
-			txt += "\n" + txtFormats.subheader[0] + translate(atkType +" Attack:") + txtFormats.subheader[1] + " ";
-			let damage = [];
+	if (template.armour)
+		txt += "\n" + getArmorTooltip(template.armour);
 
-			for (let stat of ["hack", "pierce", "crush"])
-				if (info.attack[atkType][stat] > 0)
-					damage.push(
-							txtFormats.body[0] + info.attack[atkType][stat] + txtFormats.body[1] +
-							" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
-						);
+	txt += "\n" + getSpeedTooltip(template);
 
-			if (atkType == "Ranged")
-			{
-				damage.push(
-						txtFormats.subheader[0] + translate("Range:") + txtFormats.subheader[1] + " " +
-						txtFormats.body[0] +
-						((info.attack.Ranged.minRange > 0) ? info.attack.Ranged.minRange + "-" : "") +
-						info.attack.Ranged.maxRange + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + translate("meters") + txtFormats.subtext[1]
-					);
-			}
-
-			txt += damage.join(", ");
-		}
-	}
-
-	if (info.armour)
-	{
-		// Armour
-		txt += "\n" + txtFormats.subheader[0] + translate("Armor:") + txtFormats.subheader[1] + " ";
-		var armour = [];
-		for (let stat in info.armour)
-		{
-			armour.push(
-					txtFormats.body[0] + 
-					((Array.isArray(info.armour[stat])) ? info.armour[stat][0] : info.armour[stat]) +
-					txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
-				);
-		}
-		txt += armour.join(", ");
-	}
-
-	// Speed
-	if (info.speed)
-	{
-		txt += "\n" + txtFormats.subheader[0] + translate("Speed:") + txtFormats.subheader[1] + " ";
-		var speed = [];
-		for (let stat in info.speed)
-			speed.push(
-					txtFormats.body[0] + info.speed[stat] + txtFormats.body[1] +
-					" " + txtFormats.subtext[0] + translate(stat) + txtFormats.subtext[1]
-				);
-		txt += speed.join(", ");
-	}
-
+// TODO i18n
 	// Gather
-	if (info.gather)
+	if (template.gather)
 	{
-		txt += "\n" + txtFormats.subheader[0] + translate("Gather Rates:") + txtFormats.subheader[1] + " ";
+		txt += "\n" + txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1] + " ";
 		var rates = [];
-		for (let gType in info.gather)
-			if (info.gather[gType] > 0)
+		for (let gType in template.gather)
+			if (template.gather[gType] > 0)
 				rates.push(
-						txtFormats.body[0] + info.gather[gType] + txtFormats.body[1] +
-						" " + txtFormats.subtext[0] + translate(gType) + txtFormats.subtext[1]
+						txtFormats.body[0] + template.gather[gType] + txtFormats.body[1] +
+						" " + txtFormats.unit[0] + translate(gType) + txtFormats.unit[1]
 					);
 		txt += rates.join(", ");
 	}

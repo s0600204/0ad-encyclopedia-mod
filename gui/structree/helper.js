@@ -82,12 +82,13 @@ function depath(path)
 	return path.slice(path.lastIndexOf("/")+1);
 }
 
-Array.max = function(arr)
+/**
+ * This is needed because getEntityCostTooltip in tooltip.js needs to get
+ * the template data of the different wallSet pieces. In the session this
+ * function does some caching, but here we do that in loadTemplate already.
+ */
+function GetTemplateData(templateName)
 {
-	return Math.max.apply(null, arr);
-};
-
-Array.min = function(arr)
-{
-	return Math.min.apply(null, arr);
-};
+	var template = loadTemplate(templateName);
+	return GetTemplateDataHelper(template);
+}
