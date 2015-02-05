@@ -2,50 +2,42 @@
 /* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
 
 /**
- * Derive gather rates
+ * Calculates gather rates.
  *
  * All available rates that have a value greater than 0 are summed and averaged
- *
- * @param  template  Template name
- *
- * @return  Gather rates
  */
-function derive_gatherRates(template)
+function getGatherRates(templateName)
 {
-	var gatherTypes = {
-		"Food"  : [ "food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk" ],
-		"Wood"  : [ "wood", "wood.tree"/*, "wood.ruins"*/ ],
-		"Stone" : [ "stone", "stone.rock"/*, "stone.ruins"*/ ],
-		"Metal" : [ "metal", "metal.ore" ]
-	};
-	var gatherRates = {};
+	// TODO: It would be nice to use the gather rates present in the templates
+	// instead of hard-coding the possible rates here.
 
-	for (let gType in gatherTypes)
+	// We ignore ruins here, as those are not that common and would skew the results
+	var types = {
+		"Food": ["food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk"],
+		"Wood": ["wood", "wood.tree"],
+		"Stone": ["stone", "stone.rock"],
+		"Metal": ["metal", "metal.ore"]
+	};
+	var rates = {};
+
+	for (let type in types)
 	{
-		let gCount = 0;
-		gatherRates[gType] = 0;
-		for (let gather of gatherTypes[gType])
-		{
-			let rate = +fetchValue(template, "ResourceGatherer/Rates/"+gather);
-			if (rate > 0)
-			{
-				gatherRates[gType] += rate;
-				gCount++;
-			}
-		}
-		if (gCount > 0)
-			gatherRates[gType] = Math.round(gatherRates[gType] / gCount * 100) / 100;
+		let count, rate;
+		[rate, count] = types[type].reduce(function(sum, t) {
+				let r = +fetchValue(templateName, "ResourceGatherer/Rates/"+t);
+				return [sum[0] + (r > 0 ? r : 0), sum[1] + (r > 0 ? 1 : 0)];
+			}, [0, 0]);
+
+		if (rate > 0)
+			rates[type] = Math.round(rate / count * 100) / 100;
 	}
-	return gatherRates;
+
+	if (!Object.keys(rates).length)
+		return null;
+
+	return rates;
 }
 
-/**
- * Load Unit
- *
- * @param  template Template name
- *
- * @return  Pertinent unit information
- */
 function loadUnit(templateName)
 {
 	var template = loadTemplate(templateName);
@@ -54,19 +46,13 @@ function loadUnit(templateName)
 
 	if (unit.requiredTechnology)
 	{
-		if (typeof unit.requiredTechnology == "string" && unit.requiredTechnology.slice(0, 5) == "phase")
+		if (unit.requiredTechnology.slice(0, 5) == "phase")
 			unit.phase = unit.requiredTechnology;
-		else if (typeof unit.requiredTechnology == "string" || unit.requiredTechnology.length > 0)
+		else if (unit.requiredTechnology.length)
 			unit.required = unit.requiredTechnology;
 	}
 
-	var gatherer = derive_gatherRates(templateName);
-	for (let gType in gatherer)
-		if (gatherer[gType] > 0)
-		{
-			unit.gather = gatherer;
-			break;
-		}
+	unit.gather = getGatherRates(templateName);
 
 	if (template.Heal)
 		unit.healer = {
@@ -88,13 +74,6 @@ function loadUnit(templateName)
 	return unit;
 }
 
-/**
- * Load Structure
- *
- * @param  template Template name
- *
- * @return  Pertinent structure information
- */
 function loadStructure(templateName)
 {
 	var template = loadTemplate(templateName);
@@ -103,9 +82,9 @@ function loadStructure(templateName)
 
 	if (structure.requiredTechnology)
 	{
-		if (typeof structure.requiredTechnology == "string" && structure.requiredTechnology.slice(0, 5) == "phase")
+		if (structure.requiredTechnology.slice(0, 5) == "phase")
 			structure.phase = structure.requiredTechnology;
-		else if (typeof structure.requiredTechnology == "string" || structure.requiredTechnology.length > 0)
+		else if (structure.requiredTechnology.length)
 			structure.required = structure.requiredTechnology;
 	}
 
@@ -179,19 +158,10 @@ function loadStructure(templateName)
 	return structure;
 }
 
-/**
- * Load Technology
- *
- * @param  techName  Identifying code of a technology. Also known as its subpath within the simulation/data/technologies directory
- *
- * @return  Pertinent technology information
- */
 function loadTechnology(techName)
 {
 	var template = loadTechData(techName);
 	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
-// TODO do translation here? (see GetTechnologyData)
-
 	tech.reqs = {};
 
 	if (template.pair !== undefined)
@@ -250,13 +220,6 @@ function loadTechnology(techName)
 	return tech;
 }
 
-/**
- * Load Phase Technology
- *
- * @param  phaseCode  Identifying code of a phase. Also known as its subpath within the simulation/data/technologies directory
- *
- * @return  Pertinent phase information
- */
 function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
@@ -266,13 +229,6 @@ function loadPhase(phaseCode)
 	return phase;
 }
 
-/**
- * Load Technology Pair
- *
- * @param  pairCode  Identifying code of a phase. Also known as its subpath within the simulation/data/technologies directory
- *
- * @return  Pertinent phase information
- */
 function loadTechnologyPair(pairCode)
 {
 	var pairInfo = loadTechData(pairCode);
@@ -344,11 +300,11 @@ function calcReqs(op, val)
 /**
  * Unravel phases
  *
- * @param  techs  The current available store of techs
+ * @param techs The current available store of techs
  *
- * @return  List of phases
+ * @return List of phases
  */
-function unravelPhases (techs)
+function unravelPhases(techs)
 {
 	var phaseList = [];
 
@@ -371,7 +327,7 @@ function unravelPhases (techs)
 		let reqPhase = techs[reqTech].reqs.generic[0];
 		let myPhase = techs[techcode].reqs.generic[0];
 
-		if(reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
+		if (reqPhase == myPhase || depath(reqPhase).slice(0,5) !== "phase" || depath(myPhase).slice(0,5) !== "phase")
 			continue;
 
 		let reqPhasePos = phaseList.indexOf(reqPhase);

@@ -4,44 +4,42 @@
 var g_TemplateData = {};
 var g_TechnologyData = {};
 
-
-function loadTemplate(code)
+function loadTemplate(templateName)
 {
-	if (!(code in g_TemplateData))
+	if (!(templateName in g_TemplateData))
 	{
-		// TODO clone needed because translateObjectKeys complains about GenericName being read-only
-		var data = clone(Engine.GetTemplate(code));
+		// We need to clone the template because we want to perform some translations.
+		var data = clone(Engine.GetTemplate(templateName));
 		translateObjectKeys(data, ["GenericName", "Tooltip"]);
 		
-		g_TemplateData[code] = data;
+		g_TemplateData[templateName] = data;
 	}
 
-	return g_TemplateData[code];
+	return g_TemplateData[templateName];
 }
 
-function loadTechData(code)
+function loadTechData(templateName)
 {
-	if (!(code in g_TechnologyData))
+	if (!(templateName in g_TechnologyData))
 	{
-		var filename = "simulation/data/technologies/" + code + ".json";
+		var filename = "simulation/data/technologies/" + templateName + ".json";
 		var data = Engine.ReadJSONFile(filename);
 		translateObjectKeys(data, ["genericName", "tooltip"]);
 		
-		g_TechnologyData[code] = data;
+		g_TechnologyData[templateName] = data;
 	}
 
-	return g_TechnologyData[code];
+	return g_TechnologyData[templateName];
 }
-
 
 /**
  * Fetch a value from an entity's template
  *
- * @param  templateName The template to retreive the value from
- * @param  keypath   The path to the value to be fetched. "Identity/GenericName"
- *                   is equivalent to {"Identity":{"GenericName":"FOOBAR"}}
+ * @param templateName The template to retreive the value from
+ * @param keypath The path to the value to be fetched. "Identity/GenericName"
+ *                is equivalent to {"Identity":{"GenericName":"FOOBAR"}}
  *
- * @return  The content requested at the key-path defined, or a blank array if
+ * @return The content requested at the key-path defined, or a blank array if
  *           not found
  */
 function fetchValue(templateName, keypath)

@@ -37,9 +37,6 @@ function init()
 	civSelection.selected = 0;
 }
 
-/**
- * Select Civilisation from dropdown menu
- */
 function selectCiv(civCode)
 {
 	if (civCode === g_SelectedCiv || !g_CivData[civCode])
@@ -241,9 +238,9 @@ function selectCiv(civCode)
 		}
 
 		g_ParsedData.structures[structCode].production = {
-				"technology": newProdTech,
-				"units": newProdUnits
-			};
+			"technology": newProdTech,
+			"units": newProdUnits
+		};
 	}
 
 	/* Determine the Build List for the Civ (grouped by phase) */
