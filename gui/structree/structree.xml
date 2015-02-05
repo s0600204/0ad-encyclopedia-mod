@@ -2,7 +2,6 @@
 
 <objects>
 	<script file="gui/common/functions_civinfo.js"/>
-	<script file="gui/common/functions_global_object.js"/>
 	<script file="gui/common/functions_utility.js"/>
 	<script file="gui/common/tooltips.js"/>
 	<script file="gui/structree/structree.js"/>
@@ -89,11 +88,7 @@
 			size="100%-164 100%-44 100%-16 100%-16"
 		>
 			<translatableAttribute id="caption">Close</translatableAttribute>
-			<action on="Press">
-				<![CDATA[
-					Engine.PopGuiPage();
-				]]>
-			</action>
+			<action on="Press">Engine.PopGuiPage();</action>
 		</object>
 
 	</object>

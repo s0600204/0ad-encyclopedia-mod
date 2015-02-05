@@ -46,7 +46,7 @@ function derive_gatherRates(template)
  *
  * @return  Pertinent unit information
  */
-function load_unit(templateName)
+function loadUnit(templateName)
 {
 	var template = loadTemplate(templateName);
 	var unit = GetTemplateDataHelper(template);
@@ -95,7 +95,7 @@ function load_unit(templateName)
  *
  * @return  Pertinent structure information
  */
-function load_structure(templateName)
+function loadStructure(templateName)
 {
 	var template = loadTemplate(templateName);
 	var structure = GetTemplateDataHelper(template);
@@ -141,13 +141,13 @@ function load_structure(templateName)
 	{
 		structure.wallset = {};
 		// Note: Assume wall segments of all lengths have the same armor
-		structure.armour = load_structure(structure.wallSet.templates["long"]).armour;
+		structure.armour = loadStructure(structure.wallSet.templates["long"]).armour;
 
 		let health;
 
 		for (let wSegm in structure.wallSet.templates)
 		{
-			let wPart = load_structure(structure.wallSet.templates[wSegm]);
+			let wPart = loadStructure(structure.wallSet.templates[wSegm]);
 			structure.wallset[wSegm] = wPart;
 
 			for (let research of wPart.production.technology)
@@ -186,7 +186,7 @@ function load_structure(templateName)
  *
  * @return  Pertinent technology information
  */
-function load_tech(techName)
+function loadTechnology(techName)
 {
 	var template = loadTechData(techName);
 	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
@@ -257,7 +257,7 @@ function load_tech(techName)
  *
  * @return  Pertinent phase information
  */
-function load_phase(phaseCode)
+function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
 	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
@@ -273,7 +273,7 @@ function load_phase(phaseCode)
  *
  * @return  Pertinent phase information
  */
-function load_pair(pairCode)
+function loadTechnologyPair(pairCode)
 {
 	var pairInfo = loadTechData(pairCode);
 
@@ -348,7 +348,7 @@ function calcReqs(op, val)
  *
  * @return  List of phases
  */
-function unravel_phases (techs)
+function unravelPhases (techs)
 {
 	var phaseList = [];
 

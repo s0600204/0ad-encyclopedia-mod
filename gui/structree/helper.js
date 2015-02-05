@@ -15,7 +15,7 @@ function loadTemplate(code)
 		
 		g_TemplateData[code] = data;
 	}
-	
+
 	return g_TemplateData[code];
 }
 
@@ -29,7 +29,7 @@ function loadTechData(code)
 		
 		g_TechnologyData[code] = data;
 	}
-	
+
 	return g_TechnologyData[code];
 }
 

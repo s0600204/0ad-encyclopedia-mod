@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <setup>
-	
 	<tooltip name="treeTooltip"
 		anchor="top"
 		buffer_zone="4"
@@ -12,31 +11,4 @@
 		sprite="bkTooltip"
 		textcolor="white"
 	/>
-	
-	<!-- Icons -->
-	<icon name="iconFood"
-	      sprite="stretched:session/icons/resources/food_small.png"
-	      size="12 12"
-	/>
-	<icon name="iconMetal"
-	      sprite="stretched:session/icons/resources/metal_small.png"
-	      size="12 12"
-	/>
-	<icon name="iconPopulation"
-	      sprite="stretched:session/icons/resources/population_small.png"
-	      size="12 12"
-	/>
-	<icon name="iconStone"
-	      sprite="stretched:session/icons/resources/stone_small.png"
-	      size="12 12"
-	/>
-	<icon name="iconWood"
-	      sprite="stretched:session/icons/resources/wood_small.png"
-	      size="12 12"
-	/>
-	<icon name="iconTime"
-	      sprite="stretched:session/icons/resources/time_small.png"
-	      size="12 12"
-	/>
-	
 </setup>

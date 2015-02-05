@@ -1,7 +1,7 @@
 /* global g_ParsedData, g_CivData, g_SelectedCiv, translate */
 /* exported draw */
 
-var g_drawLimits = {}; // GUI limits. Populated by predraw()
+var g_DrawLimits = {}; // GUI limits. Populated by predraw()
 
 /**
  * Draw the structree
@@ -11,23 +11,23 @@ var g_drawLimits = {}; // GUI limits. Populated by predraw()
 function draw()
 {
 	// Set basic state (positioning of elements mainly), but only once
-	if (!Object.keys(g_drawLimits).length)
+	if (!Object.keys(g_DrawLimits).length)
 		predraw();
-	
+
 	var defWidth = 96;
 	var defMargin = 4;
 	var phaseList = g_ParsedData.phaseList;
-	
+
 	Engine.GetGUIObjectByName("civEmblem").sprite = "stretched:"+g_CivData[g_SelectedCiv].Emblem;
 	Engine.GetGUIObjectByName("civName").caption = g_CivData[g_SelectedCiv].Name;
 	Engine.GetGUIObjectByName("civHistory").caption = g_CivData[g_SelectedCiv].History;
-	
+
 	let i = 0;
 	for (let pha of phaseList)
 	{
 		let s = 0;
 		let y = 0;
-		
+
 		for (let stru of g_CivData[g_SelectedCiv].buildList[pha])
 		{
 			let thisEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
@@ -36,7 +36,7 @@ function draw()
 				error("\""+g_SelectedCiv+"\" has more structures in phase "+pha+" than can be supported by the current GUI layout");
 				break;
 			}
-			
+
 			let c = 0;
 			let rowCounts = [];
 			stru = g_ParsedData.structures[stru];
@@ -44,8 +44,8 @@ function draw()
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
-			
-			for (let r in g_drawLimits[pha].prodQuant)
+
+			for (let r in g_DrawLimits[pha].prodQuant)
 			{
 				let p = 0;
 				r = +r; // force int
@@ -55,7 +55,7 @@ function draw()
 					for (let prod of stru.production.units[prod_pha])
 					{
 						prod = g_ParsedData.units[prod];
-						if (!draw_prodIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod))
 							break;
 						p++;
 					}
@@ -64,7 +64,7 @@ function draw()
 				{
 					for (let prod of [stru.wallset.gate, stru.wallset.tower])
 					{
-						if (!draw_prodIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod))
 							break;
 						p++;
 					}
@@ -75,7 +75,7 @@ function draw()
 					{
 						// TODO check if we need both phases and techs
 						prod = (prod.slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
-						if (!draw_prodIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod))
 							break;
 						p++;
 					}
@@ -91,7 +91,7 @@ function draw()
 			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
 			y = size.right + defMargin;
 			thisEle.size = size;
-			
+
 			let eleWidth = size.right - size.left;
 			let r;
 			for (r in rowCounts)
@@ -111,7 +111,7 @@ function draw()
 	}
 }
 
-function draw_prodIcon(pha, s, r, p, prod)
+function drawProdIcon(pha, s, r, p, prod)
 {
 	var prodEle = Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 	if (prodEle === undefined)
@@ -119,7 +119,7 @@ function draw_prodIcon(pha, s, r, p, prod)
 		error("The structures of \""+g_SelectedCiv+"\" have more production icons in phase "+pha+" than can be supported by the current GUI layout");
 		return false;
 	}
-	
+
 	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
 	prodEle.tooltip = assembleTooltip(prod);
 	prodEle.hidden = false;
@@ -192,7 +192,7 @@ function predraw()
 
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
-		g_drawLimits[pha] = {
+		g_DrawLimits[pha] = {
 				structQuant: 0,
 				prodQuant: []
 			};
@@ -217,7 +217,7 @@ function predraw()
 				} while (prodEle !== undefined);
 
 				// Set quantity of productions in this row
-				g_drawLimits[pha].prodQuant[r] = p;
+				g_DrawLimits[pha].prodQuant[r] = p;
 
 				// Position the prod row
 				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(phaseCount - i - r)+" 100%-4 100%";
@@ -228,7 +228,7 @@ function predraw()
 				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+j+"]").hidden = true;
 
 			let size = ele.size;
-			size.bottom += Object.keys(g_drawLimits[pha].prodQuant).length*24;
+			size.bottom += Object.keys(g_DrawLimits[pha].prodQuant).length*24;
 			ele.size = size;
 
 			s++;
@@ -236,7 +236,7 @@ function predraw()
 		} while (ele !== undefined);
 
 		// Set quantity of structures in each phase
-		g_drawLimits[pha].structQuant = s;
+		g_DrawLimits[pha].structQuant = s;
 		++i;
 	}
 	hideRemaining("phase[", i, "]");
