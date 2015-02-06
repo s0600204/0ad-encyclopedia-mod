@@ -1,6 +1,3 @@
-/* global clone, translateObjectKeys */
-/* exported loadTechData, fetchValue, fetchTokens, depath */
-
 var g_TemplateData = {};
 var g_TechnologyData = {};
 

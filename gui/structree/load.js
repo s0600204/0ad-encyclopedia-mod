@@ -1,6 +1,3 @@
-/* global g_Lists, g_SelectedCiv, fetchValue, loadTemplate, loadTechData, GetTemplateDataHelper, GetTechnologyDataHelper, depath */
-/* exported load_unit, load_structure, load_tech, load_phase, load_pair, unravel_phases */
-
 /**
  * Calculates gather rates.
  *
@@ -62,14 +59,12 @@ function loadUnit(templateName)
 		};
 
 	if (template.Builder && template.Builder.Entities._string)
-	{ // E084
 		for (let build of template.Builder.Entities._string.split(" "))
 		{
 			build = build.replace("{civ}", g_SelectedCiv);
 			if (g_Lists.structures.indexOf(build) < 0)
 				g_Lists.structures.push(build);
 		}
-	}
 
 	return unit;
 }
@@ -95,7 +90,6 @@ function loadStructure(templateName)
 	if (template.ProductionQueue)
 	{
 		if (template.ProductionQueue.Entities && template.ProductionQueue.Entities._string)
-		{ // E084
 			for (let build of template.ProductionQueue.Entities._string.split(" "))
 			{
 				build = build.replace("{civ}", g_SelectedCiv);
@@ -103,17 +97,14 @@ function loadStructure(templateName)
 				if (g_Lists.units.indexOf(build) < 0)
 					g_Lists.units.push(build);
 			}
-		}
 
 		if (template.ProductionQueue.Technologies && template.ProductionQueue.Technologies._string)
-		{ // E084
 			for (let research of template.ProductionQueue.Technologies._string.split(" "))
 			{
 				structure.production.technology.push(research);
 				if (g_Lists.techs.indexOf(research) < 0)
 					g_Lists.techs.push(research);
 			}
-		}
 	}
 
 	if (structure.wallSet)
@@ -186,7 +177,6 @@ function loadTechnology(techName)
 
 			case "any":
 				if (req[0].length > 0)
-				{ // E084
 					for (let r of req[0])
 					{
 						let v = req[0][r];
@@ -195,7 +185,6 @@ function loadTechnology(techName)
 						else
 							tech.reqs[r] = v;
 					}
-				}
 				if (req[1].length > 0)
 					tech.reqs.generic = req[1];
 				break;
@@ -209,13 +198,13 @@ function loadTechnology(techName)
 	}
 
 	if (template.supersedes !== undefined)
+	{
 		if (tech.reqs.generic !== undefined)
 			tech.reqs.generic.push(template.supersedes);
 		else
-		{ // E048
 			for (let ck of Object.keys(tech.reqs))
 				tech.reqs[ck].push(template.supersedes);
-		}
+	}
 
 	return tech;
 }

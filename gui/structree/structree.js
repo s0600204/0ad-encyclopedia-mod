@@ -1,6 +1,3 @@
-/* global draw, loadCivData, load_unit, load_structure, load_tech, load_phase, load_pair, sortNameIgnoreCase, depath, unravel_phases, loadTechData */
-/* exported init, selectCiv */
-
 var g_ParsedData = {
 	units: {},
 	structures: {},
@@ -55,7 +52,7 @@ function selectCiv(civCode)
 	g_Lists.structures = [];
 	g_Lists.techs = [];
 
-	/* get initial units */
+	// get initial units
 	var startStructs = [];
 	for (let entity of g_CivData[civCode].StartEntities)
 	{
@@ -68,7 +65,7 @@ function selectCiv(civCode)
 		}
 	}
 
-	/* Load units and structures */
+	// Load units and structures
 	var unitCount = 0;
 	do
 	{
@@ -84,7 +81,7 @@ function selectCiv(civCode)
 
 	} while (unitCount < g_Lists.units.length);
 
-	/* Load technologies */
+	// Load technologies
 	var techPairs = {};
 	for (let techcode of g_Lists.techs)
 	{
@@ -98,7 +95,7 @@ function selectCiv(civCode)
 			g_ParsedData.techs[techcode] = loadTechnology(techcode);
 	}
 
-	/* Expand tech pairs */
+	// Expand tech pairs
 	for (let paircode in techPairs)
 	{
 		let pair = techPairs[paircode];
@@ -111,16 +108,14 @@ function selectCiv(civCode)
 				if ("generic" in newTech.reqs)
 					newTech.reqs.generic.concat(techPairs[pair.req].techs);
 				else
-				{ // E084
 					for (let civkey of Object.keys(newTech.reqs))
 						newTech.reqs[civkey].concat(techPairs[pair.req].techs);
-				}
 			}
 			g_ParsedData.techs[techcode] = newTech;
 		}
 	}
 
-	/* Establish phase order */
+	// Establish phase order
 	g_ParsedData.phaseList = unravelPhases(g_ParsedData.techs);
 	for (let phasecode of g_ParsedData.phaseList)
 	{
@@ -128,12 +123,10 @@ function selectCiv(civCode)
 		g_ParsedData.phases[phasecode] = loadPhase(phasecode);
 
 		if ("requirements" in phaseInfo)
-		{ // E084
 			for (let op in phaseInfo.requirements)
 			{
 				let val = phaseInfo.requirements[op];
 				if (op == "any")
-				{ // E084
 					for (let v of val)
 					{
 						let k = Object.keys(v);
@@ -142,22 +135,20 @@ function selectCiv(civCode)
 						if (k == "tech" && v in g_ParsedData.phases)
 							g_ParsedData.phases[v].actualPhase = phasecode;
 					}
-				}
 			}
-		}
 	}
 
-	/* Group production lists of structures by phase */
+	// Group production lists of structures by phase
 	for (let structCode of g_Lists.structures)
 	{
 		let structInfo = g_ParsedData.structures[structCode];
 
-		/* If this building is shared with another civ,
-			it may have already gone through the grouping process already */
+		// If this building is shared with another civ,
+		// it may have already gone through the grouping process already
 		if (!Array.isArray(structInfo.production.technology))
 			continue;
 
-		/* Expand tech pairs */
+		// Expand tech pairs
 		for (let prod of structInfo.production.technology)
 			if (prod in techPairs)
 				structInfo.production.technology.splice(
@@ -165,7 +156,7 @@ function selectCiv(civCode)
 					techPairs[prod].techs[0], techPairs[prod].techs[1]
 				);
 
-		/* Sort Techs by Phase */
+		// Sort Techs by Phase
 		let newProdTech = {};
 		for (let prod of structInfo.production.technology)
 		{
@@ -199,7 +190,7 @@ function selectCiv(civCode)
 			newProdTech[phase].push(prod);
 		}
 
-		/* Determine phase for units */
+		// Determine phase for units
 		let newProdUnits = {};
 		for (let prod of structInfo.production.units)
 		{
@@ -243,7 +234,7 @@ function selectCiv(civCode)
 		};
 	}
 
-	/* Determine the Build List for the Civ (grouped by phase) */
+	// Determine the Build List for the Civ (grouped by phase)
 	var buildList = {};
 	for (let structCode of g_Lists.structures)
 	{
@@ -259,6 +250,6 @@ function selectCiv(civCode)
 
 	g_CivData[g_SelectedCiv].buildList = buildList;
 
-	/* Draw tree */
+	// Draw tree
 	draw();
 }

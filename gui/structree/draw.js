@@ -1,6 +1,3 @@
-/* global g_ParsedData, g_CivData, g_SelectedCiv, translate */
-/* exported draw */
-
 var g_DrawLimits = {}; // GUI limits. Populated by predraw()
 
 /**
@@ -260,7 +257,6 @@ function assembleTooltip(template)
 
 	// Auras
 	if (template.auras)
-	{ // E084
 		for (let aura in template.auras)
 			txt += '\n' + sprintf(translate("%(auralabel)s %(aurainfo)s"), {
 				auralabel: txtFormats.header[0] + sprintf(translate("%(auraname)s:"), {
@@ -268,7 +264,6 @@ function assembleTooltip(template)
 					}) + txtFormats.header[1],
 				aurainfo: txtFormats.body[0] + translate(template.auras[aura]) + txtFormats.body[1]
 			});
-	}
 
 	if (template.health)
 		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
