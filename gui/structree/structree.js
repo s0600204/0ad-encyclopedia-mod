@@ -14,10 +14,10 @@ var g_SelectedCiv = "";
  */
 function init()
 {
-	// Cache map data
 	g_CivData = loadCivData(true);
 
-// TODO assert that we have one civ
+	if (!Object.keys(g_CivData).length)
+		return;
 
 	var civList = [ { "name": civ.Name, "code": civ.Code } for each (civ in g_CivData) ];
 
@@ -212,15 +212,10 @@ function selectCiv(civCode)
 				else
 					phase = reqs.generic[0];
 			}
+			else if (structInfo.phase !== false)
+				phase = structInfo.phase;
 			else
-			{
-// TODO
-				// hack so it works with civil centres
-				if (structCode.indexOf("civil_centre") > -1 || structInfo.phase === false)
-					phase = g_ParsedData.phaseList[0];
-				else
-					phase = structInfo.phase;
-			}
+				phase = g_ParsedData.phaseList[0];
 
 			if (!(phase in newProdUnits))
 				newProdUnits[phase] = [];

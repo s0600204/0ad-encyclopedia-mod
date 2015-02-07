@@ -10,10 +10,10 @@ function getGatherRates(templateName)
 
 	// We ignore ruins here, as those are not that common and would skew the results
 	var types = {
-		"Food": ["food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk"],
-		"Wood": ["wood", "wood.tree"],
-		"Stone": ["stone", "stone.rock"],
-		"Metal": ["metal", "metal.ore"]
+		"food": ["food", "food.fish", "food.fruit", "food.grain", "food.meat", "food.milk"],
+		"wood": ["wood", "wood.tree"],
+		"stone": ["stone", "stone.rock"],
+		"metal": ["metal", "metal.ore"]
 	};
 	var rates = {};
 

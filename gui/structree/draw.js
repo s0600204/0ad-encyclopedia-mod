@@ -70,7 +70,6 @@ function draw()
 				{
 					for (let prod of stru.production.technology[prod_pha])
 					{
-						// TODO check if we need both phases and techs
 						prod = (prod.slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
 						if (!drawProdIcon(i, s, r, p, prod))
 							break;
@@ -124,7 +123,7 @@ function drawProdIcon(pha, s, r, p, prod)
 }
 
 /**
- * Calculate row position offset (accounting for different number of prod rows per phase)
+ * Calculate row position offset (accounting for different number of prod rows per phase).
  */
 function getPositionOffset(idx)
 {
@@ -150,11 +149,10 @@ function hideRemaining(prefix, idx, suffix)
 
 /**
  * Positions certain elements that only need to be positioned once
- *   (as `<repeat>` doesn't reposition automatically)
+ * (as <repeat> does not reposition automatically).
  * 
  * Also detects limits on what the GUI can display by iterating through the set
- *   elements of the GUI. These limits are then used by the draw() function
- *   above
+ * elements of the GUI. These limits are then used by draw().
  */
 function predraw()
 {
@@ -190,9 +188,9 @@ function predraw()
 		let s = 0;
 		let ele = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]");
 		g_DrawLimits[pha] = {
-				structQuant: 0,
-				prodQuant: []
-			};
+			structQuant: 0,
+			prodQuant: []
+		};
 
 		do
 		{
@@ -250,12 +248,11 @@ function predraw()
 function assembleTooltip(template)
 {
 	var txt = getEntityNamesFormatted(template);
-	txt += "\n" + getEntityCostTooltip(template, 1);
+	txt += '\n' + getEntityCostTooltip(template, 1);
 
 	if (template.tooltip)
-		txt += "\n" + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1];
+		txt += '\n' + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1];
 
-	// Auras
 	if (template.auras)
 		for (let aura in template.auras)
 			txt += '\n' + sprintf(translate("%(auralabel)s %(aurainfo)s"), {
@@ -266,35 +263,35 @@ function assembleTooltip(template)
 			});
 
 	if (template.health)
-		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
+		txt += '\n' + sprintf(translate("%(label)s %(details)s"), {
 			label: txtFormats.header[0] + translate("Health:") + txtFormats.header[1],
 			details: template.health
 		});
 
 	if (template.healer)
-		txt += "\n" + getHealerTooltip(template);
+		txt += '\n' + getHealerTooltip(template);
 
 	if (template.attack)
-		txt += "\n" + getAttackTooltip(template);
+		txt += '\n' + getAttackTooltip(template);
 
 	if (template.armour)
-		txt += "\n" + getArmorTooltip(template.armour);
+		txt += '\n' + getArmorTooltip(template.armour);
 
-	txt += "\n" + getSpeedTooltip(template);
+	txt += '\n' + getSpeedTooltip(template);
 
-// TODO i18n
-	// Gather
 	if (template.gather)
 	{
-		txt += "\n" + txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1] + " ";
 		var rates = [];
-		for (let gType in template.gather)
-			if (template.gather[gType] > 0)
-				rates.push(
-						txtFormats.body[0] + template.gather[gType] + txtFormats.body[1] +
-						" " + txtFormats.unit[0] + translate(gType) + txtFormats.unit[1]
-					);
-		txt += rates.join(", ");
+		for (let type in template.gather)
+			rates.push(sprintf(translate("%(resourceIcon)s %(rate)s"), {
+				resourceIcon: getCostComponentDisplayName(type),
+				rate: template.gather[type]
+			}));
+
+		txt += '\n' + sprintf(translate("%(label)s %(details)s"), {
+			label: txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1],
+			details: rates.join("  ")
+		});
 	}
 
 	return txt;
