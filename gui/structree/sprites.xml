@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <sprites>
-	
 	<sprite name="ProdBar">
 		<image
 			backcolor="136 136 136 102"
 			size="0 0 100% 100%"
 		/>
 	</sprite>
-	
+
 	<sprite name="bkTooltip">
 		<image
 			backcolor="0 0 0 192"
 			size="0 0 100% 100%"
 		/>
-		
+
 		<!-- sides -->
 		<image
 			texture="global/border/line_horiz.png"
@@ -36,7 +35,7 @@
 			texture_size="0 0 4 64"
 			size="0 2 2 100%-2"
 		/>
-		
+
 		<!-- corners -->
 		<image
 			texture="global/border/line_corner_top_right.png"
@@ -59,5 +58,4 @@
 			size="0 0 2 2"
 		/>
 	</sprite>
-	
 </sprites>

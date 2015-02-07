@@ -156,7 +156,7 @@ function selectCiv(civCode)
 					techPairs[prod].techs[0], techPairs[prod].techs[1]
 				);
 
-		// Sort Techs by Phase
+		// Sort techs by phase
 		let newProdTech = {};
 		for (let prod of structInfo.production.technology)
 		{
@@ -229,7 +229,7 @@ function selectCiv(civCode)
 		};
 	}
 
-	// Determine the Build List for the Civ (grouped by phase)
+	// Determine the buildList for the civ (grouped by phase)
 	var buildList = {};
 	for (let structCode of g_Lists.structures)
 	{

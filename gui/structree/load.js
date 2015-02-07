@@ -230,12 +230,12 @@ function loadTechnologyPair(pairCode)
 
 /**
  * Calculate the prerequisite requirements of a technology.
- *   Works recursively if needed.
+ * Works recursively if needed.
  *
- * @param  op  The base operation. Can be "civ", "tech", "all" or "any"
- * @param  val  The value associated with the above operation.
+ * @param op The base operation. Can be "civ", "tech", "all" or "any".
+ * @param val The value associated with the above operation.
  *
- * @return  Sorted requirments.
+ * @return Sorted requirments.
  */
 function calcReqs(op, val)
 {
