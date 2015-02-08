@@ -168,7 +168,7 @@ function loadTechnology(techName)
 			switch (op)
 			{
 			case "tech":
-				tech.reqs.generic = [ req ];
+				tech.reqs.generic = req;
 				break;
 
 			case "civ":
@@ -190,8 +190,11 @@ function loadTechnology(techName)
 				break;
 
 			case "all":
-				for (let r of req[0])
-					tech.reqs[r] = req[1];
+				if (req[0].length < 1)
+					tech.reqs.generic = req[1];
+				else
+					for (let r of req[0])
+						tech.reqs[r] = req[1];
 				break;
 			}
 		}
@@ -242,10 +245,14 @@ function calcReqs(op, val)
 	switch (op)
 	{
 	case "civ":
-	case "tech":
 		// nothing needs doing
 		break;
-
+	
+	case "tech":
+		if (depath(val).slice(0,4) === "pair")
+			return loadTechnologyPair(val).techs;
+		return [ val ];
+	
 	case "all":
 	case "any":
 		let t = [];
@@ -263,7 +270,7 @@ function calcReqs(op, val)
 					break;
 
 				case "tech":
-					t.push(r);
+					t = t.concat(r);
 					break;
 
 				case "any":
