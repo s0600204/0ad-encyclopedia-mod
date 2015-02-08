@@ -119,7 +119,7 @@ function load_common_fromEnt (entityData)
 		};
 	
 	var reqTech = fetchValue(entityData, "Identity/RequiredTechnology");
-	if (typeof reqTech == "string" && reqTech.slice(0, 5) == "phase")
+	if (typeof reqTech == "string" && depath(reqTech).slice(0, 5) == "phase")
 		entity.phase = reqTech;
 	else if (typeof reqTech == "string" || reqTech.length > 0)
 		entity.required = reqTech;

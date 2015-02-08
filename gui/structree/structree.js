@@ -102,7 +102,7 @@ function selectCiv (civCode)
 	{
 		let realcode = depath(techcode);
 		
-		if (realcode.slice(0,4) == "pair")
+		if (realcode.slice(0,4) == "pair" || realcode.indexOf("_pair") > -1)
 			techPairs[techcode] = load_pair(techcode);
 		else if (realcode.slice(0,5) == "phase")
 			g_ParsedData.phases[techcode] = load_phase(techcode);
@@ -116,19 +116,28 @@ function selectCiv (civCode)
 		let pairinfo = techPairs[paircode];
 		for (let techcode of pairinfo.techs)
 		{
-			let newTech = load_tech(techcode);
-			
-			if (pairinfo.req !== "")
+			let newTech = {};
+			if (depath(techcode).slice(0, 5) === "phase")
 			{
-				if ("generic" in newTech.reqs)
-					newTech.reqs.generic.concat(techPairs[pairinfo.req].techs);
-				else
-				{ // E084
-					for (let civkey of Object.keys(newTech.reqs))
-						newTech.reqs[civkey].concat(techPairs[pairinfo.req].techs);
-				}
+				newTech = load_phase(techcode);
+				g_ParsedData.phases[techcode] = newTech;
 			}
-			g_ParsedData.techs[techcode] = newTech;
+			else
+			{
+				newTech = load_tech(techcode);
+				
+				if (pairinfo.req !== "")
+				{
+					if ("generic" in newTech.reqs)
+						newTech.reqs.generic.concat(techPairs[pairinfo.req].techs);
+					else
+					{ // E084
+						for (let civkey of Object.keys(newTech.reqs))
+							newTech.reqs[civkey].concat(techPairs[pairinfo.req].techs);
+					}
+				}
+				g_ParsedData.techs[techcode] = newTech;
+			}
 		}
 	}
 	
@@ -149,8 +158,12 @@ function selectCiv (civCode)
 						let k = Object.keys(v);
 						k = k[0];
 						v = v[k];
-						if (k == "tech" && v in g_ParsedData.phases)
-							g_ParsedData.phases[v].actualPhase = phasecode;
+						if (k == "tech")
+							if(v in g_ParsedData.phases)
+								g_ParsedData.phases[v].actualPhase = phasecode;
+							else if (v in techPairs)
+								for (let t of techPairs[v].techs)
+									g_ParsedData.phases[t].actualPhase = phasecode;
 					}
 			}
 	}
@@ -167,7 +180,7 @@ function selectCiv (civCode)
 		
 		/* Expand tech pairs */
 		for (let prod of structInfo.production.technology)
-			if (prod.slice(0,4) == "pair" || prod.indexOf("/pair") > -1)
+			if (prod.slice(0,4) == "pair" || prod.indexOf("/pair") > -1 || prod.indexOf("_pair") > -1)
 				structInfo.production.technology.splice(
 						structInfo.production.technology.indexOf(prod), 1,
 						techPairs[prod].techs[0], techPairs[prod].techs[1]
@@ -179,7 +192,7 @@ function selectCiv (civCode)
 		{
 			let phase = "";
 			
-			if (prod.slice(0,5) === "phase")
+			if (depath(prod).slice(0,5) === "phase")
 			{
 				phase = g_ParsedData.phaseList.indexOf(g_ParsedData.phases[prod].actualPhase);
 				if (phase > 0)
@@ -223,16 +236,20 @@ function selectCiv (civCode)
 				phase = unit.phase;
 			else if (unit.required !== undefined)
 			{
-				let reqs = g_ParsedData.techs[unit.required].reqs;
-				if (g_SelectedCiv in reqs)
-					phase = reqs[g_SelectedCiv][0];
+				if (unit.required in g_ParsedData.phases)
+					phase = g_ParsedData.phases[unit.required].actualPhase;
 				else
-					phase = reqs.generic[0];
+				{
+					let reqs = g_ParsedData.techs[unit.required].reqs;
+					if (g_SelectedCiv in reqs)
+						phase = reqs[g_SelectedCiv][0];
+					else
+						phase = reqs.generic[0];
+				}
 			}
 			else
 			{
-				// hack so it works with civil centres
-				if (structCode.indexOf("civil_centre") > -1 || structInfo.phase === false)
+				if (structInfo.phase === false)
 					phase = g_ParsedData.phaseList[0];
 				else
 					phase = structInfo.phase;
@@ -258,6 +275,9 @@ function selectCiv (civCode)
 			g_ParsedData.structures[structCode].phase = g_ParsedData.phaseList[0];
 		
 		let myPhase = g_ParsedData.structures[structCode].phase;
+		
+		if (g_ParsedData.phaseList.indexOf(myPhase) === -1)
+			myPhase = g_ParsedData.phases[myPhase].actualPhase;
 		
 		if (!(myPhase in buildList))
 			buildList[myPhase] = [];
