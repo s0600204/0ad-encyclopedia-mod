@@ -1,9 +1,0 @@
-{
-	"forin": false,
-	"moz": true,
-	"esnext": true,
-	"unused": "strict",
-	"undef": true,
-	"quotmark": true,
-	"predef": [ "Engine", "error", "warn", "sprintf" ]
-}

@@ -111,7 +111,7 @@ function loadStructure(templateName)
 	{
 		structure.wallset = {};
 		// Note: Assume wall segments of all lengths have the same armor
-		structure.armour = loadStructure(structure.wallSet.templates["long"]).armour;
+		structure.armour = loadStructure(structure.wallSet.templates.long).armour;
 
 		let health;
 

@@ -248,14 +248,14 @@ function predraw()
 function assembleTooltip(template)
 {
 	var txt = getEntityNamesFormatted(template);
-	txt += '\n' + getEntityCostTooltip(template, 1);
+	txt += "\n" + getEntityCostTooltip(template, 1);
 
 	if (template.tooltip)
-		txt += '\n' + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1];
+		txt += "\n" + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1];
 
 	if (template.auras)
 		for (let aura in template.auras)
-			txt += '\n' + sprintf(translate("%(auralabel)s %(aurainfo)s"), {
+			txt += "\n" + sprintf(translate("%(auralabel)s %(aurainfo)s"), {
 				auralabel: txtFormats.header[0] + sprintf(translate("%(auraname)s:"), {
 						auraname: translate(aura)
 					}) + txtFormats.header[1],
@@ -263,21 +263,21 @@ function assembleTooltip(template)
 			});
 
 	if (template.health)
-		txt += '\n' + sprintf(translate("%(label)s %(details)s"), {
+		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
 			label: txtFormats.header[0] + translate("Health:") + txtFormats.header[1],
 			details: template.health
 		});
 
 	if (template.healer)
-		txt += '\n' + getHealerTooltip(template);
+		txt += "\n" + getHealerTooltip(template);
 
 	if (template.attack)
-		txt += '\n' + getAttackTooltip(template);
+		txt += "\n" + getAttackTooltip(template);
 
 	if (template.armour)
-		txt += '\n' + getArmorTooltip(template.armour);
+		txt += "\n" + getArmorTooltip(template.armour);
 
-	txt += '\n' + getSpeedTooltip(template);
+	txt += "\n" + getSpeedTooltip(template);
 
 	if (template.gather)
 	{
@@ -288,7 +288,7 @@ function assembleTooltip(template)
 				rate: template.gather[type]
 			}));
 
-		txt += '\n' + sprintf(translate("%(label)s %(details)s"), {
+		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
 			label: txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1],
 			details: rates.join("  ")
 		});
