@@ -335,6 +335,11 @@ function unravelPhases(techs)
 			phaseList.splice(myPhasePos, 0, reqPhase);
 		else if (myPhasePos < 0 && reqPhasePos > -1)
 			phaseList.splice(reqPhasePos+1, 0, myPhase);
+		else if (reqPhasePos > myPhasePos)
+		{
+			phaseList.splice(reqPhasePos+1, 0, myPhase);
+			phaseList.splice(myPhasePos, 1);
+		}
 	}
 	return phaseList;
 }
