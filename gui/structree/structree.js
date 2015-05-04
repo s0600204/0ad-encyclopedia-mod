@@ -19,18 +19,17 @@ function init()
 	if (!Object.keys(g_CivData).length)
 		return;
 
-	var civList = [ { "name": civ.Name, "code": civ.Code } for each (civ in g_CivData) ];
+	var civList = [];
+	for (let civ in g_CivData)
+		civList.push({ "name": g_CivData[civ].Name, "code": g_CivData[civ].Code });
 
 	// Alphabetically sort the list, ignoring case
 	civList.sort(sortNameIgnoreCase);
 
-	var civListNames = [ civ.name for each (civ in civList) ];
-	var civListCodes = [ civ.code for each (civ in civList) ];
-
 	// Set civ control
 	var civSelection = Engine.GetGUIObjectByName("civSelection");
-	civSelection.list = civListNames;
-	civSelection.list_data = civListCodes;
+	civSelection.list = civList.map(c => c.name);
+	civSelection.list_data = civList.map(c => c.code);
 	civSelection.selected = 0;
 }
 
