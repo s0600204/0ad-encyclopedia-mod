@@ -53,7 +53,7 @@ function draw()
 					for (let prod of stru.production.units[prod_pha])
 					{
 						prod = g_ParsedData.units[prod];
-						if (!drawProdIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod, "Blue"))
 							break;
 						p++;
 					}
@@ -62,7 +62,7 @@ function draw()
 				{
 					for (let prod of [stru.wallset.gate, stru.wallset.tower])
 					{
-						if (!drawProdIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod, "Green"))
 							break;
 						p++;
 					}
@@ -72,7 +72,7 @@ function draw()
 					for (let prod of stru.production.technology[prod_pha])
 					{
 						prod = (depath(prod).slice(0,5) == "phase") ? g_ParsedData.phases[prod] : g_ParsedData.techs[prod];
-						if (!drawProdIcon(i, s, r, p, prod))
+						if (!drawProdIcon(i, s, r, p, prod, "Gold"))
 							break;
 						p++;
 					}
@@ -108,7 +108,7 @@ function draw()
 	}
 }
 
-function drawProdIcon(pha, s, r, p, prod)
+function drawProdIcon(pha, s, r, p, prod, clr)
 {
 	var prodEle = Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 	if (prodEle === undefined)
@@ -120,6 +120,8 @@ function drawProdIcon(pha, s, r, p, prod)
 	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
 	prodEle.tooltip = assembleTooltip(prod);
 	prodEle.hidden = false;
+	
+	Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]_frame").sprite = "IconFrame_"+clr;
 	return true;
 }
 
@@ -141,7 +143,7 @@ function getProdIconDimen()
 	var pIcon = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
 	pIcon.width = pIcon.right - pIcon.left;
 	pIcon.height = pIcon.bottom - pIcon.top;
-	pIcon.margin = 4;
+	pIcon.margin = 3;
 	pIcon.adjWidth = pIcon.width + pIcon.margin * 2;
 	pIcon.adjHeight = pIcon.height + pIcon.margin * 2;
 	return pIcon;

@@ -28,4 +28,10 @@
 		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		tooltip_style="treeTooltip"
 	/>
+	
+	<style name="IconFrame"
+		sprite="IconFrame_Grey"
+		size="0 0 100% 100%"
+		ghost="true"
+	/>
 </styles>

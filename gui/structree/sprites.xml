@@ -79,5 +79,65 @@
 			size="2 2 100%-2 100%-2"
 		/>
 	</sprite>
+
+	<sprite name="IconFrame_Grey">
+		<image
+			border="true"
+			bordercolor="103 103 103"
+			backcolor="0 0 0 0"
+			size="0 0 100% 100%"
+		/>
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="1 1 100%-1 100%-1"
+		/>
+	</sprite>
+	
+	<sprite name="IconFrame_Blue">
+		<image
+			border="true"
+			bordercolor="103 103 163"
+			backcolor="0 0 0 0"
+			size="0 0 100% 100%"
+		/>
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="1 1 100%-1 100%-1"
+		/>
+	</sprite>
+	
+	<sprite name="IconFrame_Gold">
+		<image
+			border="true"
+			bordercolor="163 163 103"
+			backcolor="0 0 0 0"
+			size="0 0 100% 100%"
+		/>
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="1 1 100%-1 100%-1"
+		/>
+	</sprite>
+	
+	<sprite name="IconFrame_Green">
+		<image
+			border="true"
+			bordercolor="124 163 124"
+			backcolor="0 0 0 0"
+			size="0 0 100% 100%"
+		/>
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="1 1 100%-1 100%-1"
+		/>
+	</sprite>
 	
 </sprites>
