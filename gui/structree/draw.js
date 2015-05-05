@@ -10,9 +10,11 @@ function draw()
 	// Set basic state (positioning of elements mainly), but only once
 	if (!Object.keys(g_DrawLimits).length)
 		predraw();
-
+	
 	var defWidth = 96;
 	var defMargin = 4;
+	var iconMargin = getProdIconDimen().margin;
+	var iconWidth = getProdIconDimen().width + iconMargin;
 	var phaseList = g_ParsedData.phaseList;
 
 	Engine.GetGUIObjectByName("civEmblem").sprite = "stretched:"+g_CivData[g_SelectedCiv].Emblem;
@@ -84,7 +86,7 @@ function draw()
 
 			let size = thisEle.size;
 			size.left = y;
-			size.right = size.left + ((c*24 < defWidth)?defWidth:c*24)+4;
+			size.right = y + ((c*iconWidth < defWidth)?defWidth:c*iconWidth)+iconMargin;
 			y = size.right + defMargin;
 			thisEle.size = size;
 
@@ -92,7 +94,7 @@ function draw()
 			let r;
 			for (r in rowCounts)
 			{
-				let wid = rowCounts[r] * 24 - 4;
+				let wid = rowCounts[r] * iconWidth - iconMargin;
 				let phaEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]");
 				size = phaEle.size;
 				size.left = (eleWidth - wid)/2;
@@ -130,9 +132,20 @@ function getPositionOffset(idx)
 	var phases = g_ParsedData.phaseList.length;
 
 	var size = 92*idx; // text, image and offset
-	size += 24 * (phases*idx - (idx-1)*idx/2); // phase rows (phase-currphase+1 per row)
+	size += (getProdIconDimen().adjWidth+4) * (phases*idx - (idx-1)*idx/2); // phase rows (phase-currphase+1 per row)
 
 	return size;
+}
+
+function getProdIconDimen()
+{
+	var pIcon = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
+	pIcon.width = pIcon.right - pIcon.left;
+	pIcon.height = pIcon.bottom - pIcon.top;
+	pIcon.margin = 4;
+	pIcon.adjWidth = pIcon.width + pIcon.margin * 2;
+	pIcon.adjHeight = pIcon.height + pIcon.margin * 2;
+	return pIcon;
 }
 
 function hideRemaining(prefix, idx, suffix)
@@ -157,7 +170,7 @@ function hideRemaining(prefix, idx, suffix)
 function predraw()
 {
 	var phaseList = g_ParsedData.phaseList;
-	var initIconSize = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
+	var initIconSize = getProdIconDimen();
 
 	let phaseCount = phaseList.length;
 	let i = 0;
@@ -177,10 +190,12 @@ function predraw()
 		for (; j < phaseCount - i; ++j)
 		{
 			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
-			prodBar.size = "40 1+"+(24*j)+"+98+"+offset+" 100%-8 1+"+(24*j)+"+98+"+offset+"+22";
+			prodBar.size = "40 98+"+ ((initIconSize.adjHeight+2)*j+offset+1) +" 100%-8 98+"+ ((initIconSize.adjHeight+2)*(j+1)+offset-1);
+			
 			// Set phase icon
 			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
 			prodBarIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[phaseList[i+j]].icon;
+			prodBarIcon.size = "4 "+initIconSize.margin+" 4+"+initIconSize.width+" "+(initIconSize.height+initIconSize.margin);
 		}
 		// Hide remaining prod bars
 		hideRemaining("phase["+i+"]_bar[", j-1, "]");
@@ -197,14 +212,16 @@ function predraw()
 			// Position production icons
 			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
-				let p=1;
+				let p=0;
 				let prodEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
 
 				do
 				{
 					let prodsize = prodEle.size;
-					prodsize.left = (initIconSize.right+4) * p;
-					prodsize.right = (initIconSize.right+4) * (p+1) - 4;
+					prodsize.left = (initIconSize.right+initIconSize.margin) * p;
+					prodsize.right = (initIconSize.right+initIconSize.margin) * (p+1) - initIconSize.margin;
+					prodsize.top = initIconSize.margin;
+					prodsize.bottom = initIconSize.height + initIconSize.margin;
 					prodEle.size = prodsize;
 
 					p++;
@@ -215,7 +232,7 @@ function predraw()
 				g_DrawLimits[pha].prodQuant[r] = p;
 
 				// Position the prod row
-				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+24*(phaseCount - i - r)+" 100%-4 100%";
+				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]").size = "4 100%-"+(initIconSize.adjHeight+2)*(phaseCount - i - r)+"-1 100%-4 100%";
 			}
 
 			// Hide unused struct rows
@@ -223,7 +240,7 @@ function predraw()
 				Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+j+"]").hidden = true;
 
 			let size = ele.size;
-			size.bottom += Object.keys(g_DrawLimits[pha].prodQuant).length*24;
+			size.bottom += Object.keys(g_DrawLimits[pha].prodQuant).length*(initIconSize.adjHeight+2);
 			ele.size = size;
 
 			s++;
