@@ -1,9 +1,9 @@
 {
     "name": "structree",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "label": "Structure and Technology Tree",
     "url": "https://github.com/s0600204/0ad-structree-mod",
     "description": "Visualisation of the Structure and Technology Tree within 0AD",
-    "dependencies": ["0ad"],
+    "dependencies": ["0ad>=0.0.19"],
     "type": "visualisation"
 }
