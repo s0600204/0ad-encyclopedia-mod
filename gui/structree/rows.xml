@@ -3,12 +3,11 @@
 <object name="phase_rows">
 	<repeat count="4" var="k">
 		<object name="phase[k]">
-			<repeat count="11" var="s">
+			<repeat count="12" var="s">
 				<object type="image" style="StructBox" name="phase[k]_struct[s]">
-					<object type="text" style="StructNameSpecific" name="phase[k]_struct[s]_name"/>
-					<object type="image" style="StructIcon" name="phase[k]_struct[s]_icon"
-						sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
-					/>
+					<object type="image" style="StructIcon" name="phase[k]_struct[s]_icon" sprite="stretched:pregame/shell/logo/wfg_logo_white.png">
+						<object type="image" style="StructIconFrame"/>
+					</object>
 					<repeat count="4" var="r">
 						<object name="phase[k]_struct[s]_row[r]">
 							<repeat count="16" var="p">

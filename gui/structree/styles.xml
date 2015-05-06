@@ -7,25 +7,24 @@
 		scrollbar_style="ModernScrollBar"
 	/>
 
-	<style name="StructNameSpecific"
-		textcolor="white"
-		font="sans-12"
-		text_align="center"
-		size="8 0 100%-8 20"
-	/>
-
 	<style name="StructBox"
 		sprite="ModernDarkBoxGold"
-		size="4 4 68 68+16"
+		size="4 4+36 68 60+16"
 	/>
 
 	<style name="StructIcon"
-		size="50%-24 8+16 50%+24 8+16+48"
+		size="50%-32 -36 50%+32 28"
 		tooltip_style="treeTooltip"
+	/>
+	
+	<style name="StructIconFrame"
+		sprite="IconFrame_Struct"
+		size="0 0 100% 100%"
+		ghost="true"
 	/>
 
 	<style name="ProdBox"
-		size="0 0 20 20"
+		size="0 0 24 24"
 		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		tooltip_style="treeTooltip"
 	/>

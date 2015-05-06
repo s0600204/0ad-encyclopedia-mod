@@ -11,8 +11,8 @@ function draw()
 	if (!Object.keys(g_DrawLimits).length)
 		predraw();
 	
-	var defWidth = 96;
-	var defMargin = 4;
+	var defWidth = 112;
+	var defMargin = 8;
 	var iconMargin = getProdIconDimen().margin;
 	var iconWidth = getProdIconDimen().width + iconMargin;
 	var phaseList = g_ParsedData.phaseList;
@@ -41,7 +41,6 @@ function draw()
 			stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
-			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
 
 			for (let r in g_DrawLimits[pha].prodQuant)
@@ -132,7 +131,7 @@ function getPositionOffset(idx)
 	var phases = g_ParsedData.phaseList.length;
 
 	var size = 92*idx; // text, image and offset
-	size += (getProdIconDimen().adjWidth+4) * (phases*idx - (idx-1)*idx/2); // phase rows (phase-currphase+1 per row)
+	size += (getProdIconDimen().adjWidth+8) * (phases*idx - (idx-1)*idx/2); // phase rows (phase-currphase+1 per row)
 
 	return size;
 }
@@ -190,7 +189,7 @@ function predraw()
 		for (; j < phaseCount - i; ++j)
 		{
 			let prodBar = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]");
-			prodBar.size = "40 98+"+ ((initIconSize.adjHeight+2)*j+offset+1) +" 100%-8 98+"+ ((initIconSize.adjHeight+2)*(j+1)+offset-1);
+			prodBar.size = "40 90+"+ ((initIconSize.adjHeight+2)*j+offset+1) +" 100%-8 90+"+ ((initIconSize.adjHeight+2)*(j+1)+offset-1);
 			
 			// Set phase icon
 			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");

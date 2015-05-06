@@ -58,4 +58,26 @@
 			size="0 0 2 2"
 		/>
 	</sprite>
+
+	<sprite name="IconFrame_Struct">
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="0 0 100% 100%"
+		/>
+		<image
+			border="true"
+			bordercolor="209 174 132"
+			backcolor="0 0 0 0"
+			size="1 1 100%-1 100%-1"
+		/>
+		<image
+			border="true"
+			bordercolor="0 0 0"
+			backcolor="0 0 0 0"
+			size="2 2 100%-2 100%-2"
+		/>
+	</sprite>
+	
 </sprites>
