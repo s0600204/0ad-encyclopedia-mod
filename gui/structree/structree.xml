@@ -3,6 +3,7 @@
 <objects>
 	<script file="gui/common/functions_civinfo.js"/>
 	<script file="gui/common/functions_utility.js"/>
+	<script file="gui/common/functions_positioning.js"/>
 	<script file="gui/common/tooltips.js"/>
 	<script file="gui/structree/structree.js"/>
 	<script file="gui/structree/draw.js"/>

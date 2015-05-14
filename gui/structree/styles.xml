@@ -24,7 +24,7 @@
 	/>
 
 	<style name="ProdBox"
-		size="0 0 24 24"
+		size="3 3 24+3 24+3"
 		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		tooltip_style="treeTooltip"
 	/>

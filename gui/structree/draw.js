@@ -13,7 +13,7 @@ function draw()
 	
 	var defWidth = 112;
 	var defMargin = 8;
-	var iconMargin = getProdIconDimen().margin;
+	var iconMargin = getProdIconDimen().hMargin;
 	var iconWidth = getProdIconDimen().width + iconMargin;
 	var phaseList = g_ParsedData.phaseList;
 
@@ -143,23 +143,12 @@ function getProdIconDimen()
 	var pIcon = Engine.GetGUIObjectByName("phase[0]_struct[0]_row[0]_prod[0]").size;
 	pIcon.width = pIcon.right - pIcon.left;
 	pIcon.height = pIcon.bottom - pIcon.top;
-	pIcon.margin = 3;
-	pIcon.adjWidth = pIcon.width + pIcon.margin * 2;
-	pIcon.adjHeight = pIcon.height + pIcon.margin * 2;
+	pIcon.vMargin = pIcon.top;
+	pIcon.hMargin = pIcon.left;
+	pIcon.adjWidth = pIcon.width + pIcon.hMargin * 2;
+	pIcon.adjHeight = pIcon.height + pIcon.vMargin * 2;
 	return pIcon;
 }
-
-function hideRemaining(prefix, idx, suffix)
-{
-	let obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
-	while (obj)
-	{
-		obj.hidden = true;
-		++idx;
-		obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
-	}
-}
-
 
 /**
  * Positions certain elements that only need to be positioned once
@@ -196,7 +185,7 @@ function predraw()
 			// Set phase icon
 			let prodBarIcon = Engine.GetGUIObjectByName("phase["+i+"]_bar["+(j-1)+"]_icon");
 			prodBarIcon.sprite = "stretched:session/portraits/"+g_ParsedData.phases[phaseList[i+j]].icon;
-			prodBarIcon.size = "4 "+initIconSize.margin+" 4+"+initIconSize.width+" "+(initIconSize.height+initIconSize.margin);
+			prodBarIcon.size = "4 "+initIconSize.vMargin+" 4+"+initIconSize.width+" "+(initIconSize.height+initIconSize.vMargin);
 		}
 		// Hide remaining prod bars
 		hideRemaining("phase["+i+"]_bar[", j-1, "]");
@@ -213,21 +202,7 @@ function predraw()
 			// Position production icons
 			for (let r in phaseList.slice(phaseList.indexOf(pha)))
 			{
-				let p=0;
-				let prodEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
-
-				do
-				{
-					let prodsize = prodEle.size;
-					prodsize.left = (initIconSize.right+initIconSize.margin) * p;
-					prodsize.right = (initIconSize.right+initIconSize.margin) * (p+1) - initIconSize.margin;
-					prodsize.top = initIconSize.margin;
-					prodsize.bottom = initIconSize.height + initIconSize.margin;
-					prodEle.size = prodsize;
-
-					p++;
-					prodEle = Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_row["+r+"]_prod["+p+"]");
-				} while (prodEle !== undefined);
+				let p = horizSpaceRepeatedObjects("phase["+i+"]_struct["+s+"]_row["+r+"]_prod[p]", "p", initIconSize.hMargin);
 
 				// Set quantity of productions in this row
 				g_DrawLimits[pha].prodQuant[r] = p;
