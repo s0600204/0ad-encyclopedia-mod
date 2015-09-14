@@ -37,7 +37,10 @@ function getGatherRates(templateName)
 
 function loadUnit(templateName)
 {
+	if (!Engine.TemplateExists(templateName)) 
+		return null; 
 	var template = loadTemplate(templateName);
+	
 	var unit = GetTemplateDataHelper(template);
 	unit.phase = false;
 
@@ -216,7 +219,10 @@ function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
 	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
-	phase.actualPhase = "";
+
+	phase.actualPhase = phaseCode;
+	if (template.replaces !== undefined) 
+		phase.actualPhase = template.replaces[0];
 
 	return phase;
 }

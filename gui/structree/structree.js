@@ -7,12 +7,12 @@ var g_ParsedData = {
 var g_Lists = {};
 var g_CivData = {};
 var g_SelectedCiv = "";
-
+var g_CallbackSet = false;
 
 /**
  * Initialize the dropdown containing all the available civs
  */
-function init()
+function init(data)
 {
 	g_CivData = loadCivData(true);
 
@@ -28,9 +28,20 @@ function init()
 
 	// Set civ control
 	var civSelection = Engine.GetGUIObjectByName("civSelection");
+
 	civSelection.list = civList.map(c => c.name);
 	civSelection.list_data = civList.map(c => c.code);
-	civSelection.selected = 0;
+
+	if(data.civ) 
+	{ 
+		civSelection.selected = civSelection.list_data.indexOf(data.civ); 
+		selectCiv(data.civ); 
+	} 
+	else 
+		civSelection.selected = 0; 
+	
+	if (data.callback)
+		g_CallbackSet = true; 
 }
 
 function selectCiv(civCode)
@@ -121,34 +132,13 @@ function selectCiv(civCode)
 	// Establish phase order
 	g_ParsedData.phaseList = unravelPhases(g_ParsedData.techs);
 	for (let phasecode of g_ParsedData.phaseList)
-	{
-		let phaseInfo = loadTechData(phasecode);
 		g_ParsedData.phases[phasecode] = loadPhase(phasecode);
-
-		if ("requirements" in phaseInfo)
-			for (let op in phaseInfo.requirements)
-			{
-				let val = phaseInfo.requirements[op];
-				if (op == "any")
-					for (let v of val)
-					{
-						let k = Object.keys(v);
-						k = k[0];
-						v = v[k];
-						if (k == "tech")
-							if (v in g_ParsedData.phases)
-								g_ParsedData.phases[v].actualPhase = phasecode;
-							else if (v in techPairs)
-								for (let t of techPairs[v].techs)
-									g_ParsedData.phases[t].actualPhase = phasecode;
-					}
-			}
-	}
 
 	// Group production lists of structures by phase
 	for (let structCode of g_Lists.structures)
 	{
 		let structInfo = g_ParsedData.structures[structCode];
+		let structPhaseIdx = g_ParsedData.phaseList.indexOf(structInfo.phase);
 
 		// If this building is shared with another civ,
 		// it may have already gone through the grouping process already
@@ -188,11 +178,11 @@ function selectCiv(civCode)
 						phase = req;
 			}
 
-			if (depath(phase).slice(0,5) !== "phase")
-			{
-				warn(prod+" doesn't have a specific phase set ("+structCode+")");
-				phase = structInfo.phase;
-			}
+			if (depath(phase).slice(0,5) !== "phase" || g_ParsedData.phaseList.indexOf(phase) < structPhaseIdx)
+				if (structInfo.phase !== false)
+					phase = structInfo.phase;
+				else
+					phase = g_ParsedData.phaseList[0];
 
 			if (!(phase in newProdTech))
 				newProdTech[phase] = [];
@@ -204,11 +194,9 @@ function selectCiv(civCode)
 		let newProdUnits = {};
 		for (let prod of structInfo.production.units)
 		{
-			if (!(prod in g_ParsedData.units))
-			{
-				error(prod+" doesn't exist! ("+structCode+")");
+			if (!g_ParsedData.units[prod])
 				continue;
-			}
+			
 			let unit = g_ParsedData.units[prod];
 			let phase = "";
 
@@ -227,10 +215,12 @@ function selectCiv(civCode)
 						phase = reqs.generic[0];
 				}
 			}
-			else if (structInfo.phase !== false)
-				phase = structInfo.phase;
-			else
-				phase = g_ParsedData.phaseList[0];
+
+			if (depath(phase).slice(0,5) !== "phase" || g_ParsedData.phaseList.indexOf(phase) < structPhaseIdx)
+				if (structInfo.phase !== false)
+					phase = structInfo.phase;
+				else
+					phase = g_ParsedData.phaseList[0];
 
 			if (!(phase in newProdUnits))
 				newProdUnits[phase] = [];
@@ -264,4 +254,12 @@ function selectCiv(civCode)
 
 	// Draw tree
 	draw();
+}
+
+function closeStrucTree() 
+{ 
+	if (g_CallbackSet)
+		Engine.PopGuiPageCB(0); 
+	else 
+	Engine.PopGuiPage(); 
 }
