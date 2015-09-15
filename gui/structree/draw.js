@@ -39,7 +39,7 @@ function draw()
 			stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
-			setOnPress("phase["+i+"]_struct["+s+"]_icon", stru);
+			setViewerOnPress("phase["+i+"]_struct["+s+"]_icon", stru);
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
 
@@ -178,13 +178,15 @@ function drawProdIcon(pha, s, r, p, prod)
 	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
 	prodEle.tooltip = assembleTooltip(prod);
 	prodEle.hidden = false;
-	prodEle.onpressright = function () { Engine.PushGuiPage("page_viewer.xml", prod); };
+	setViewerOnPress(prodEle, prod);
 	return true;
 }
 
-function setOnPress(ele, stru)
+function setViewerOnPress(ele, entity)
 {
-	Engine.GetGUIObjectByName(ele).onpressright = function () { Engine.PushGuiPage("page_viewer.xml", stru); };
+	if (typeof ele === "string")
+		ele = Engine.GetGUIObjectByName(ele);
+	ele.onpressright = function () { Engine.PushGuiPage("page_viewer.xml", entity); };
 }
 
 /**

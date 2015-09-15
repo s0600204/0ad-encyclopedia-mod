@@ -12,20 +12,17 @@
 	<object type="image" z="0" sprite="bkTranslucent"/>
 
 	<object type="image" sprite="ModernDialogNoTitle" size="50%-250 50%-300 50%+250 50%+300">
-	<!--	<object style="TitleText" type="text" name="dialogTitle" size="50%-128 -18 50%+128 14">
-			<translatableAttribute id="caption">Entity Details</translatableAttribute>
-		</object>-->
 
 		<object name="entityName" type="text" style="Title" size="8 12 100%-8 48"/>
 
 		<object name="entityIcon" type="image"
-			size="-32 48 128-32 128+48"
+			size="16 48 128+16 128+48"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		>
 			<object type="image" style="IconFrame"/>
 		</object>
 
-		<object name="entityStats" type="text" style="BodyText" size="128-28 44 100%-8 50%"/>
+		<object name="entityStats" type="text" style="BodyText" size="128+20 44 100%-8 50%"/>
 
 		<object name="entityInfo" type="text" style="BodyText" size="16 128+48 100%-16 100%"/>
 

@@ -1,19 +1,17 @@
 
 /* Globals */
-var g_ParsedData = {};
-var g_SelectedCiv = "rome";
+var g_SelectedCiv = "gaia"; // fallback default
 var g_CallbackSet = false;
 
 /**
- * Init
+ * Init. Also populates the gui objects.
  * 
- * @arg template For the moment, the object to be shown
- * 
+ * @arg template The object or the template name of the entity to be displayed
  */
 function init (template = null) {
 	if (!template)
 	{
-		warn("No Template provided");
+		error("Viewer: No template provided");
 		closeViewer();
 		return;
 	}
@@ -22,35 +20,21 @@ function init (template = null) {
 		var templateName = template.entityName || template;
 		if (template.callback)
 			g_CallbackSet = true;
+		if (template.civ)
+			g_SelectedCiv = template.civ;
 
 		template = loadTemplateFromName(templateName);
 		if (!template)
 		{
-			warn("Unable to load template: "+templateName);
+			error("Viewer: unable to recognise or load template: "+templateName);
 			closeViewer();
 			return;
 		}
 	}
 
-//	warn(uneval(template));
-
-	/*var specific = Engine.GetGUIObjectByName("dialogTitle");
-	var generic = Engine.GetGUIObjectByName("entityName");
-	if (template.name.specific)
-	{
-		// drop caps for specific name
-		specific.caption = template.name.specific.toUpperCase();
-		
-		if (template.name.generic)
-			generic.caption = "("+ template.name.generic +")";
-	}
-	else if (template.name.generic)
-		specific.caption = template.name.generic;
-	else
-		specific.caption = "?";*/
-
 	Engine.GetGUIObjectByName("entityName").caption = getEntityNamesFormatted(template);
 	Engine.GetGUIObjectByName("entityIcon").sprite = "stretched:session/portraits/" + template.icon;
+	Engine.GetGUIObjectByName("entityStats").caption = getEntityCostTooltip(template, 1) +"\n"+ getEntityStats(template);
 
 	var txt = "";
 
@@ -67,10 +51,14 @@ function init (template = null) {
 		txt += getAurasTooltip(template) + "\n";
 
 	Engine.GetGUIObjectByName("entityInfo").caption = txt;
-
-	Engine.GetGUIObjectByName("entityStats").caption = getEntityCostTooltip(template, 1) +"\n"+ getEntityStats(template);
 }
 
+/**
+ * Determines the requested template and loads it
+ * 
+ * @arg templateName The template name. If loading a technology, then `tech/` must be prefixed.
+ * @return The entity object if successful, false if not
+ */
 function loadTemplateFromName(templateName)
 {
 	if (templateName.indexOf("|") > -1)
@@ -83,6 +71,7 @@ function loadTemplateFromName(templateName)
 	case "other":
 		return loadStructure(templateName);
 		break;
+
 	case "units":
 	case "gaia":
 		return loadUnit(templateName);
@@ -91,8 +80,9 @@ function loadTemplateFromName(templateName)
 	case "tech":
 		return loadTechnology(templateName.substr(templateName.indexOf("/")+1));
 		break;
+
 	default:
-		warn("Unrecognised prefix: "+prefix);
+		// do nothing (error message is given elsewhere)
 	}
 
 	return false;
@@ -124,6 +114,9 @@ function getEntityNamesFormatted(template)
 	return names;
 }
 
+/**
+ * Closes the page
+ */
 function closeViewer() 
 { 
 	if (g_CallbackSet)

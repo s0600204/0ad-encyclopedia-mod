@@ -422,3 +422,18 @@ function updateSelectionDetails()
 		updateUnitCommands(entState, supplementalDetailsPanel, commandsPanel, selection);
 	}
 }
+
+/**
+ * Pauses game and opens the entity details viewer on a given entity
+ */
+function showEntityDetails(entityName = null)
+{
+	pauseGame();
+	var data = { // TODO civ should be that of entity, not that of current player
+		"entityName" : entityName,
+		"callback": "resumeGame",
+		"civ": g_Players[Engine.GetPlayerID()].civ,
+	};
+	Engine.PushGuiPage("page_viewer.xml", data);
+}
+

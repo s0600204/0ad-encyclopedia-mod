@@ -1124,19 +1124,6 @@ g_SelectionPanels.Training = {
 };
 
 /**
- * Pauses game and opens the entity details viewer on a given entity
- */
-function showEntityDetails(entityName = null)
-{
-	pauseGame();
-	var data = { // TODO add info about researched techs and unlocked entities
-		"entityName" : entityName,
-		"callback": "resumeGame",
-	};
-	Engine.PushGuiPage("page_viewer.xml", data);
-}
-
-/**
  * If two panels need the same space, so they collide,
  * the one appearing first in the order is rendered.
  *
