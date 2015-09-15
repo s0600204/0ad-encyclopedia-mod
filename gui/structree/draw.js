@@ -39,6 +39,7 @@ function draw()
 			stru = g_ParsedData.structures[stru];
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").sprite = "stretched:session/portraits/"+stru.icon;
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_icon").tooltip = assembleTooltip(stru);
+			setOnPress("phase["+i+"]_struct["+s+"]_icon", stru);
 			Engine.GetGUIObjectByName("phase["+i+"]_struct["+s+"]_name").caption = translate(stru.name.specific);
 			thisEle.hidden = false;
 
@@ -177,7 +178,13 @@ function drawProdIcon(pha, s, r, p, prod)
 	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
 	prodEle.tooltip = assembleTooltip(prod);
 	prodEle.hidden = false;
+	prodEle.onpressright = function () { Engine.PushGuiPage("page_viewer.xml", prod); };
 	return true;
+}
+
+function setOnPress(ele, stru)
+{
+	Engine.GetGUIObjectByName(ele).onpressright = function () { Engine.PushGuiPage("page_viewer.xml", stru); };
 }
 
 /**
@@ -203,7 +210,6 @@ function hideRemaining(prefix, idx, suffix)
 		obj = Engine.GetGUIObjectByName(prefix+idx+suffix);
 	}
 }
-
 
 /**
  * Positions certain elements that only need to be positioned once
@@ -352,37 +358,7 @@ function assembleTooltip(template)
 	if (template.auras)
 		txt += getAurasTooltip(template);
 
-	if (template.health)
-		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
-			label: txtFormats.header[0] + translate("Health:") + txtFormats.header[1],
-			details: template.health
-		});
-
-	if (template.healer)
-		txt += "\n" + getHealerTooltip(template);
-
-	if (template.attack)
-		txt += "\n" + getAttackTooltip(template);
-
-	if (template.armour)
-		txt += "\n" + getArmorTooltip(template.armour);
-
-	txt += "\n" + getSpeedTooltip(template);
-
-	if (template.gather)
-	{
-		var rates = [];
-		for (let type in template.gather)
-			rates.push(sprintf(translate("%(resourceIcon)s %(rate)s"), {
-				resourceIcon: getCostComponentDisplayName(type),
-				rate: template.gather[type]
-			}));
-
-		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
-			label: txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1],
-			details: rates.join("  ")
-		});
-	}
+	txt += getEntityStats(template);
 
 	return txt;
 }

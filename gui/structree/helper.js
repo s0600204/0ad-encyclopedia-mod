@@ -87,3 +87,42 @@ function GetTemplateData(templateName)
 	var template = loadTemplate(templateName);
 	return GetTemplateDataHelper(template);
 }
+
+function getEntityStats(template)
+{
+	var txt = "";
+
+	if (template.health)
+		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
+			label: txtFormats.header[0] + translate("Health:") + txtFormats.header[1],
+			details: template.health
+		});
+
+	if (template.healer)
+		txt += "\n" + getHealerTooltip(template);
+
+	if (template.attack)
+		txt += "\n" + getAttackTooltip(template);
+
+	if (template.armour)
+		txt += "\n" + getArmorTooltip(template.armour);
+
+	txt += "\n" + getSpeedTooltip(template);
+
+	if (template.gather)
+	{
+		var rates = [];
+		for (let type in template.gather)
+			rates.push(sprintf(translate("%(resourceIcon)s %(rate)s"), {
+				resourceIcon: getCostComponentDisplayName(type),
+				rate: template.gather[type]
+			}));
+
+		txt += "\n" + sprintf(translate("%(label)s %(details)s"), {
+			label: txtFormats.header[0] + translate("Gather Rates:") + txtFormats.header[1],
+			details: rates.join("  ")
+		});
+	}
+
+	return txt;
+}

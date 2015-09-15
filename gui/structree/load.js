@@ -53,6 +53,8 @@ function loadUnit(templateName)
 	}
 
 	unit.gather = getGatherRates(templateName);
+	
+	unit.history = template.Identity.History;
 
 	if (template.ProductionQueue)
 	{
@@ -97,6 +99,8 @@ function loadStructure(templateName)
 		else if (structure.requiredTechnology.length)
 			structure.required = structure.requiredTechnology;
 	}
+
+	structure.history = template.Identity.History;
 
 	structure.production = {
 		"technology": [],
