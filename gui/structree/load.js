@@ -79,7 +79,7 @@ function loadUnit(templateName)
 		for (let build of template.Builder.Entities._string.split(" "))
 		{
 			build = build.replace("{civ}", g_SelectedCiv);
-			if (g_Lists.structures.indexOf(build) < 0)
+			if (typeof g_Lists !== "undefined" && g_Lists.structures.indexOf(build) < 0)
 				g_Lists.structures.push(build);
 		}
 
@@ -113,7 +113,7 @@ function loadStructure(templateName)
 			{
 				build = build.replace("{civ}", g_SelectedCiv);
 				structure.production.units.push(build);
-				if (g_Lists.units.indexOf(build) < 0)
+				if (typeof g_Lists !== "undefined" && g_Lists.units.indexOf(build) < 0)
 					g_Lists.units.push(build);
 			}
 
@@ -121,7 +121,7 @@ function loadStructure(templateName)
 			for (let research of template.ProductionQueue.Technologies._string.split(" "))
 			{
 				structure.production.technology.push(research);
-				if (g_Lists.techs.indexOf(research) < 0)
+				if (typeof g_Lists !== "undefined" && g_Lists.techs.indexOf(research) < 0)
 					g_Lists.techs.push(research);
 			}
 	}

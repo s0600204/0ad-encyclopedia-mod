@@ -303,6 +303,7 @@ g_SelectionPanels.Construction = {
 	"setAction": function(data)
 	{
 		data.button.onPress = function () { startBuildingPlacement(data.item, data.playerState); };
+		data.button.onPressRight = function () { Engine.PushGuiPage("page_viewer.xml", data.item); };
 	},
 	"setTooltip": function(data)
 	{
@@ -833,6 +834,7 @@ g_SelectionPanels.Research = {
 			// as we're in a loop, we need to limit the scope with a closure
 			// else the last value of the loop will be taken, rather than the current one
 			button.onpress = (function(template) { return function () { addResearchToQueue(data.unitEntState.id, template); }; })(data.entType[i]);
+			button.onPressRight = function () { Engine.PushGuiPage("page_viewer.xml", "tech/"+data.item); };
 			// on mouse enter, show a cross over the other icons
 			button.onmouseenter = (function(others, icons) {
 				return function() {
@@ -1055,6 +1057,7 @@ g_SelectionPanels.Training = {
 	"setAction": function(data)
 	{
 		data.button.onPress = function() { addTrainingToQueue(data.selection, data.item, data.playerState); };
+		data.button.onPressRight = function () { Engine.PushGuiPage("page_viewer.xml", data.item); };
 	},
 	"setCountDisplay": function(data)
 	{

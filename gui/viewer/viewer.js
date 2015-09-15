@@ -1,6 +1,7 @@
 
 /* Globals */
 var g_ParsedData = {};
+var g_SelectedCiv = "rome";
 
 /**
  * Init
@@ -17,10 +18,14 @@ function init (template = null) {
 	}
 	else if (typeof template === "string")
 	{
-	//	todo: fetch object automatically
-		warn("string provided: "+template);
-		Engine.PopGuiPage();
-		return;
+		var templateName = template;
+		template = loadTemplateFromName(template);
+		if (!template)
+		{
+			warn("Unable to load template: "+templateName);
+			Engine.PopGuiPage();
+			return;
+		}
 	}
 
 //	warn(uneval(template));
@@ -51,6 +56,9 @@ function init (template = null) {
 	if (template.history)
 		txt += "\n" + txtFormats.body[0] +  translate(template.history) + txtFormats.body[1] + "\n";
 
+	if (template.description)
+		txt += "\n" + txtFormats.body[0] +  translate(template.description) + txtFormats.body[1] + "\n";
+
 	if (template.auras)
 		txt += getAurasTooltip(template) + "\n";
 
@@ -61,9 +69,27 @@ function init (template = null) {
 
 function loadTemplateFromName(templateName)
 {
+	var prefix = templateName.substr(0, templateName.indexOf("/"));
+
+	switch (prefix)
+	{
+	case "structures":
+	case "other":
+		return loadStructure(templateName);
+		break;
+	case "units":
+	case "gaia":
+		return loadUnit(templateName);
+		break;
 	
-	
-	
+	case "tech":
+		return loadTechnology(templateName.substr(templateName.indexOf("/")+1));
+		break;
+	default:
+		warn("Unrecognised prefix: "+prefix);
+	}
+
+	return false;
 }
 
 /**
