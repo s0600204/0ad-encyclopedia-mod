@@ -73,7 +73,9 @@ function init (template = null) {
 
 function loadTemplateFromName(templateName)
 {
-	var prefix = templateName.substr(0, templateName.indexOf("/"));
+	if (templateName.indexOf("|") > -1)
+		templateName = templateName.slice(templateName.indexOf("|")+1);
+	var prefix = templateName.slice(0, templateName.indexOf("/"));
 
 	switch (prefix)
 	{

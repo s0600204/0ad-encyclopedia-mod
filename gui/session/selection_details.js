@@ -246,7 +246,10 @@ function displaySingle(entState, template)
 
 	// Icon image
 	if (template.icon)
+	{
 		Engine.GetGUIObjectByName("icon").sprite = "stretched:session/portraits/" + template.icon;
+		Engine.GetGUIObjectByName("iconBorder").onpressright = function () { showEntityDetails(entState.template); };
+	}
 	else
 		// TODO: we should require all entities to have icons, so this case never occurs
 		Engine.GetGUIObjectByName("icon").sprite = "bkFillBlack";
