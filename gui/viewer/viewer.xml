@@ -38,7 +38,7 @@
 		>
 			<translatableAttribute id="caption">Close</translatableAttribute>
 			<action on="Press"><![CDATA[
-				Engine.PopGuiPage();
+				closeViewer();
 			]]></action>
 		</object>
 	</object>

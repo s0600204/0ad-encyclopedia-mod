@@ -2,6 +2,7 @@
 /* Globals */
 var g_ParsedData = {};
 var g_SelectedCiv = "rome";
+var g_CallbackSet = false;
 
 /**
  * Init
@@ -13,17 +14,20 @@ function init (template = null) {
 	if (!template)
 	{
 		warn("No Template provided");
-		Engine.PopGuiPage();
+		closeViewer();
 		return;
 	}
-	else if (typeof template === "string")
+	else if (typeof template === "string" || template.entityName)
 	{
-		var templateName = template;
-		template = loadTemplateFromName(template);
+		var templateName = template.entityName || template;
+		if (template.callback)
+			g_CallbackSet = true;
+
+		template = loadTemplateFromName(templateName);
 		if (!template)
 		{
 			warn("Unable to load template: "+templateName);
-			Engine.PopGuiPage();
+			closeViewer();
 			return;
 		}
 	}
@@ -116,4 +120,12 @@ function getEntityNamesFormatted(template)
 		names = "???";
 
 	return names;
+}
+
+function closeViewer() 
+{ 
+	if (g_CallbackSet)
+		Engine.PopGuiPageCB(0); 
+	else 
+		Engine.PopGuiPage(); 
 }
