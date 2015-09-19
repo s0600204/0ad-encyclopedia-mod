@@ -34,7 +34,11 @@ function init (template = null) {
 
 	Engine.GetGUIObjectByName("entityName").caption = getEntityNamesFormatted(template);
 	Engine.GetGUIObjectByName("entityIcon").sprite = "stretched:session/portraits/" + template.icon;
-	Engine.GetGUIObjectByName("entityStats").caption = getEntityCostTooltip(template, 1) +"\n"+ getEntityStats(template);
+
+	var caption = "";
+	if (template.cost)
+		caption += getEntityCostTooltip(template, 1) + "\n";
+	Engine.GetGUIObjectByName("entityStats").caption = caption + getEntityStats(template);
 
 	var txt = "";
 
@@ -49,6 +53,8 @@ function init (template = null) {
 
 	if (template.auras)
 		txt += getAurasTooltip(template) + "\n";
+	
+	txt += getVisibleEntityClassesFormatted(template);
 
 	Engine.GetGUIObjectByName("entityInfo").caption = txt;
 }
@@ -73,10 +79,13 @@ function loadTemplateFromName(templateName)
 		break;
 
 	case "units":
-	case "gaia":
 		return loadUnit(templateName);
 		break;
-	
+
+	case "gaia":
+		return loadResource(templateName);
+		break;
+
 	case "tech":
 		return loadTechnology(templateName.substr(templateName.indexOf("/")+1));
 		break;
@@ -112,6 +121,21 @@ function getEntityNamesFormatted(template)
 		names = "???";
 
 	return names;
+}
+
+function loadResource(templateName)
+{
+	var template = loadTemplate(templateName);
+	var resource = GetTemplateDataHelper(template);
+
+	resource.history = template.Identity.History;
+
+	resource.supply = {
+		"type": template.ResourceSupply.Type.split("."),
+		"amount": template.ResourceSupply.Amount,
+	};
+
+	return resource;
 }
 
 /**

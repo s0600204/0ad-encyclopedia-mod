@@ -107,7 +107,8 @@ function getEntityStats(template)
 	if (template.armour)
 		txt += "\n" + getArmorTooltip(template.armour);
 
-	txt += "\n" + getSpeedTooltip(template);
+	if (template.speed)
+		txt += "\n" + getSpeedTooltip(template);
 
 	if (template.gather)
 	{
@@ -123,6 +124,9 @@ function getEntityStats(template)
 			details: rates.join("  ")
 		});
 	}
+
+	if (template.supply)
+		txt += "\n" + getResourceSupplyTooltip(template);
 
 	return txt;
 }
