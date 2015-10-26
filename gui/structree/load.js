@@ -43,6 +43,7 @@ function loadUnit(templateName)
 	
 	var unit = GetTemplateDataHelper(template);
 	unit.phase = false;
+	unit.name.internal = templateName;
 
 	if (unit.requiredTechnology)
 	{
@@ -97,6 +98,7 @@ function loadStructure(templateName)
 	var template = loadTemplate(templateName);
 	var structure = GetTemplateDataHelper(template);
 	structure.phase = false;
+	structure.name.internal = templateName;
 
 	if (structure.requiredTechnology)
 	{
@@ -179,6 +181,7 @@ function loadTechnology(techName)
 	var template = loadTechData(techName);
 	var tech = GetTechnologyDataHelper(template, g_SelectedCiv);
 	tech.reqs = {};
+	tech.name.internal = "tech/"+techName;
 
 	if (template.pair !== undefined)
 		tech.pair = template.pair;
@@ -241,6 +244,7 @@ function loadPhase(phaseCode)
 {
 	var template = loadTechData(phaseCode);
 	var phase = GetTechnologyDataHelper(template, g_SelectedCiv);
+	phase.name.internal = "tech/"+phaseCode;
 
 	phase.actualPhase = phaseCode;
 	if (template.replaces !== undefined) 

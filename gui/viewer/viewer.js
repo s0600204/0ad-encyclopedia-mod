@@ -3,7 +3,7 @@
 var g_SelectedCiv = "gaia"; // fallback default
 var g_CallbackSet = false;
 var g_Template = {};
-
+var g_ParsedData = {};
 
 /**
  * Page initialisation. May also eventually pre-draw/arrange objects.
@@ -32,12 +32,14 @@ function init (template = null) {
 			closeViewer();
 			return;
 		}
+		g_ParsedData[templateName] = g_Template;
 	}
 	else
 	{
 		if (template.civ)
 			g_SelectedCiv = template.civ;
 		g_Template = template;
+		g_ParsedData[template.name.internal] = template;
 	}
 
 	draw();
@@ -91,30 +93,36 @@ function loadTemplateFromName(templateName)
 		templateName = templateName.slice(templateName.indexOf("|")+1);
 	var prefix = templateName.slice(0, templateName.indexOf("/"));
 
+	if (g_ParsedData[templateName])
+		return g_ParsedData[templateName];
+
+	var template;
 	switch (prefix)
 	{
 	case "structures":
 	case "other":
-		return loadStructure(templateName);
+		template = loadStructure(templateName);
 		break;
 
 	case "units":
-		return loadUnit(templateName);
+		template = loadUnit(templateName);
 		break;
 
 	case "gaia":
-		return loadResource(templateName);
+		template = loadResource(templateName);
 		break;
 
 	case "tech":
-		return loadTechnology(templateName.substr(templateName.indexOf("/")+1));
+		template = loadTechnology(templateName.substr(templateName.indexOf("/")+1));
 		break;
 
 	default:
-		// do nothing (error message is given elsewhere)
+		// just return false (an error message is given elsewhere)
+		return false;
 	}
+	g_ParsedData[templateName] = template;
 
-	return false;
+	return template;
 }
 
 /**
