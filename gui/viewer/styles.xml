@@ -7,6 +7,12 @@
 		ghost="true"
 	/>
 
+	<style name="RankGlyph"
+		sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
+		size="4 6 20 22"
+		ghost="true"
+	/>
+
 	<style name="Title"
 		textcolor="white"
 		text_align="center"

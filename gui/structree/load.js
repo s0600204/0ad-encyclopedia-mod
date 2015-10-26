@@ -68,6 +68,12 @@ function loadUnit(templateName)
 		}
 	}
 
+	if (template.Promotion)
+		unit.promotion = {
+			"current_rank": template.Identity.Rank,
+			"entity": template.Promotion.Entity
+		};
+
 	if (template.Heal)
 		unit.healer = {
 			"Range": +template.Heal.Range || 0,

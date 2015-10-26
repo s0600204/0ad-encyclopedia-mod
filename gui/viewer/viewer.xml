@@ -20,6 +20,7 @@
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
 		>
 			<object type="image" style="IconFrame"/>
+			<object type="image" style="RankGlyph" name="entityRankGlyph"/>
 		</object>
 
 		<object name="entityStats" type="text" style="BodyText" size="128+20 44 100%-8 50%"/>

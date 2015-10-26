@@ -35,6 +35,10 @@ function init (template = null) {
 	Engine.GetGUIObjectByName("entityName").caption = getEntityNamesFormatted(template);
 	Engine.GetGUIObjectByName("entityIcon").sprite = "stretched:session/portraits/" + template.icon;
 
+	if (template.promotion)
+		Engine.GetGUIObjectByName("entityRankGlyph").sprite = "stretched:" + getRankGlyph(template.promotion.current_rank);
+	Engine.GetGUIObjectByName("entityRankGlyph").hidden = !(template.promotion);
+
 	var caption = "";
 	if (template.cost)
 		caption += getEntityCostTooltip(template, 1) + "\n";
@@ -136,6 +140,20 @@ function loadResource(templateName)
 	};
 
 	return resource;
+}
+
+/**
+ * Returns the appropriate promotion rank glyph for a given rank
+ * 
+ * @param rank The rank
+ * @return Path to the image
+ */
+function getRankGlyph(rank)
+{
+	var ranks = [ "Basic", "Advanced", "Elite" ];
+	if (!ranks.indexOf(rank) < 0)
+		return null;
+	return "session/icons/rank" + (ranks.indexOf(rank) + 1) + ".png";
 }
 
 /**
