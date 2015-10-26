@@ -42,7 +42,7 @@ function init (template = null) {
 		g_ParsedData[template.name.internal] = template;
 	}
 
-	draw();
+	Navigation.switchTo(g_Template.name.internal);
 }
 
 /**
@@ -165,6 +165,54 @@ function loadResource(templateName)
 
 	return resource;
 }
+
+var Navigation = (function ()
+{
+	var idx = -1;
+	var list = [];
+	var curr = "";
+
+	function back()
+	{
+		if (idx <= 0)
+			return;
+		g_Template = loadTemplateFromName(list[--idx]);
+		draw();
+		Engine.GetGUIObjectByName("navFwdBtn").sprite = "stretched:global/modern/arrow-right.png";
+		if (idx === 0)
+			Engine.GetGUIObjectByName("navBackBtn").sprite = "stretched:grayscale:global/modern/arrow-left.png";
+	};
+
+	function forward()
+	{
+		if (idx >= list.length-1)
+			return;
+		g_Template = loadTemplateFromName(list[++idx]);
+		draw();
+		Engine.GetGUIObjectByName("navBackBtn").sprite = "stretched:global/modern/arrow-left.png";
+		if (idx === list.length-1)
+			Engine.GetGUIObjectByName("navFwdBtn").sprite = "stretched:grayscale:global/modern/arrow-right.png";
+	};
+
+	function switchTo(templateName)
+	{
+		var newTemplate = loadTemplateFromName(templateName);
+		if (!newTemplate)
+			return;
+		list.splice(++idx, list.length, templateName);
+		g_Template = newTemplate;
+		draw();
+		Engine.GetGUIObjectByName("navFwdBtn").sprite = "stretched:grayscale:global/modern/arrow-right.png";
+		if (idx > 0)
+			Engine.GetGUIObjectByName("navBackBtn").sprite = "stretched:global/modern/arrow-left.png";
+	};
+
+	return {
+		"back": function () { back() },
+		"forward": function () { forward() },
+		"switchTo": function (templateName) { switchTo(templateName) },
+	};
+}());
 
 /**
  * Returns the appropriate promotion rank glyph for a given rank

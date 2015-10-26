@@ -15,6 +15,17 @@
 
 		<object name="entityName" type="text" style="Title" size="8 12 100%-8 48"/>
 
+		<object type="button" sprite="stretched:grayscale:global/modern/arrow-left.png" size="8 12 8+16 12+16" name="navBackBtn">
+			<action on="Press"><![CDATA[
+				Navigation.back();
+			]]></action>
+		</object>
+		<object type="button" sprite="stretched:grayscale:global/modern/arrow-right.png" size="100%-16-8 12 100%-8 12+16" name="navFwdBtn">
+			<action on="Press"><![CDATA[
+				Navigation.forward();
+			]]></action>
+		</object>
+
 		<object name="entityIcon" type="image"
 			size="16 48 128+16 128+48"
 			sprite="stretched:pregame/shell/logo/wfg_logo_white.png"
