@@ -2,9 +2,11 @@
 /* Globals */
 var g_SelectedCiv = "gaia"; // fallback default
 var g_CallbackSet = false;
+var g_Template = {};
+
 
 /**
- * Init. Also populates the gui objects.
+ * Page initialisation. May also eventually pre-draw/arrange objects.
  * 
  * @arg template The object or the template name of the entity to be displayed
  */
@@ -23,42 +25,56 @@ function init (template = null) {
 		if (template.civ)
 			g_SelectedCiv = template.civ;
 
-		template = loadTemplateFromName(templateName);
-		if (!template)
+		g_Template = loadTemplateFromName(templateName);
+		if (!g_Template)
 		{
 			error("Viewer: unable to recognise or load template: "+templateName);
 			closeViewer();
 			return;
 		}
 	}
+	else
+	{
+		if (template.civ)
+			g_SelectedCiv = template.civ;
+		g_Template = template;
+	}
 
-	Engine.GetGUIObjectByName("entityName").caption = getEntityNamesFormatted(template);
-	Engine.GetGUIObjectByName("entityIcon").sprite = "stretched:session/portraits/" + template.icon;
+	draw();
+}
 
-	if (template.promotion)
-		Engine.GetGUIObjectByName("entityRankGlyph").sprite = "stretched:" + getRankGlyph(template.promotion.current_rank);
-	Engine.GetGUIObjectByName("entityRankGlyph").hidden = !(template.promotion);
+/**
+ * Populate the UI elements.
+ */
+function draw ()
+{
+	Engine.GetGUIObjectByName("entityName").caption = getEntityNamesFormatted(g_Template);
+	Engine.GetGUIObjectByName("entityIcon").sprite = "stretched:session/portraits/" + g_Template.icon;
+
+	if (g_Template.promotion)
+		Engine.GetGUIObjectByName("entityRankGlyph").sprite = "stretched:" + getRankGlyph(g_Template.promotion.current_rank);
+	Engine.GetGUIObjectByName("entityRankGlyph").hidden = !(g_Template.promotion);
 
 	var caption = "";
-	if (template.cost)
-		caption += getEntityCostTooltip(template, 1) + "\n";
-	Engine.GetGUIObjectByName("entityStats").caption = caption + getEntityStats(template);
+	if (g_Template.cost)
+		caption += getEntityCostTooltip(g_Template, 1) + "\n";
+	Engine.GetGUIObjectByName("entityStats").caption = caption + getEntityStats(g_Template);
 
 	var txt = "";
 
-	if (template.tooltip)
-		txt += "\n" + txtFormats.body[0] +  translate(template.tooltip) + txtFormats.body[1] + "\n";
+	if (g_Template.tooltip)
+		txt += "\n" + txtFormats.body[0] +  translate(g_Template.tooltip) + txtFormats.body[1] + "\n";
 
-	if (template.history)
-		txt += "\n" + txtFormats.body[0] +  translate(template.history) + txtFormats.body[1] + "\n";
+	if (g_Template.history)
+		txt += "\n" + txtFormats.body[0] +  translate(g_Template.history) + txtFormats.body[1] + "\n";
 
-	if (template.description)
-		txt += "\n" + txtFormats.body[0] +  translate(template.description) + txtFormats.body[1] + "\n";
+	if (g_Template.description)
+		txt += "\n" + txtFormats.body[0] +  translate(g_Template.description) + txtFormats.body[1] + "\n";
 
-	if (template.auras)
-		txt += getAurasTooltip(template) + "\n";
+	if (g_Template.auras)
+		txt += getAurasTooltip(g_Template) + "\n";
 	
-	txt += getVisibleEntityClassesFormatted(template);
+	txt += getVisibleEntityClassesFormatted(g_Template);
 
 	Engine.GetGUIObjectByName("entityInfo").caption = txt;
 }
