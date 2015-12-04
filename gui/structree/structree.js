@@ -12,7 +12,7 @@ var g_CallbackSet = false;
 /**
  * Initialize the dropdown containing all the available civs
  */
-function init(data)
+function init(data = {})
 {
 	g_CivData = loadCivData(true);
 
@@ -121,8 +121,10 @@ function selectCiv(civCode)
 					if ("generic" in newTech.reqs)
 						newTech.reqs.generic.concat(techPairs[pair.req].techs);
 					else
+					{
 						for (let civkey of Object.keys(newTech.reqs))
 							newTech.reqs[civkey].concat(techPairs[pair.req].techs);
+					}
 				}
 				g_ParsedData.techs[techcode] = newTech;
 			}
@@ -132,7 +134,37 @@ function selectCiv(civCode)
 	// Establish phase order
 	g_ParsedData.phaseList = unravelPhases(g_ParsedData.techs);
 	for (let phasecode of g_ParsedData.phaseList)
+	{
+		let phaseInfo = loadTechData(phasecode);
 		g_ParsedData.phases[phasecode] = loadPhase(phasecode);
+
+		if (!("requirements" in phaseInfo))
+			continue;
+
+		for (let op in phaseInfo.requirements)
+		{
+			let val = phaseInfo.requirements[op];
+			if (op != "any")
+				continue;
+
+			for (let v of val)
+			{
+				let k = Object.keys(v);
+				k = k[0];
+				v = v[k];
+				if (k != "tech")
+					continue;
+
+				if (v in g_ParsedData.phases)
+					g_ParsedData.phases[v].actualPhase = phasecode;
+				else if (v in techPairs)
+				{
+					for (let t of techPairs[v].techs)
+						g_ParsedData.phases[t].actualPhase = phasecode;
+				}
+			}
+		}
+	}
 
 	// Group production lists of structures by phase
 	for (let structCode of g_Lists.structures)
@@ -201,7 +233,12 @@ function selectCiv(civCode)
 			let phase = "";
 
 			if (unit.phase !== false)
-				phase = unit.phase;
+			{
+				if (g_ParsedData.phaseList.indexOf(unit.phase) < 0)
+					phase = g_ParsedData.phases[unit.phase].actualPhase;
+				else
+					phase = unit.phase;
+			}
 			else if (unit.required !== undefined)
 			{
 				if (unit.required in g_ParsedData.phases)
@@ -236,6 +273,7 @@ function selectCiv(civCode)
 
 	// Determine the buildList for the civ (grouped by phase)
 	var buildList = {};
+	var trainerList = [];
 	for (let pha of g_ParsedData.phaseList)
 		buildList[pha] = [];
 	for (let structCode of g_Lists.structures)
@@ -246,11 +284,15 @@ function selectCiv(civCode)
 		let myPhase = g_ParsedData.structures[structCode].phase;
 		if (g_ParsedData.phaseList.indexOf(myPhase) === -1)
 			myPhase = g_ParsedData.phases[myPhase].actualPhase;
-		
+
 		buildList[myPhase].push(structCode);
 	}
+	for (let unitCode of g_Lists.units)
+		if (g_ParsedData.units[unitCode] && g_ParsedData.units[unitCode].trainer)
+			trainerList.push(unitCode);
 
 	g_CivData[g_SelectedCiv].buildList = buildList;
+	g_CivData[g_SelectedCiv].trainList = trainerList;
 
 	// Draw tree
 	draw();
