@@ -120,14 +120,13 @@ function draw()
 		trainer = g_ParsedData.units[trainer];
 		Engine.GetGUIObjectByName("trainer["+t+"]_icon").sprite = "stretched:session/portraits/"+trainer.icon;
 		Engine.GetGUIObjectByName("trainer["+t+"]_icon").tooltip = assembleTooltip(trainer);
-		Engine.GetGUIObjectByName("trainer["+t+"]_name").caption = translate(trainer.name.specific);
 		thisEle.hidden = false;
 		
 		let p = 0;
 		for (let prod of trainer.trainer)
 		{
 			prod = g_ParsedData.units[prod];
-			if (!drawProdIcon(null, t, null, p, prod))
+			if (!drawProdIcon(null, t, null, p, prod, "Blue"))
 				break;
 			p++;
 		}
@@ -151,7 +150,7 @@ function draw()
 	{
 		Engine.GetGUIObjectByName("display_trainers").hidden = false;
 		var size = Engine.GetGUIObjectByName("display_tree").size;
-		size.right = -124;
+		size.right = -138;
 		Engine.GetGUIObjectByName("display_tree").size = size;
 	}
 	else
@@ -178,8 +177,11 @@ function drawProdIcon(pha, s, r, p, prod, clr)
 	prodEle.sprite = "stretched:session/portraits/"+prod.icon;
 	prodEle.tooltip = assembleTooltip(prod);
 	prodEle.hidden = false;
-	
-	Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]_frame").sprite = "IconFrame_"+clr;
+
+	if (pha !== null)
+		Engine.GetGUIObjectByName("phase["+pha+"]_struct["+s+"]_row["+r+"]_prod["+p+"]_frame").sprite = "IconFrame_"+clr;
+	else
+		Engine.GetGUIObjectByName("trainer["+s+"]_prod["+p+"]_frame").sprite = "IconFrame_"+clr;
 	return true;
 }
 
@@ -294,29 +296,15 @@ function predraw()
 		trainerQuant: 0,
 		prodQuant: 0
 	};
-	
-	var x = 4;
+
 	do
 	{
-		let p = 0;
-		let prodEle = Engine.GetGUIObjectByName("trainer["+t+"]_prod["+p+"]");
-		do
-		{
-			let prodsize = prodEle.size;
-			prodsize.left = (initIconSize.right+4) * p;
-			prodsize.right = (initIconSize.right+4) * (p+1) - 4;
-			prodEle.size = prodsize;
-
-			p++;
-			prodEle = Engine.GetGUIObjectByName("trainer["+t+"]_prod["+p+"]");
-		} while (prodEle !== undefined);
-		Engine.GetGUIObjectByName("trainer["+t+"]_row").size = "4 100%-24"+" 100%-4 100%";
+		let p = horizSpaceRepeatedObjects("trainer["+t+"]_prod[p]", "p", initIconSize.hMargin);
 		g_DrawLimits.trainer.prodQuant = p;
+		Engine.GetGUIObjectByName("trainer["+t+"]_row").size = "4 100%-"+(initIconSize.adjHeight+2)+"-1 100%-4 100%";
 		
 		let size = ele.size;
-		size.top += x;
-		size.bottom += x + 24;
-		x += size.bottom - size.top + 8;
+		size.bottom += initIconSize.adjHeight+2;
 		ele.size = size;
 		
 		t++;
@@ -324,6 +312,9 @@ function predraw()
 		
 	} while (ele !== undefined);
 	
+	var icon_offset = -Engine.GetGUIObjectByName("trainer[0]_icon").size.top;
+	vertiSpaceRepeatedObjects("trainer[t]", "t", initIconSize.hMargin*4 + icon_offset);
+
 	g_DrawLimits.trainer.trainerQuant = t;
 }
 
